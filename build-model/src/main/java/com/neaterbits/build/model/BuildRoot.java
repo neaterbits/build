@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+import com.neaterbits.build.buildsystem.common.BuildSystemRootScan;
+import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
-import com.neaterbits.ide.common.buildsystem.BuildSystemRootScan;
-import com.neaterbits.ide.common.buildsystem.Scope;
 
 public interface BuildRoot {
 

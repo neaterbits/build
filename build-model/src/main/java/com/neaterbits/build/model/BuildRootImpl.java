@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
+import com.neaterbits.build.buildsystem.common.BuildSystemRootScan;
+import com.neaterbits.build.buildsystem.common.ScanException;
+import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.types.dependencies.DependencyType;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
@@ -17,10 +21,6 @@ import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
 import com.neaterbits.compiler.util.modules.ModuleId;
-import com.neaterbits.ide.common.buildsystem.BuildSystemRoot;
-import com.neaterbits.ide.common.buildsystem.BuildSystemRootScan;
-import com.neaterbits.ide.common.buildsystem.ScanException;
-import com.neaterbits.ide.common.buildsystem.Scope;
 
 public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> implements BuildRoot {
 

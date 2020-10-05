@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.types.dependencies.DependencyType;
 import com.neaterbits.build.types.resource.LibraryResource;
 import com.neaterbits.build.types.resource.LibraryResourcePath;
@@ -17,7 +18,6 @@ import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePat
 import com.neaterbits.build.types.resource.compile.TargetDirectoryResource;
 import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
 import com.neaterbits.compiler.util.modules.ModuleId;
-import com.neaterbits.ide.common.buildsystem.BuildSystemRoot;
 
 class BuildRootImplInit {
 
