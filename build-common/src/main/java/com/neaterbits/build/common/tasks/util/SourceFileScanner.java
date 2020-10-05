@@ -11,9 +11,9 @@ import com.neaterbits.build.types.resource.SourceFileHolderResourcePath;
 import com.neaterbits.build.types.resource.SourceFileResource;
 import com.neaterbits.build.types.resource.SourceFileResourcePath;
 import com.neaterbits.build.types.resource.SourceFolderResourcePath;
-import com.neaterbits.compiler.util.Files;
-import com.neaterbits.compiler.util.Strings;
+import com.neaterbits.util.Files;
 import com.neaterbits.util.PathUtil;
+import com.neaterbits.util.StringUtils;
 
 public class SourceFileScanner {
 
@@ -94,7 +94,7 @@ public class SourceFileScanner {
 
 		String dirPath = PathUtil.removeDirectoryFromPath(sourceFolderFile, directory);
 
-		final String [] namespaceParts = Strings.split(dirPath, '/');
+		final String [] namespaceParts = StringUtils.split(dirPath, '/');
 
 		final NamespaceResource namespaceResource = new NamespaceResource(directory, namespaceParts);
 

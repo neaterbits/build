@@ -14,7 +14,7 @@ import com.neaterbits.build.types.compile.CompilerStatus;
 import com.neaterbits.build.types.compile.BuildIssue.Type;
 import com.neaterbits.build.types.resource.SourceFileResourcePath;
 import com.neaterbits.build.types.resource.SourceLineResourcePath;
-import com.neaterbits.compiler.util.Strings;
+import com.neaterbits.util.StringUtils;
 
 public final class JavaCompiler implements Compiler {
 
@@ -56,7 +56,7 @@ public final class JavaCompiler implements Compiler {
 
 			arguments.add("-cp");
 
-			arguments.add(Strings.join(compiledDependencies, ':', File::getPath));
+			arguments.add(StringUtils.join(compiledDependencies, ':', File::getPath));
 		}
 
 		arguments.addAll(sourceFiles.stream()
@@ -104,14 +104,14 @@ public final class JavaCompiler implements Compiler {
 
 		System.out.println("## compile to " + targetDirectory.getPath() + " completed with exit code " + exitCode + " and issues " + issues.size());
 
-		return new CompilerStatus(Strings.join(arguments, ' '), exitCode, exitCode == 0, issues);
+		return new CompilerStatus(StringUtils.join(arguments, ' '), exitCode, exitCode == 0, issues);
 	}
 
 	private static BuildIssue makeBuildIssue(String line, List<SourceFileResourcePath> sourceFiles) {
 
 		System.out.println("error: " + line);
 
-		final String [] parts = Strings.split(line, ':');
+		final String [] parts = StringUtils.split(line, ':');
 
 		final BuildIssue buildIssue;
 
