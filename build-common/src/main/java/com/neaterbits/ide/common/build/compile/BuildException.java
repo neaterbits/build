@@ -3,7 +3,7 @@ package com.neaterbits.ide.common.build.compile;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.neaterbits.ide.common.build.model.compile.BuildIssue;
+import com.neaterbits.build.types.compile.BuildIssue;
 
 public class BuildException extends Exception {
 

@@ -7,18 +7,18 @@
 		<artifactId>root</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>build-types</artifactId>
+	<artifactId>build-model</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.neaterbits.compiler</groupId>
-			<artifactId>compiler-util</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>build-types</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${ideGroupId}</groupId>
-			<artifactId>ide-util</artifactId>
-			<version>${ideUtilVersion}</version>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>buildsystem-common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

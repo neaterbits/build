@@ -1,8 +1,8 @@
 package com.neaterbits.ide.common.build.tasks;
 
-import com.neaterbits.ide.common.build.compile.Compiler;
-import com.neaterbits.ide.common.build.model.BuildRoot;
-import com.neaterbits.ide.common.build.model.compile.FileDependencyMap;
+import com.neaterbits.build.model.BuildRoot;
+import com.neaterbits.build.types.compile.Compiler;
+import com.neaterbits.build.types.compile.FileDependencyMap;
 import com.neaterbits.ide.common.language.BuildableLanguage;
 
 public final class ModulesBuildContext extends TaskBuilderContext {

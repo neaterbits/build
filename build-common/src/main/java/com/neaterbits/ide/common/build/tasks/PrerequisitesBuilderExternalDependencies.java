@@ -3,10 +3,10 @@ package com.neaterbits.ide.common.build.tasks;
 
 import java.util.List;
 
+import com.neaterbits.build.types.compile.ExternalModuleDependencyList;
+import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.resource.LibraryResourcePath;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.build.model.LibraryDependency;
-import com.neaterbits.ide.common.build.model.compile.ExternalModuleDependencyList;
 import com.neaterbits.ide.util.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.ide.util.dependencyresolution.spec.builder.PrerequisitesBuilder;
 import com.neaterbits.ide.util.scheduling.Constraint;

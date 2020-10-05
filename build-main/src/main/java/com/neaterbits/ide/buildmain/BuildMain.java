@@ -8,9 +8,9 @@ import javax.xml.bind.JAXBException;
 
 import com.neaterbits.ide.common.buildsystem.BuildSystem;
 import com.neaterbits.ide.common.buildsystem.ScanException;
+import com.neaterbits.build.model.BuildRoot;
+import com.neaterbits.build.model.BuildRootImpl;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.build.model.BuildRoot;
-import com.neaterbits.ide.common.build.model.BuildRootImpl;
 import com.neaterbits.ide.common.build.tasks.ModulesBuildContext;
 import com.neaterbits.ide.common.build.tasks.TargetBuilderModules;
 import com.neaterbits.ide.component.java.language.JavaBuildableLanguage;

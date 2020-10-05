@@ -2,8 +2,8 @@ package com.neaterbits.ide.common.build.compile;
 
 import java.util.Objects;
 
-import com.neaterbits.ide.common.build.model.compile.CompileList;
-import com.neaterbits.ide.common.build.model.compile.FileDependencyMap;
+import com.neaterbits.build.types.compile.CompileList;
+import com.neaterbits.build.types.compile.FileDependencyMap;
 
 public final class CompilationScanResult {
 

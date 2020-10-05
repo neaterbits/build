@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.model.BuildRoot;
+import com.neaterbits.build.types.dependencies.LibraryDependency;
+import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.build.model.BuildRoot;
-import com.neaterbits.ide.common.build.model.LibraryDependency;
-import com.neaterbits.ide.common.build.model.ProjectDependency;
 import com.neaterbits.ide.common.buildsystem.Scope;
 
 public class ModuleBuilderUtil {

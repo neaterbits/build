@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
+import com.neaterbits.build.model.BuildRoot;
+import com.neaterbits.build.model.BuildRootImpl;
 import com.neaterbits.ide.buildsystem.maven.MavenBuildSystem;
-import com.neaterbits.ide.common.build.model.BuildRoot;
-import com.neaterbits.ide.common.build.model.BuildRootImpl;
 import com.neaterbits.ide.common.buildsystem.ScanException;
 
 public abstract class BaseBuildTest {

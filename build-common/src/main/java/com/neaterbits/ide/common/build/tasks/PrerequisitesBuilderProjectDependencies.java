@@ -2,10 +2,10 @@ package com.neaterbits.ide.common.build.tasks;
 
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.types.compile.ProjectModuleDependencyList;
+import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
-import com.neaterbits.ide.common.build.model.ProjectDependency;
-import com.neaterbits.ide.common.build.model.compile.ProjectModuleDependencyList;
 import com.neaterbits.ide.util.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.ide.util.dependencyresolution.spec.builder.PrerequisitesBuilder;
 
