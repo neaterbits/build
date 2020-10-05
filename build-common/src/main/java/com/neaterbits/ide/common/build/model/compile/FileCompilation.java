@@ -3,8 +3,8 @@ package com.neaterbits.ide.common.build.model.compile;
 import java.io.File;
 import java.util.Objects;
 
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.compile.CompiledFileResourcePath;
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.compile.CompiledFileResourcePath;
 
 public final class FileCompilation {
 

@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.compile.CompiledModuleFileResource;
+import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.ide.buildsystem.maven.MavenModuleId;
 import com.neaterbits.ide.common.build.model.BuildRoot;
 import com.neaterbits.ide.common.build.model.ProjectDependency;
 import com.neaterbits.ide.common.buildsystem.ScanException;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.compile.CompiledModuleFileResource;
-import com.neaterbits.ide.common.resource.compile.CompiledModuleFileResourcePath;
 
 public class ModuleBuilderTest extends BaseBuildTest {
 

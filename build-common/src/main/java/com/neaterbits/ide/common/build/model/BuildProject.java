@@ -3,7 +3,7 @@ package com.neaterbits.ide.common.build.model;
 import java.util.List;
 import java.util.Objects;
 
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 
 final class BuildProject<PROJECT> {
 

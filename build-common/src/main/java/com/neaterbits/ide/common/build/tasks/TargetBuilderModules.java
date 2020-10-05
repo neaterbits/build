@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.ide.common.build.compile.BuildException;
 import com.neaterbits.ide.common.build.compile.Compiler;
 import com.neaterbits.ide.common.build.compile.CompilerStatus;
@@ -14,8 +16,6 @@ import com.neaterbits.ide.common.build.model.ProjectDependency;
 import com.neaterbits.ide.common.build.model.compile.ExternalModuleDependencyList;
 import com.neaterbits.ide.common.build.model.compile.ModuleCompileList;
 import com.neaterbits.ide.common.build.model.compile.ProjectModuleDependencyList;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.ide.util.dependencyresolution.spec.TargetBuilderSpec;
 import com.neaterbits.ide.util.dependencyresolution.spec.builder.ActionLog;
 import com.neaterbits.ide.util.dependencyresolution.spec.builder.TargetBuilder;

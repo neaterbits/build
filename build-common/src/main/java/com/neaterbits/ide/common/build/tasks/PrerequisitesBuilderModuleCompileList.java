@@ -1,11 +1,11 @@
 package com.neaterbits.ide.common.build.tasks;
 
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.ide.common.build.model.compile.FileCompilation;
 import com.neaterbits.ide.common.build.model.compile.ModuleCompileList;
 import com.neaterbits.ide.common.build.model.compile.SourceFolderCompileList;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
 import com.neaterbits.ide.util.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.ide.util.dependencyresolution.spec.builder.PrerequisitesBuilder;
 import com.neaterbits.ide.util.scheduling.Constraint;

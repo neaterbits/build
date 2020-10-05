@@ -2,10 +2,10 @@ package com.neaterbits.ide.common.build.tasks;
 
 import java.util.Collection;
 
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.ide.common.build.model.BuildRoot;
 import com.neaterbits.ide.common.language.BuildableLanguage;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.ide.util.scheduling.task.TaskContext;
 
 public abstract class TaskBuilderContext extends TaskContext {

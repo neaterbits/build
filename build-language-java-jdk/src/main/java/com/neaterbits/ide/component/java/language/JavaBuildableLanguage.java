@@ -2,11 +2,11 @@ package com.neaterbits.ide.component.java.language;
 
 import java.io.File;
 
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.compile.CompiledFileResource;
+import com.neaterbits.build.types.resource.compile.CompiledFileResourcePath;
+import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
 import com.neaterbits.ide.common.language.BuildableLanguage;
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.compile.CompiledFileResource;
-import com.neaterbits.ide.common.resource.compile.CompiledFileResourcePath;
-import com.neaterbits.ide.common.resource.compile.TargetDirectoryResourcePath;
 import com.neaterbits.ide.util.PathUtil;
 
 public class JavaBuildableLanguage implements BuildableLanguage {

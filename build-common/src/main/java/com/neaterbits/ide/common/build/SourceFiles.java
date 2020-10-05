@@ -3,7 +3,7 @@ package com.neaterbits.ide.common.build;
 import java.util.Objects;
 import java.util.Set;
 
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
 
 public final class SourceFiles {
 

@@ -3,9 +3,9 @@ package com.neaterbits.ide.common.build.compile;
 import java.util.Collection;
 import java.util.List;
 
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 
 public interface BuildLogger {
 

@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
+import com.neaterbits.build.types.resource.compile.CompiledFileResourcePath;
+import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
 import com.neaterbits.ide.common.build.model.BuildRoot;
 import com.neaterbits.ide.common.build.tasks.util.SourceFileScanner;
 import com.neaterbits.ide.common.language.CompileableLanguage;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
-import com.neaterbits.ide.common.resource.compile.CompiledFileResourcePath;
-import com.neaterbits.ide.common.resource.compile.TargetDirectoryResourcePath;
 
 class BuildUtil {
 

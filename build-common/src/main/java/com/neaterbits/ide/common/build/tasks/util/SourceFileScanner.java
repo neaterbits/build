@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import com.neaterbits.build.types.resource.NamespaceResource;
+import com.neaterbits.build.types.resource.ResourcePath;
+import com.neaterbits.build.types.resource.SourceFileHolderResourcePath;
+import com.neaterbits.build.types.resource.SourceFileResource;
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.compiler.util.Files;
 import com.neaterbits.compiler.util.Strings;
-import com.neaterbits.ide.common.resource.NamespaceResource;
-import com.neaterbits.ide.common.resource.ResourcePath;
-import com.neaterbits.ide.common.resource.SourceFileHolderResourcePath;
-import com.neaterbits.ide.common.resource.SourceFileResource;
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
 import com.neaterbits.ide.util.PathUtil;
 
 public class SourceFileScanner {

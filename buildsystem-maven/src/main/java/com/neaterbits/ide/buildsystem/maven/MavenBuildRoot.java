@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Objects;
 
 import com.neaterbits.build.types.language.Language;
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResource;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.ide.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.ide.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.ide.buildsystem.maven.parse.PomTreeParser;
@@ -15,9 +18,6 @@ import com.neaterbits.ide.common.buildsystem.BuildSystemRoot;
 import com.neaterbits.ide.common.buildsystem.BuildSystemRootListener;
 import com.neaterbits.ide.common.buildsystem.ScanException;
 import com.neaterbits.ide.common.buildsystem.Scope;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.SourceFolderResource;
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
 
 public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, MavenProject, MavenDependency> {
 

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.ide.common.build.model.BuildRoot;
 import com.neaterbits.ide.common.build.model.LibraryDependency;
 import com.neaterbits.ide.common.build.model.ProjectDependency;
 import com.neaterbits.ide.common.buildsystem.Scope;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
 
 public class ModuleBuilderUtil {
 	

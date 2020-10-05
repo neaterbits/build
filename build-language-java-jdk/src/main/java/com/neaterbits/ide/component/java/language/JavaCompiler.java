@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.SourceLineResourcePath;
 import com.neaterbits.compiler.util.Strings;
 import com.neaterbits.ide.common.build.compile.Compiler;
 import com.neaterbits.ide.common.build.compile.CompilerStatus;
 import com.neaterbits.ide.common.build.model.compile.BuildIssue;
 import com.neaterbits.ide.common.build.model.compile.BuildIssue.Type;
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.SourceLineResourcePath;
 
 public final class JavaCompiler implements Compiler {
 

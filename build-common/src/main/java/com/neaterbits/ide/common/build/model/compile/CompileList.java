@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 
 public final class CompileList {
 

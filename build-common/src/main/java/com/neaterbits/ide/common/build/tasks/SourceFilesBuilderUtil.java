@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.types.resource.SourceFileResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
+import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
 import com.neaterbits.ide.common.build.model.compile.FileCompilation;
 import com.neaterbits.ide.common.build.tasks.util.SourceFileScanner;
-import com.neaterbits.ide.common.resource.SourceFileResourcePath;
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
-import com.neaterbits.ide.common.resource.compile.TargetDirectoryResourcePath;
 
 public class SourceFilesBuilderUtil {
 

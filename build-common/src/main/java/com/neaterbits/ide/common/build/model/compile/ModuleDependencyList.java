@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.types.resource.ModuleResourcePath;
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.ide.common.build.model.ModuleDependency;
-import com.neaterbits.ide.common.resource.ModuleResourcePath;
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
 import com.neaterbits.ide.util.dependencyresolution.executor.CollectedObject;
 
 public class ModuleDependencyList<DEPENDENCY_MODULE extends ModuleResourcePath, DEPENDENCY extends ModuleDependency<DEPENDENCY_MODULE>>

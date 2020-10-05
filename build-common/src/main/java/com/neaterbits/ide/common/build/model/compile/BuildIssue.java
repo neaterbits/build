@@ -2,7 +2,7 @@ package com.neaterbits.ide.common.build.model.compile;
 
 import java.util.Objects;
 
-import com.neaterbits.ide.common.resource.SourceLineResourcePath;
+import com.neaterbits.build.types.resource.SourceLineResourcePath;
 
 public final class BuildIssue {
 	

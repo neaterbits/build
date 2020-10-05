@@ -2,7 +2,7 @@ package com.neaterbits.ide.common.build.model;
 
 import java.util.Set;
 
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 
 public interface DependencyMap {
 

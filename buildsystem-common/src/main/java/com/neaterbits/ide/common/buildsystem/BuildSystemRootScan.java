@@ -2,8 +2,8 @@ package com.neaterbits.ide.common.buildsystem;
 
 import java.util.List;
 
-import com.neaterbits.ide.common.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.common.resource.SourceFolderResourcePath;
+import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 
 public interface BuildSystemRootScan {
 
