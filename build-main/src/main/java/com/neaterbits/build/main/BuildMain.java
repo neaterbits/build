@@ -15,13 +15,13 @@ import com.neaterbits.build.language.java.jdk.JavaCompiler;
 import com.neaterbits.build.model.BuildRoot;
 import com.neaterbits.build.model.BuildRootImpl;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.util.dependencyresolution.executor.logger.BinaryTargetExecutorLogger;
-import com.neaterbits.ide.util.dependencyresolution.executor.logger.DelegatingTargetExecutorLogger;
-import com.neaterbits.ide.util.dependencyresolution.executor.logger.StructuredTargetExecutorLogger;
-import com.neaterbits.ide.util.scheduling.QueueAsyncExecutor;
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.structuredlog.xml.model.Log;
 import com.neaterbits.structuredlog.xml.model.LogIO;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.BinaryTargetExecutorLogger;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.DelegatingTargetExecutorLogger;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.StructuredTargetExecutorLogger;
+import com.neaterbits.util.concurrency.scheduling.QueueAsyncExecutor;
 
 public class BuildMain {
 

@@ -7,9 +7,9 @@ import com.neaterbits.build.types.compile.ExternalModuleDependencyList;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.resource.LibraryResourcePath;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
-import com.neaterbits.ide.util.dependencyresolution.spec.PrerequisitesBuilderSpec;
-import com.neaterbits.ide.util.dependencyresolution.spec.builder.PrerequisitesBuilder;
-import com.neaterbits.ide.util.scheduling.Constraint;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
+import com.neaterbits.util.concurrency.scheduling.Constraint;
 
 public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends TaskBuilderContext>
 			extends PrerequisitesBuilderSpec<CONTEXT, ProjectModuleResourcePath> {

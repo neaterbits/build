@@ -9,9 +9,19 @@
 	<artifactId>build-language-java-jdk</artifactId>
 	<dependencies>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>build-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>${ideGroupId}</groupId>
 			<artifactId>component-common</artifactId>
 			<version>${ideComponentCommonVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>${utilGroupId}</groupId>
+			<artifactId>util-base</artifactId>
+			<version>${utilBaseVersion}</version>
 		</dependency>
 	</dependencies>
 </project>

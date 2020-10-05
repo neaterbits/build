@@ -6,9 +6,9 @@ import com.neaterbits.build.types.compile.SourceFolderCompileList;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.SourceFileResourcePath;
 import com.neaterbits.build.types.resource.SourceFolderResourcePath;
-import com.neaterbits.ide.util.dependencyresolution.spec.PrerequisitesBuilderSpec;
-import com.neaterbits.ide.util.dependencyresolution.spec.builder.PrerequisitesBuilder;
-import com.neaterbits.ide.util.scheduling.Constraint;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
+import com.neaterbits.util.concurrency.scheduling.Constraint;
 
 public class PrerequisitesBuilderModuleCompileList extends PrerequisitesBuilderSpec<ModulesBuildContext, ProjectModuleResourcePath> {
 

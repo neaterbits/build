@@ -16,11 +16,10 @@ import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
-import com.neaterbits.ide.common.build.compile.BuildException;
-import com.neaterbits.ide.util.dependencyresolution.spec.TargetBuilderSpec;
-import com.neaterbits.ide.util.dependencyresolution.spec.builder.ActionLog;
-import com.neaterbits.ide.util.dependencyresolution.spec.builder.TargetBuilder;
-import com.neaterbits.ide.util.scheduling.Constraint;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetBuilderSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.TargetBuilder;
+import com.neaterbits.util.concurrency.scheduling.Constraint;
 
 public class TargetBuilderModules extends TargetBuilderSpec<ModulesBuildContext> {
 

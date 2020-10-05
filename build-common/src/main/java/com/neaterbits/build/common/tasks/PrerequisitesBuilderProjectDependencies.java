@@ -6,8 +6,8 @@ import com.neaterbits.build.types.compile.ProjectModuleDependencyList;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
-import com.neaterbits.ide.util.dependencyresolution.spec.PrerequisitesBuilderSpec;
-import com.neaterbits.ide.util.dependencyresolution.spec.builder.PrerequisitesBuilder;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
 
 final class PrerequisitesBuilderProjectDependencies extends PrerequisitesBuilderSpec<ModulesBuildContext, ProjectModuleResourcePath> {
 

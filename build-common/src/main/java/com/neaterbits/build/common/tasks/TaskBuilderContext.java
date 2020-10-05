@@ -6,7 +6,7 @@ import com.neaterbits.build.common.language.BuildableLanguage;
 import com.neaterbits.build.model.BuildRoot;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
-import com.neaterbits.ide.util.scheduling.task.TaskContext;
+import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public abstract class TaskBuilderContext extends TaskContext {
 	private final BuildRoot buildRoot;

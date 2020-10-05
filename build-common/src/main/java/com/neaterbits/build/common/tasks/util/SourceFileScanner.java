@@ -13,7 +13,7 @@ import com.neaterbits.build.types.resource.SourceFileResourcePath;
 import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.compiler.util.Files;
 import com.neaterbits.compiler.util.Strings;
-import com.neaterbits.ide.util.PathUtil;
+import com.neaterbits.util.PathUtil;
 
 public class SourceFileScanner {
 
@@ -35,7 +35,7 @@ public class SourceFileScanner {
 	}
 
 	/*
-	
+
 	public static void findSourceFiles(SourceFolderResourcePath sourceFolderPath, Consumer<SourceFileResourcePath> resources) {
 
 		findSourceFiles(
@@ -45,10 +45,10 @@ public class SourceFileScanner {
 				resources);
 	}
 	*/
-	
+
 
 	public static void findSourceFiles(SourceFileHolderResourcePath sourceHolderPath, File sourceFolderFile, List<ResourcePath> resources) {
-		
+
 		findSourceFiles(
 				sourceHolderPath,
 				sourceFolderFile,
@@ -63,17 +63,17 @@ public class SourceFileScanner {
 			Consumer<SourceFileResourcePath> resources) {
 
 		Files.recurseDirectories(sourceFolderFile, file -> {
-			
-			final SourceFileResourcePath filePath = getSourceFile.apply(sourceHolderPath, file); 
+
+			final SourceFileResourcePath filePath = getSourceFile.apply(sourceHolderPath, file);
 
 			resources.accept(filePath);
 		});
 	}
-	
+
 	public static class Namespace {
 		private final String dirPath;
 		private final NamespaceResource namespace;
-		
+
 		public Namespace(String dirPath, NamespaceResource namespace) {
 			this.dirPath = dirPath;
 			this.namespace = namespace;
@@ -87,15 +87,15 @@ public class SourceFileScanner {
 			return namespace;
 		}
 	}
-	
+
 	public static Namespace getNamespaceResource(File sourceFolderFile, File sourceFile) {
-		
+
 		final File directory = sourceFile.getParentFile();
-		
+
 		String dirPath = PathUtil.removeDirectoryFromPath(sourceFolderFile, directory);
-		
+
 		final String [] namespaceParts = Strings.split(dirPath, '/');
-		
+
 		final NamespaceResource namespaceResource = new NamespaceResource(directory, namespaceParts);
 
 		return new Namespace(dirPath, namespaceResource);

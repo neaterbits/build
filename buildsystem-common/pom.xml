@@ -12,10 +12,5 @@
   		<artifactId>build-types</artifactId>
   		<version>${project.version}</version>
   	</dependency>
-  	<dependency>
-  		<groupId>${ideGroupId}</groupId>
-  		<artifactId>ide-util</artifactId>
-  		<version>${ideUtilVersion}</version>
-  	</dependency>
   </dependencies>
 </project>

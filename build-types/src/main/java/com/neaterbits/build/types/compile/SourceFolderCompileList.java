@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.neaterbits.build.types.resource.SourceFolderResourcePath;
-import com.neaterbits.ide.util.dependencyresolution.executor.CollectedObject;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectedObject;
 
 public final class SourceFolderCompileList implements CollectedObject {
 

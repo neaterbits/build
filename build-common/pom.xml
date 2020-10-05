@@ -24,11 +24,6 @@
   		<version>${project.version}</version>
   	</dependency>
   	<dependency>
-  		<groupId>${ideGroupId}</groupId>
-  		<artifactId>ide-util</artifactId>
-  		<version>${ideUtilVersion}</version>
-  	</dependency>
-  	<dependency>
   		<groupId>${project.groupId}</groupId>
   		<artifactId>buildsystem-maven</artifactId>
   		<version>${project.version}</version>
