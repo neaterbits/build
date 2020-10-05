@@ -9,22 +9,22 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
-import com.neaterbits.compiler.util.ArrayStack;
-import com.neaterbits.compiler.util.Context;
-import com.neaterbits.compiler.util.Stack;
+import com.neaterbits.util.ArrayStack;
+import com.neaterbits.util.Stack;
+import com.neaterbits.util.parse.context.Context;
 
 final class StackPomEventListener implements PomEventListener {
 
 	private final File rootDirectory;
-	
+
 	private MavenProject mavenProject;
-	
+
 	private final Stack<StackBase> stack;
 
 	StackPomEventListener(File rootDirectory) {
-		
+
 		Objects.requireNonNull(rootDirectory);
-		
+
 		this.rootDirectory = rootDirectory;
 		this.stack = new ArrayStack<>();
 	}
@@ -33,14 +33,14 @@ final class StackPomEventListener implements PomEventListener {
 		Objects.requireNonNull(frame);
 
 		// System.out.println("push: " + frame.getClass().getSimpleName());
-		
+
 		stack.push(frame);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private <T> T pop() {
 		final T frame = (T)stack.pop();
-		
+
 		// System.out.println("pop: " + frame.getClass().getSimpleName());
 
 		return frame;
@@ -50,7 +50,7 @@ final class StackPomEventListener implements PomEventListener {
 	private <T> T get() {
 		return (T)stack.get();
 	}
-	
+
 	public MavenProject getMavenProject() {
 		return mavenProject;
 	}
@@ -64,10 +64,10 @@ final class StackPomEventListener implements PomEventListener {
 	public void onText(Context context, String text) {
 
 		final StackBase stackBase = get();
-		
+
 		if (stackBase instanceof StackText) {
 			final StackText stackText = (StackText)stackBase;
-			
+
 			stackText.setText(text.trim());
 		}
 	}
@@ -81,15 +81,15 @@ final class StackPomEventListener implements PomEventListener {
 
 	@Override
 	public void onGroupIdEnd(Context context) {
-		
+
 		final StackGroupId stackGroupId = pop();
-		
+
 		final EntitySetter entitySetter = get();
-		
+
 		entitySetter.setGroupId(stackGroupId.getText());
 	}
 
-	
+
 	@Override
 	public void onArtifactIdStart(Context context) {
 
@@ -100,7 +100,7 @@ final class StackPomEventListener implements PomEventListener {
 	public void onArtifactIdEnd(Context context) {
 
 		final StackArtifactId stackArtifactId = pop();
-		
+
 		final EntitySetter entitySetter = get();
 
 		entitySetter.setArtifactId(stackArtifactId.getText());
@@ -108,33 +108,33 @@ final class StackPomEventListener implements PomEventListener {
 
 	@Override
 	public void onVersionStart(Context context) {
-		
+
 		push(new StackVersion(context));
-		
+
 	}
-	
+
 	@Override
 	public void onVersionEnd(Context context) {
 
 		final StackVersion stackVersion = pop();
-		
+
 		final EntitySetter entitySetter = get();
 
 		entitySetter.setVersion(stackVersion.getText());
 	}
-	
+
 	@Override
 	public void onParentStart(Context context) {
-		
+
 		push(new StackParent(context));
-		
+
 	}
 
 	@Override
 	public void onParentEnd(Context context) {
 
 		final StackParent stackParent = pop();
-		
+
 		final StackProject stackProject = get();
 
 		stackProject.setParentModuleId(stackParent.makeModuleId());
@@ -157,11 +157,11 @@ final class StackPomEventListener implements PomEventListener {
 
 	@Override
 	public void onScopeEnd(Context context) {
-		
+
 		final StackScope stackScope = pop();
-		
+
 		final StackDependency stackDependency = get();
-		
+
 		stackDependency.setScope(stackScope.getText());
 	}
 
@@ -174,9 +174,9 @@ final class StackPomEventListener implements PomEventListener {
 	public void onOptionalEnd(Context context) {
 
 		final StackOptional stackOptional = pop();
-		
+
 		final StackDependency stackDependency = get();
-		
+
 		stackDependency.setOptional(stackOptional.getText());
 	}
 
@@ -184,26 +184,26 @@ final class StackPomEventListener implements PomEventListener {
 	public void onDependencyEnd(Context context) {
 
 		final StackDependency stackDependency = pop();
-		
+
 		final MavenDependency dependency = new MavenDependency(
 				stackDependency.makeModuleId(),
 				stackDependency.getPackaging(),
 				stackDependency.getScope(),
 				stackDependency.getOptional());
-	
+
 		final StackDependencies stackDependencies = get();
-	
+
 		stackDependencies.addDependency(dependency);
 	}
-	
+
 
 	@Override
 	public void onDependenciesEnd(Context context) {
-		
+
 		final StackDependencies stackDependencies = pop();
-		
+
 		final StackProject stackProject = get();
-		
+
 		stackProject.setDependencies(stackDependencies.getDependencies());
 	}
 
@@ -211,22 +211,22 @@ final class StackPomEventListener implements PomEventListener {
 	public void onModulesStart(Context context) {
 
 		push(new StackModules(context));
-		
+
 	}
 
 	@Override
 	public void onModuleStart(Context context) {
 
 		push(new StackModule(context));
-		
+
 	}
 
 	@Override
 	public void onModuleEnd(Context context) {
 		final StackModule stackModule = pop();
-		
+
 		final StackModules stackModules = get();
-		
+
 		stackModules.addModule(stackModule.getText());
 	}
 
@@ -234,12 +234,12 @@ final class StackPomEventListener implements PomEventListener {
 	public void onModulesEnd(Context context) {
 
 		final StackModules stackModules = pop();
-		
+
 		final StackProject stackProject = get();
-		
+
 		stackProject.setSubModules(stackModules.getModules());
 	}
-	
+
 	@Override
 	public void onReportingStart(Context context) {
 
@@ -250,11 +250,11 @@ final class StackPomEventListener implements PomEventListener {
 	public void onReportingEnd(Context context) {
 
 		final StackReporting stackReporting = pop();
-		
+
 		final MavenReporting reporting = new MavenReporting(stackReporting.getPlugins());
-		
+
 		final StackProject stackProject = get();
-		
+
 		stackProject.setReporting(reporting);
 	}
 
@@ -277,11 +277,11 @@ final class StackPomEventListener implements PomEventListener {
 	public void onPluginEnd(Context context) {
 
 		final StackPlugin stackPlugin = pop();
-		
+
 		final MavenPlugin mavenPlugin = new MavenPlugin(stackPlugin.makeModuleId(), null);
-		
+
 		final StackPlugins stackPlugins = get();
-		
+
 		stackPlugins.addPlugin(mavenPlugin);
 	}
 
@@ -289,21 +289,21 @@ final class StackPomEventListener implements PomEventListener {
 	public void onPluginsEnd(Context context) {
 
 		final StackPlugins stackPlugins = pop();
-		
+
 		final PluginsSetter pluginsSetter = get();
-		
+
 		pluginsSetter.setPlugins(stackPlugins.getPlugins());
 	}
 
 	@Override
 	public void onExtensionsStart(Context context) {
-		
+
 		if (get() instanceof StackBuild) {
 			push(new StackExtensions(context));
 		}
 	}
 
-	
+
 	@Override
 	public void onExtensionStart(Context context) {
 		push(new StackExtension(context));
@@ -311,23 +311,23 @@ final class StackPomEventListener implements PomEventListener {
 
 	@Override
 	public void onExtensionEnd(Context context) {
-		
+
 		final StackExtension stackExtension = pop();
-		
+
 		final StackExtensions stackExtensions = get();
-		
+
 		stackExtensions.addExtension(new MavenExtension(stackExtension.makeModuleId()));
 	}
 
 	@Override
 	public void onExtensionsEnd(Context context) {
-		
+
 		if (get() instanceof StackExtensions) {
-		
+
 			final StackExtensions stackExtensions = pop();
-			
+
 			final StackBuild stackBuild = get();
-			
+
 			stackBuild.setExtensions(stackExtensions.getExtensions());
 		}
 	}
@@ -336,11 +336,11 @@ final class StackPomEventListener implements PomEventListener {
 	public void onBuildEnd(Context context) {
 
 		final StackBuild stackBuild = pop();
-		
+
 		final MavenBuild build = new MavenBuild(stackBuild.getPlugins());
-		
+
 		final StackProject stackProject = get();
-	
+
 		stackProject.setBuild(build);
 	}
 
@@ -348,7 +348,7 @@ final class StackPomEventListener implements PomEventListener {
 	public void onProjectEnd(Context context) {
 
 		final StackProject project = pop();
-		
+
 		final MavenProject mavenProject = new MavenProject(
 				rootDirectory,
 				project.makeModuleId(),
@@ -357,7 +357,7 @@ final class StackPomEventListener implements PomEventListener {
 				project.getSubModules(),
 				project.getDependencies(),
 				project.getBuild());
-		
+
 		this.mavenProject = mavenProject;
 	}
 }

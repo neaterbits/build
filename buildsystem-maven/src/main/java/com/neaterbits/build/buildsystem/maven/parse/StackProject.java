@@ -7,12 +7,12 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
-import com.neaterbits.compiler.util.Context;
+import com.neaterbits.util.parse.context.Context;
 
 final class StackProject extends StackEntity {
 
 	private String name;
-	
+
 	private MavenModuleId parentModuleId;
 	private List<String> subModules;
 	private List<MavenDependency> dependencies;
@@ -21,7 +21,7 @@ final class StackProject extends StackEntity {
 
 	StackProject(Context context) {
 		super(context);
-		
+
 		this.subModules = new ArrayList<>();
 		this.dependencies = new ArrayList<>();
 	}

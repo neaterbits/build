@@ -13,6 +13,7 @@ import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.BuildSystemRootScan;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
+import com.neaterbits.build.types.ModuleId;
 import com.neaterbits.build.types.dependencies.DependencyType;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
@@ -20,38 +21,37 @@ import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
-import com.neaterbits.compiler.util.modules.ModuleId;
 
 public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> implements BuildRoot {
 
 	private final File path;
 	private final BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> buildSystemRoot;
-	
+
 	private final Map<ProjectModuleResourcePath, BuildProject<PROJECT>> projects;
 	private final Map<MODULE_ID, PROJECT> buildSystemProjectByModuleId;
 	private final Map<MODULE_ID, ProjectModuleResourcePath> moduleIdToResourcePath;
 
 	private final List<BuildRootListener> listeners;
-	
+
 	public BuildRootImpl(File path, BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> buildSystemRoot) {
-		
+
 		Objects.requireNonNull(path);
-		
+
 		this.path = path;
-		
+
 		this.buildSystemRoot = buildSystemRoot;
 		this.listeners = new ArrayList<>();
-		
+
 		final Collection<PROJECT> projects = buildSystemRoot.getProjects();
-		
+
 		this.buildSystemProjectByModuleId = projects.stream()
 				.collect(Collectors.toMap(buildSystemRoot::getModuleId, project -> project));
-		
+
 		this.moduleIdToResourcePath = BuildRootImplInit.mapModuleIdToResourcePath(buildSystemProjectByModuleId, buildSystemRoot);
-		
+
 		this.projects = BuildRootImplInit.makeBuildProjects(buildSystemProjectByModuleId, moduleIdToResourcePath, buildSystemRoot);
 	}
-	
+
 	@Override
 	public File getPath() {
 		return path;
@@ -61,32 +61,32 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> impl
 	public Collection<ProjectModuleResourcePath> getModules() {
 		return Collections.unmodifiableCollection(moduleIdToResourcePath.values());
 	}
-	
+
 	@Override
 	public void setSourceFolders(ProjectModuleResourcePath module, List<SourceFolderResourcePath> sourceFolders) {
 
 		projects.get(module).setSourceFolders(sourceFolders);
-		
+
 		for (BuildRootListener buildRootListener : listeners) {
 			buildRootListener.onSourceFoldersChanged(module);
 		}
 	}
-	
+
 	@Override
 	public List<SourceFolderResourcePath> getSourceFolders(ProjectModuleResourcePath module) {
-		
+
 		final BuildProject<PROJECT> buildProject = projects.get(module);
-		
+
 		if (buildProject == null) {
 			throw new IllegalArgumentException("No buildproject with name " + module);
 		}
-		
+
 		return buildProject.getSourceFolders();
 	}
 
 	@Override
 	public List<ProjectDependency> getProjectDependenciesForProjectModule(ProjectModuleResourcePath module) {
-		
+
 		return projects.get(module).getDependencies().stream()
 				.filter(dependency -> dependency.getType() == DependencyType.PROJECT)
 				.map(dependency -> new ProjectDependencyImpl(dependency))
@@ -107,7 +107,7 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> impl
 			boolean includeOptionalDependencies) {
 
 		final LibraryDependencyImpl impl = (LibraryDependencyImpl)dependency;
-		
+
 		try {
 			return getTransitiveExternalDependencies(impl.getDependency(), scope, includeOptionalDependencies);
 		}
@@ -131,9 +131,9 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> impl
 
 	@Override
 	public void downloadExternalDependencyAndAddToBuildModel(LibraryDependency dependency) {
-		
+
 		final LibraryDependencyImpl impl = (LibraryDependencyImpl)dependency;
-		
+
 		@SuppressWarnings("unchecked")
 		final BuildDependency<DEPENDENCY> buildDependency = (BuildDependency<DEPENDENCY>)impl.getDependency();
 

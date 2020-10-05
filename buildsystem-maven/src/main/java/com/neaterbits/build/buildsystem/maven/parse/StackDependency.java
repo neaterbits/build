@@ -1,12 +1,12 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
-import com.neaterbits.compiler.util.Context;
+import com.neaterbits.util.parse.context.Context;
 
 final class StackDependency extends StackEntity {
 
 	private String scope;
 	private String optional;
-	
+
 	StackDependency(Context context) {
 		super(context);
 	}

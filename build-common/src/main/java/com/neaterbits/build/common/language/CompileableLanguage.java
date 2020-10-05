@@ -3,12 +3,12 @@ package com.neaterbits.build.common.language;
 import java.io.IOException;
 import java.util.Set;
 
+import com.neaterbits.build.types.TypeName;
 import com.neaterbits.build.types.resource.LibraryResourcePath;
 import com.neaterbits.build.types.resource.SourceFileResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.compiler.bytecode.common.ClassLibs;
 import com.neaterbits.compiler.bytecode.common.DependencyFile;
-import com.neaterbits.compiler.util.TypeName;
 
 public interface CompileableLanguage extends BuildableLanguage {
 	

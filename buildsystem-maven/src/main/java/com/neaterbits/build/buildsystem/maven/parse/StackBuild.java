@@ -5,13 +5,13 @@ import java.util.List;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.compiler.util.Context;
+import com.neaterbits.util.parse.context.Context;
 
 final class StackBuild extends StackBase implements PluginsSetter {
 
 	private List<MavenPlugin> plugins;
 	private List<MavenExtension> extensions;
-	
+
 	StackBuild(Context context) {
 		super(context);
 

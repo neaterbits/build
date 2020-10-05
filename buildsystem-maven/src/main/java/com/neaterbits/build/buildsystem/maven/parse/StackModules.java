@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.neaterbits.compiler.util.Context;
+import com.neaterbits.util.parse.context.Context;
 
 final class StackModules extends StackBase {
-	
+
 	private final List<String> modules;
 
 	StackModules(Context context) {
@@ -19,7 +19,7 @@ final class StackModules extends StackBase {
 	List<String> getModules() {
 		return modules;
 	}
-	
+
 	void addModule(String module) {
 		Objects.requireNonNull(module);
 

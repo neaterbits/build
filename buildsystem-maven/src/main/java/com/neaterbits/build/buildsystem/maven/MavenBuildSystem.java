@@ -10,15 +10,15 @@ import com.neaterbits.build.buildsystem.common.BuildSystem;
 import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
-import com.neaterbits.compiler.util.modules.ModuleId;
+import com.neaterbits.build.types.ModuleId;
 
 public final class MavenBuildSystem implements BuildSystem {
 
 	@Override
 	public boolean isBuildSystemFor(File rootDirectory) {
-		
+
 		final File pomFile = new File(rootDirectory, "pom.xml");
-		
+
 		return pomFile.exists() && pomFile.isFile() && pomFile.canRead();
 	}
 
@@ -26,15 +26,15 @@ public final class MavenBuildSystem implements BuildSystem {
 	@Override
 	public <MODULE_ID extends ModuleId, PROJECT, DEPENDENCY>
 	BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> scan(File rootDirectory) throws ScanException {
-		
+
 		final List<MavenProject> mavenProjects;
-		
+
 		try {
 			mavenProjects = MavenModulesReader.readModules(rootDirectory);
 		} catch (XMLStreamException | IOException ex) {
 			throw new ScanException("Failed to scan project", ex);
 		}
-		
+
 		return (BuildSystemRoot)new MavenBuildRoot(mavenProjects);
 	}
 }

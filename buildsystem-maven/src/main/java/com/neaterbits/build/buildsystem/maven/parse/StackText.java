@@ -2,12 +2,12 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.Objects;
 
-import com.neaterbits.compiler.util.Context;
+import com.neaterbits.util.parse.context.Context;
 
 abstract class StackText extends StackBase {
 
 	private String text;
-	
+
 	StackText(Context context) {
 		super(context);
 	}

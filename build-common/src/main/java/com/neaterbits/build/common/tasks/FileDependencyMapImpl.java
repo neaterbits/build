@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import com.neaterbits.build.types.TypeName;
 import com.neaterbits.build.types.compile.FileDependencyMap;
 import com.neaterbits.build.types.resource.SourceFileResourcePath;
-import com.neaterbits.compiler.util.TypeName;
 
 final class FileDependencyMapImpl implements FileDependencyMap {
 

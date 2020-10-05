@@ -12,5 +12,11 @@
   		<artifactId>buildsystem-common</artifactId>
   		<version>${project.version}</version>
   	</dependency>
+  
+  	<dependency>
+  		<groupId>${utilGroupId}</groupId>
+  		<artifactId>util-parse</artifactId>
+  		<version>${utilParseVersion}</version>
+  	</dependency>
   </dependencies>
 </project>

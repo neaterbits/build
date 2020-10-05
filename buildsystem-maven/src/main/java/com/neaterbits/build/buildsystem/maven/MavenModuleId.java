@@ -2,7 +2,7 @@ package com.neaterbits.build.buildsystem.maven;
 
 import java.util.Objects;
 
-import com.neaterbits.compiler.util.modules.ModuleId;
+import com.neaterbits.build.types.ModuleId;
 
 public final class MavenModuleId extends ModuleId {
 
@@ -11,11 +11,11 @@ public final class MavenModuleId extends ModuleId {
 	private final String version;
 
 	public MavenModuleId(String groupId, String artifactId, String version) {
-		
+
 		super(groupId + ':' + artifactId + ':' + version);
 
 		Objects.requireNonNull(artifactId);
-		
+
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;

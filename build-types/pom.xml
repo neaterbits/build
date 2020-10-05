@@ -11,11 +11,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.neaterbits.compiler</groupId>
-			<artifactId>compiler-util</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>${utilGroupId}</groupId>
 			<artifactId>util-concurrency</artifactId>
 			<version>${utilConcurrencyVersion}</version>
