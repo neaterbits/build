@@ -1,4 +1,4 @@
-package com.neaterbits.ide.common.language;
+package com.neaterbits.build.types.language;
 
 public enum Language {
 

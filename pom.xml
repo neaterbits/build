@@ -41,8 +41,10 @@
 
 	<modules>
 		<module>buildsystem-common</module>
-		<module>buildsystem-maven</module>
+		<module>buildsystem-model</module>
 		<module>build-common</module>
+		<module>build-types</module>
+		<module>buildsystem-maven</module>
 		<module>build-language-java-jdk</module>
 		<module>build-main</module>
 	</modules>

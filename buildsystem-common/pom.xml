@@ -8,9 +8,9 @@
   <artifactId>buildsystem-common</artifactId>
   <dependencies>
   	<dependency>
-  		<groupId>com.neaterbits.compiler</groupId>
-  		<artifactId>compiler-util</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>build-types</artifactId>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>${ideGroupId}</groupId>
