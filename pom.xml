@@ -14,9 +14,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
-		<ideGroupId>com.neaterbits.ide</ideGroupId>
-		<ideComponentCommonVersion>0.0.1-SNAPSHOT</ideComponentCommonVersion>
-
 		<utilGroupId>com.neaterbits.util</utilGroupId>
 		<utilBaseVersion>0.0.1-SNAPSHOT</utilBaseVersion>
 		<utilConcurrencyVersion>0.0.1-SNAPSHOT</utilConcurrencyVersion>
