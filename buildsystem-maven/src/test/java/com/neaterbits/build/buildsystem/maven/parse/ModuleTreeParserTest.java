@@ -8,7 +8,6 @@ import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
-import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

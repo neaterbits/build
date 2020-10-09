@@ -8,7 +8,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
 
-import com.neaterbits.build.buildsystem.maven.MavenModulesReader;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +25,6 @@ public class MavenModulesReaderTest {
 
 	@Test
 	public void testManyModulesReader() throws XMLStreamException, IOException {
-		MavenModulesReader.readModules(new File("../../dataview/source"));
+		MavenModulesReader.readModules(new File("../"));
 	}
 }

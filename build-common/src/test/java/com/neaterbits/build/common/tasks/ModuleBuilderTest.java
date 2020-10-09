@@ -40,18 +40,14 @@ public class ModuleBuilderTest extends BaseBuildTest {
 
 		final BuildRoot buildRoot = getBuildRoot();
 	
-		for (ProjectModuleResourcePath module : buildRoot.getModules()) {
-			System.out.println("## module " + module);
-		}
-
 		final ProjectModuleResourcePath root = findOneModule(buildRoot, "root");
 		assertThat(root.getModuleId().getId().contains("root")).isTrue();
 		
 		final MavenModuleId rootModuleId = (MavenModuleId)root.getModuleId();
 		
-		final ProjectModuleResourcePath ideCommon = findOneModule(buildRoot, "ide-common");
+		final ProjectModuleResourcePath ideCommon = findOneModule(buildRoot, "build-common");
 
-		assertThat(ideCommon.getModuleId().getId().contains("ide-common")).isTrue();
+		assertThat(ideCommon.getModuleId().getId().contains("build-common")).isTrue();
 
 		final List<ProjectDependency> directDependencies = buildRoot.getProjectDependenciesForProjectModule(ideCommon);
 		
@@ -72,11 +68,12 @@ public class ModuleBuilderTest extends BaseBuildTest {
 				directDependencies,
 				dependency -> dependency.getModulePath().length() <= 1
 							? "" : dependency.getModulePath().get(1).getName(),
-				"util");
+				"buildsystem-common");
 		
 		assertThat(utilDependency.getCompiledModuleFilePath() instanceof CompiledModuleFileResourcePath).isTrue();
 		assertThat(utilDependency.getCompiledModuleFilePath().get(2) instanceof CompiledModuleFileResource).isTrue();
-		assertThat(utilDependency.getCompiledModuleFilePath().get(2).getName()).isEqualTo("util-" + rootModuleId.getVersion() + ".jar");
+		assertThat(utilDependency.getCompiledModuleFilePath().get(2).getName())
+			.isEqualTo("buildsystem-common-" + rootModuleId.getVersion() + ".jar");
 		/*
 		
 		final List<Dependency> transitiveDependencies = ModuleBuilderUtil.transitiveProjectDependencies(buildRoot, ideCommon);
