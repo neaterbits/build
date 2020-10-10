@@ -18,11 +18,5 @@
   		<artifactId>buildsystem-common</artifactId>
   		<version>${project.version}</version>
   	</dependency>
-  	<dependency>
-  		<groupId>${project.groupId}</groupId>
-  		<artifactId>buildsystem-maven</artifactId>
-  		<version>${project.version}</version>
-  		<scope>test</scope>
-  	</dependency>
   </dependencies>
 </project>

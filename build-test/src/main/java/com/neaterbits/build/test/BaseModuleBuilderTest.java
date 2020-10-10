@@ -1,4 +1,4 @@
-package com.neaterbits.build.common.tasks;
+package com.neaterbits.build.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,15 +10,17 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import com.neaterbits.build.buildsystem.common.ScanException;
-import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.model.BuildRoot;
+import com.neaterbits.build.types.ModuleId;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResource;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 
-public class ModuleBuilderTest extends BaseBuildTest {
+public abstract class BaseModuleBuilderTest extends BaseBuildTest {
 
+	protected abstract String getJarFileName(String moduleName, ModuleId rootModuleId);
+	
 	private static ProjectModuleResourcePath findOneModule(BuildRoot buildRoot, String match) {
 		
 		return findOne(buildRoot.getModules(), ProjectModuleResourcePath::getName, match);
@@ -42,8 +44,6 @@ public class ModuleBuilderTest extends BaseBuildTest {
 	
 		final ProjectModuleResourcePath root = findOneModule(buildRoot, "root");
 		assertThat(root.getModuleId().getId().contains("root")).isTrue();
-		
-		final MavenModuleId rootModuleId = (MavenModuleId)root.getModuleId();
 		
 		final ProjectModuleResourcePath ideCommon = findOneModule(buildRoot, "build-common");
 
@@ -73,7 +73,8 @@ public class ModuleBuilderTest extends BaseBuildTest {
 		assertThat(utilDependency.getCompiledModuleFilePath() instanceof CompiledModuleFileResourcePath).isTrue();
 		assertThat(utilDependency.getCompiledModuleFilePath().get(2) instanceof CompiledModuleFileResource).isTrue();
 		assertThat(utilDependency.getCompiledModuleFilePath().get(2).getName())
-			.isEqualTo("buildsystem-common-" + rootModuleId.getVersion() + ".jar");
+			.isEqualTo(getJarFileName("buildsystem-common", root.getModuleId()));
+	
 		/*
 		
 		final List<Dependency> transitiveDependencies = ModuleBuilderUtil.transitiveProjectDependencies(buildRoot, ideCommon);

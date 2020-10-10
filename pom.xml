@@ -14,6 +14,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	
+		<assertjVersion>1.7.1</assertjVersion>
+	
 		<utilGroupId>com.neaterbits.util</utilGroupId>
 		<utilBaseVersion>0.0.1-SNAPSHOT</utilBaseVersion>
 		<utilConcurrencyVersion>0.0.1-SNAPSHOT</utilConcurrencyVersion>
@@ -30,7 +32,7 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>1.7.1</version>
+			<version>${assertjVersion}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -49,6 +51,7 @@
 		<module>build-language-java-jdk</module>
 		<module>build-main</module>
 		<module>build-model</module>
+		<module>build-test</module>
 	</modules>
 
 	<build>
