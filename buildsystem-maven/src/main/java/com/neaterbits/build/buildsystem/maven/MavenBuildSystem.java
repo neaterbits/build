@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import javax.xml.stream.XMLStreamException;
-
 import com.neaterbits.build.buildsystem.common.BuildSystem;
 import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.types.ModuleId;
 
 public final class MavenBuildSystem implements BuildSystem {
@@ -31,7 +30,7 @@ public final class MavenBuildSystem implements BuildSystem {
 
 		try {
 			mavenProjects = MavenModulesReader.readModules(rootDirectory);
-		} catch (XMLStreamException | IOException ex) {
+		} catch (XMLReaderException | IOException ex) {
 			throw new ScanException("Failed to scan project", ex);
 		}
 

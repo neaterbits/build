@@ -28,183 +28,168 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 		this.delegate = delegate;
 	}
 
-	private Context context(XMLEvent event) {
-
-		return new ImmutableFullContext(
-				file.getPath(),
-				event.getLocation().getLineNumber(),
-				event.getLocation().getColumnNumber(),
-				event.getLocation().getCharacterOffset(),
-				event.getLocation().getLineNumber(),
-				event.getLocation().getColumnNumber(),
-				event.getLocation().getCharacterOffset(),
-				null);
+	@Override
+	public void onStartDocument(Void param) {
 
 	}
 
 	@Override
-	public void onStartDocument(StartDocument event, Void param) {
+	public void onStartElement(Context context, String localPart, Void param) {
 
-	}
-
-	@Override
-	public void onStartElement(StartElement event, Void param) {
-
-		switch (event.getName().getLocalPart()) {
+		switch (localPart) {
 
 		case "project":
-			delegate.onProjectStart(context(event));
+			delegate.onProjectStart(context);
 			break;
 
 		case "parent":
-			delegate.onParentStart(context(event));
+			delegate.onParentStart(context);
 			break;
 
 		case "modules":
-			delegate.onModulesStart(context(event));
+			delegate.onModulesStart(context);
 			break;
 
 		case "module":
-			delegate.onModuleStart(context(event));
+			delegate.onModuleStart(context);
 			break;
 
 		case "groupId":
-			delegate.onGroupIdStart(context(event));
+			delegate.onGroupIdStart(context);
 			break;
 
 		case "artifactId":
-			delegate.onArtifactIdStart(context(event));
+			delegate.onArtifactIdStart(context);
 			break;
 
 		case "version":
-			delegate.onVersionStart(context(event));
+			delegate.onVersionStart(context);
 			break;
 
 		case "dependencies":
-			delegate.onDependenciesStart(context(event));
+			delegate.onDependenciesStart(context);
 			break;
 
 		case "dependency":
-			delegate.onDependencyStart(context(event));
+			delegate.onDependencyStart(context);
 			break;
 
 		case "scope":
-			delegate.onScopeStart(context(event));
+			delegate.onScopeStart(context);
 			break;
 
 		case "optional":
-			delegate.onOptionalStart(context(event));
+			delegate.onOptionalStart(context);
 			break;
 
 		case "reporting":
-			delegate.onReportingStart(context(event));
+			delegate.onReportingStart(context);
 			break;
 
 		case "build":
-			delegate.onBuildStart(context(event));
+			delegate.onBuildStart(context);
 			break;
 
 		case "plugins":
-			delegate.onPluginsStart(context(event));
+			delegate.onPluginsStart(context);
 			break;
 
 		case "plugin":
-			delegate.onPluginStart(context(event));
+			delegate.onPluginStart(context);
 			break;
 
 		case "extensions":
-			delegate.onExtensionsStart(context(event));
+			delegate.onExtensionsStart(context);
 			break;
 
 		case "extension":
-			delegate.onExtensionStart(context(event));
+			delegate.onExtensionStart(context);
 			break;
 		}
 	}
 	@Override
-	public void onText(Characters event, Void param) {
+	public void onText(Context context, String data, Void param) {
 
-		final String text = event.getData();
 
-		delegate.onText(context(event), text);
+		delegate.onText(context, data);
 	}
 
 	@Override
-	public void onEndElement(EndElement event, Void param) {
-		switch (event.getName().getLocalPart()) {
+	public void onEndElement(Context context, String localPart, Void param) {
+		switch (localPart) {
 
 		case "project":
-			delegate.onProjectEnd(context(event));
+			delegate.onProjectEnd(context);
 			break;
 
 		case "parent":
-			delegate.onParentEnd(context(event));
+			delegate.onParentEnd(context);
 			break;
 
 		case "modules":
-			delegate.onModulesEnd(context(event));
+			delegate.onModulesEnd(context);
 			break;
 
 		case "module":
-			delegate.onModuleEnd(context(event));
+			delegate.onModuleEnd(context);
 			break;
 
 		case "groupId":
-			delegate.onGroupIdEnd(context(event));
+			delegate.onGroupIdEnd(context);
 			break;
 
 		case "artifactId":
-			delegate.onArtifactIdEnd(context(event));
+			delegate.onArtifactIdEnd(context);
 			break;
 
 		case "version":
-			delegate.onVersionEnd(context(event));
+			delegate.onVersionEnd(context);
 			break;
 
 		case "dependencies":
-			delegate.onDependenciesEnd(context(event));
+			delegate.onDependenciesEnd(context);
 			break;
 
 		case "scope":
-			delegate.onScopeEnd(context(event));
+			delegate.onScopeEnd(context);
 			break;
 
 		case "dependency":
-			delegate.onDependencyEnd(context(event));
+			delegate.onDependencyEnd(context);
 			break;
 
 		case "optional":
-			delegate.onOptionalEnd(context(event));
+			delegate.onOptionalEnd(context);
 			break;
 
 		case "reporting":
-			delegate.onReportingEnd(context(event));
+			delegate.onReportingEnd(context);
 			break;
 
 		case "build":
-			delegate.onBuildEnd(context(event));
+			delegate.onBuildEnd(context);
 			break;
 
 		case "plugins":
-			delegate.onPluginsEnd(context(event));
+			delegate.onPluginsEnd(context);
 			break;
 
 		case "plugin":
-			delegate.onPluginEnd(context(event));
+			delegate.onPluginEnd(context);
 			break;
 
 		case "extensions":
-			delegate.onExtensionsEnd(context(event));
+			delegate.onExtensionsEnd(context);
 			break;
 
 		case "extension":
-			delegate.onExtensionEnd(context(event));
+			delegate.onExtensionEnd(context);
 			break;
 		}
 	}
 
 	@Override
-	public void onEndDocument(EndDocument event, Void param) {
+	public void onEndDocument(Void param) {
 
 	}
 }

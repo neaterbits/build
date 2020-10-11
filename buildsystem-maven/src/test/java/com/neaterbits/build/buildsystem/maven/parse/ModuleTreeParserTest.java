@@ -3,18 +3,17 @@ package com.neaterbits.build.buildsystem.maven.parse;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.stream.XMLStreamException;
-
 import org.junit.Test;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModuleTreeParserTest {
 
 	@Test
-	public void testRead() throws XMLStreamException, IOException {
+	public void testRead() throws XMLReaderException, IOException {
 
 		final File file = new File("../pom.xml");
 

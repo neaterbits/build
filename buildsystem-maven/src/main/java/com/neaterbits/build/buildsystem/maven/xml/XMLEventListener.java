@@ -1,20 +1,16 @@
 package com.neaterbits.build.buildsystem.maven.xml;
 
-import javax.xml.stream.events.Characters;
-import javax.xml.stream.events.EndDocument;
-import javax.xml.stream.events.EndElement;
-import javax.xml.stream.events.StartDocument;
-import javax.xml.stream.events.StartElement;
+import com.neaterbits.util.parse.context.Context;
 
 public interface XMLEventListener<T> {
 
-	void onStartDocument(StartDocument event, T param);
+	void onStartDocument(T param);
 
-	void onStartElement(StartElement event, T param);
+	void onStartElement(Context context, String localPart, T param);
 
-	void onEndElement(EndElement event, T param);
+	void onEndElement(Context context, String localPart, T param);
 
-	void onText(Characters event, T param);
+	void onText(Context context, String data, T param);
 
-	void onEndDocument(EndDocument event, T param);
+	void onEndDocument(T param);
 }

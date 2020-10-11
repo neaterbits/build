@@ -5,14 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.stream.XMLStreamException;
-
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
 public class MavenModulesReader {
 
-	static List<MavenProject> readModules(File baseDirectory) throws XMLStreamException, IOException {
+	static List<MavenProject> readModules(File baseDirectory) throws XMLReaderException, IOException {
 
 		final List<MavenProject> modules = new ArrayList<>();
 		
@@ -21,7 +20,7 @@ public class MavenModulesReader {
 		return modules;
 	}
 
-	static void readModules(File pomDirectory, List<MavenProject> modules) throws XMLStreamException, IOException {
+	static void readModules(File pomDirectory, List<MavenProject> modules) throws XMLReaderException, IOException {
 
 		// System.out.println("## read file " + pomDirectory.getPath());
 		
