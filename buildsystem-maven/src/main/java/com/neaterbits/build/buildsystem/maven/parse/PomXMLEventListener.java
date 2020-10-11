@@ -1,30 +1,18 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
-import java.io.File;
 import java.util.Objects;
-
-import javax.xml.stream.events.Characters;
-import javax.xml.stream.events.EndDocument;
-import javax.xml.stream.events.EndElement;
-import javax.xml.stream.events.StartDocument;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
 import com.neaterbits.util.parse.context.Context;
-import com.neaterbits.util.parse.context.ImmutableFullContext;
 
 public final class PomXMLEventListener implements XMLEventListener<Void> {
 
-	private final File file;
 	private final PomEventListener delegate;
 
-	public PomXMLEventListener(File file, PomEventListener delegate) {
+	public PomXMLEventListener(PomEventListener delegate) {
 
-		Objects.requireNonNull(file);
 		Objects.requireNonNull(delegate);
 
-		this.file = file;
 		this.delegate = delegate;
 	}
 

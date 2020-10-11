@@ -9,13 +9,13 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
-import com.neaterbits.build.buildsystem.maven.xml.stream.JavaxXMLStreamReaderFactory;
+import com.neaterbits.build.buildsystem.maven.xml.dom.DOMReaderFactory;
 
 public final class PomTreeParser {
 
 	public static MavenProject readModule(File pomFile) throws XMLReaderException, IOException {
 		
-		final XMLReaderFactory xmlReaderFactory = new JavaxXMLStreamReaderFactory();
+		final XMLReaderFactory xmlReaderFactory = new DOMReaderFactory();
 
 		final StackPomEventListener pomEventListener = new StackPomEventListener(pomFile.getParentFile());
 
@@ -24,7 +24,7 @@ public final class PomTreeParser {
 			final XMLReader xmlReader = xmlReaderFactory.createReader(inputStream, pomFile.getAbsolutePath());
 			
 			xmlReader.readXML(
-					new PomXMLEventListener(pomFile, pomEventListener),
+					new PomXMLEventListener(pomEventListener),
 					null);
 		}
 
