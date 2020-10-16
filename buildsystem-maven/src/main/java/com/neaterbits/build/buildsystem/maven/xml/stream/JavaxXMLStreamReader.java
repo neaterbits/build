@@ -15,7 +15,7 @@ import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.util.parse.context.Context;
 import com.neaterbits.util.parse.context.ImmutableFullContext;
 
-final class JavaxXMLStreamReader implements XMLReader {
+final class JavaxXMLStreamReader implements XMLReader<Void> {
 
 	private final String file;
 	private final XMLEventReader xmlEventReader;
@@ -29,7 +29,7 @@ final class JavaxXMLStreamReader implements XMLReader {
 	}
 
 	@Override
-	public <T> void readXML(XMLEventListener<T> eventListener, T param) throws XMLReaderException {
+	public <T> Void readXML(XMLEventListener<T> eventListener, T param) throws XMLReaderException {
 
 		try {
 			while (xmlEventReader.hasNext()) {
@@ -72,6 +72,8 @@ final class JavaxXMLStreamReader implements XMLReader {
 		catch (XMLStreamException ex) {
 			throw new XMLReaderException("Could not read XML", ex);
 		}
+
+		return null;
 	}
 
 	private Context context(XMLEvent event) {

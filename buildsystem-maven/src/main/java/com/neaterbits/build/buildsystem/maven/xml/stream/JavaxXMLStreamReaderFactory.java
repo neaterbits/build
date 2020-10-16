@@ -10,10 +10,10 @@ import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 
-public class JavaxXMLStreamReaderFactory implements XMLReaderFactory {
+public class JavaxXMLStreamReaderFactory implements XMLReaderFactory<Void> {
 
 	@Override
-	public XMLReader createReader(InputStream inputStream, String filePath) throws XMLReaderException {
+	public XMLReader<Void> createReader(InputStream inputStream, String filePath) throws XMLReaderException {
 
 		final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 

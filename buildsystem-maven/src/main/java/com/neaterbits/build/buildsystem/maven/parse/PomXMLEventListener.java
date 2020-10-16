@@ -8,6 +8,8 @@ import com.neaterbits.util.parse.context.Context;
 public final class PomXMLEventListener implements XMLEventListener<Void> {
 
 	private final PomEventListener delegate;
+	
+	private int unknownTag;
 
 	public PomXMLEventListener(PomEventListener delegate) {
 
@@ -19,6 +21,7 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 	@Override
 	public void onStartDocument(Void param) {
 
+		this.unknownTag = 0;
 	}
 
 	@Override
@@ -93,17 +96,23 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 		case "extension":
 			delegate.onExtensionStart(context);
 			break;
+			
+		default:
+			++ unknownTag;
+			break;
 		}
 	}
 	@Override
 	public void onText(Context context, String data, Void param) {
 
-
-		delegate.onText(context, data);
+		if (unknownTag == 0) {
+			delegate.onText(context, data);
+		}
 	}
 
 	@Override
 	public void onEndElement(Context context, String localPart, Void param) {
+
 		switch (localPart) {
 
 		case "project":
@@ -173,11 +182,22 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 		case "extension":
 			delegate.onExtensionEnd(context);
 			break;
+			
+		default:
+			if (unknownTag == 0) {
+				throw new IllegalStateException();
+			}
+		
+			-- unknownTag;
+			break;
 		}
 	}
 
 	@Override
 	public void onEndDocument(Void param) {
 
+		if (unknownTag != 0) {
+			throw new IllegalStateException();
+		}
 	}
 }

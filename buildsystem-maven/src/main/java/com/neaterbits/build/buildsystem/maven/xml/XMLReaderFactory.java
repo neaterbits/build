@@ -2,8 +2,8 @@ package com.neaterbits.build.buildsystem.maven.xml;
 
 import java.io.InputStream;
 
-public interface XMLReaderFactory {
+public interface XMLReaderFactory<DOCUMENT> {
 	
-	XMLReader createReader(InputStream inputStream, String filePath) throws XMLReaderException;
+	XMLReader<DOCUMENT> createReader(InputStream inputStream, String filePath) throws XMLReaderException;
 
 }

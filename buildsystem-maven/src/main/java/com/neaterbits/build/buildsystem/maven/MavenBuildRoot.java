@@ -14,6 +14,7 @@ import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 import com.neaterbits.build.types.language.Language;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.SourceFolderResource;
@@ -24,11 +25,15 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	private final List<MavenProject> projects;
 	private final List<BuildSystemRootListener> listeners;
 
-	MavenBuildRoot(List<MavenProject> projects) {
+	private final XMLReaderFactory<?> xmlReaderFactory;
+	
+	MavenBuildRoot(List<MavenProject> projects, XMLReaderFactory<?> xmlReaderFactory) {
 
 		Objects.requireNonNull(projects);
+		Objects.requireNonNull(xmlReaderFactory);
 
 		this.projects = projects;
+		this.xmlReaderFactory = xmlReaderFactory;
 
 		this.listeners = new ArrayList<>();
 	}
@@ -222,7 +227,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		final MavenProject mavenProject;
 
 		try {
-			 mavenProject = PomTreeParser.readModule(pomFile);
+			 mavenProject = PomTreeParser.readModule(pomFile, xmlReaderFactory).getProject();
 		} catch (Exception ex) {
 			throw new ScanException("Failed to parse dependencies pom file for " + dependency, ex);
 		}

@@ -5,28 +5,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
+import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 
 public class MavenModulesReader {
 
-	static List<MavenProject> readModules(File baseDirectory) throws XMLReaderException, IOException {
+	static <DOCUMENT> List<MavenXMLProject<DOCUMENT>> readModules(
+								File baseDirectory,
+								XMLReaderFactory<DOCUMENT> xmlReaderFactory) throws XMLReaderException, IOException {
 
-		final List<MavenProject> modules = new ArrayList<>();
+		final List<MavenXMLProject<DOCUMENT>> modules = new ArrayList<>();
 		
-		readModules(baseDirectory, modules);
+		readModules(baseDirectory, modules, xmlReaderFactory);
 
 		return modules;
 	}
 
-	static void readModules(File pomDirectory, List<MavenProject> modules) throws XMLReaderException, IOException {
+	static <DOCUMENT> void readModules(
+			File pomDirectory,
+			List<MavenXMLProject<DOCUMENT>> modules,
+			XMLReaderFactory<DOCUMENT> xmlReaderFactory) throws XMLReaderException, IOException {
 
 		// System.out.println("## read file " + pomDirectory.getPath());
 		
 		final File pomFile = new File(pomDirectory, "pom.xml");
 		
-		final MavenProject mavenProject = PomTreeParser.readModule(pomFile);
+		final MavenXMLProject<DOCUMENT> mavenProject = PomTreeParser.readModule(pomFile, xmlReaderFactory);
 		
 		if (mavenProject == null) {
 			throw new IllegalStateException();
@@ -34,10 +40,12 @@ public class MavenModulesReader {
 		
 		modules.add(mavenProject);
 		
-		if (mavenProject.getSubModules() != null) {
+		final List<String> subModules = mavenProject.getProject().getSubModules();
+		
+		if (subModules != null) {
 			
-			for (String subModule : mavenProject.getSubModules()) {
-				readModules(new File(pomDirectory, subModule), modules);
+			for (String subModule : subModules) {
+				readModules(new File(pomDirectory, subModule), modules, xmlReaderFactory);
 			}
 		}
 	}

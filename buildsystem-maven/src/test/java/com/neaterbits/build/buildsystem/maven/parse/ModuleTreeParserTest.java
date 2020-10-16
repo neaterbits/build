@@ -6,7 +6,9 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
+import com.neaterbits.build.buildsystem.maven.xml.stream.JavaxXMLStreamReaderFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +19,10 @@ public class ModuleTreeParserTest {
 
 		final File file = new File("../pom.xml");
 
-		final MavenProject mavenProject = PomTreeParser.readModule(file);
+		final MavenXMLProject<Void> mavenXMLProject
+			= PomTreeParser.readModule(file, new JavaxXMLStreamReaderFactory());
+	
+		final MavenProject mavenProject = mavenXMLProject.getProject();
 
 		assertThat(mavenProject).isNotNull();
 

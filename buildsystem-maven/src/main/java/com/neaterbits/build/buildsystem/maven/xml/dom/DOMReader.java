@@ -15,37 +15,71 @@ import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
-final class DOMReader implements XMLReader {
+final class DOMReader implements XMLReader<Document> {
 	
 	private final DocumentBuilder documentBuilder;
 	private final InputStream inputStream;
+	private final boolean skipIgnoreableWhitespace;
 	
-	DOMReader(DocumentBuilder documentBuilder, InputStream inputStream) {
+	DOMReader(DocumentBuilder documentBuilder, InputStream inputStream, boolean skipIgnoreableWhitespace) {
 
 		Objects.requireNonNull(documentBuilder);
 		Objects.requireNonNull(inputStream);
 		
 		this.documentBuilder = documentBuilder;
 		this.inputStream = inputStream;
+		this.skipIgnoreableWhitespace = skipIgnoreableWhitespace;
 	}
 
 	@Override
-	public <T> void readXML(XMLEventListener<T> eventListener, T param) throws XMLReaderException, IOException {
+	public <T> Document readXML(XMLEventListener<T> eventListener, T param) throws XMLReaderException, IOException {
 
+		final Document document;
+		
 		try {
-			final Document document = documentBuilder.parse(inputStream);
-			
-			eventListener.onStartDocument(param);
-			
-			iterate(document.getChildNodes(), eventListener, param);
-			
-			eventListener.onEndDocument(param);
+			document = documentBuilder.parse(inputStream);
+
+			if (eventListener != null) {
+			    iterate(document, eventListener, param, skipIgnoreableWhitespace);
+			}
 		} catch (SAXException ex) {
 			throw new XMLReaderException("Caught exception", ex);
 		}
+		
+		return document;
 	}
 	
-	private <T> void iterate(NodeList nodeList, XMLEventListener<T> eventListener, T param) {
+	static <T> void iterate(Document document, XMLEventListener<T> eventListener, T param) {
+		
+		Objects.requireNonNull(document);
+		
+		iterate(document, eventListener, param, false);
+	}
+	
+	static <T> void iterate(
+			Document document,
+			XMLEventListener<T> eventListener,
+			T param,
+			boolean skipIgnoreableWhitespace) {
+		
+		eventListener.onStartDocument(param);
+		
+		final Node rootElement = document.getDocumentElement();
+		
+		eventListener.onStartElement(null, rootElement.getNodeName(), param);
+
+		iterate(rootElement.getChildNodes(), eventListener, param, skipIgnoreableWhitespace);
+		
+		eventListener.onEndElement(null, rootElement.getNodeName(), param);
+
+		eventListener.onEndDocument(param);
+	}
+
+	private static <T> void iterate(
+			NodeList nodeList,
+			XMLEventListener<T> eventListener,
+			T param,
+			boolean skipIgnoreableWhitespace) {
 
 		final int length = nodeList.getLength();
 		
@@ -62,19 +96,19 @@ final class DOMReader implements XMLReader {
 				eventListener.onStartElement(null, localPart, param);
 				
 				if (node.hasChildNodes()) {
-					iterate(node.getChildNodes(), eventListener, param);
+					iterate(node.getChildNodes(), eventListener, param, skipIgnoreableWhitespace);
 				}
 
 				eventListener.onEndElement(null, localPart, param);
 				break;
 			
 			case Node.TEXT_NODE:
-				eventListener.onText(null, node.getTextContent(), param);
+				
+				if (!(skipIgnoreableWhitespace && (node.getNextSibling() != null || node.getPreviousSibling() != null))) {
+					eventListener.onText(null, node.getTextContent(), param);
+				}
 				break;
-				
-				
 			}
-			
 		}
 	}
 }

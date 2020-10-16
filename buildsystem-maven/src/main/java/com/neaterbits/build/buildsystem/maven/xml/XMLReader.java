@@ -2,8 +2,8 @@ package com.neaterbits.build.buildsystem.maven.xml;
 
 import java.io.IOException;
 
-public interface XMLReader {
+public interface XMLReader<DOCUMENT> {
 
-	<T> void readXML(XMLEventListener<T> eventListener, T param) throws XMLReaderException, IOException;
+	<T> DOCUMENT readXML(XMLEventListener<T> eventListener, T param) throws XMLReaderException, IOException;
 
 }
