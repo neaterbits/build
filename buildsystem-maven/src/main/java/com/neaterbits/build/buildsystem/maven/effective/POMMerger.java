@@ -106,7 +106,7 @@ final class POMMerger<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
                     
                         
                         final ELEMENT existingElement = model.getElement(toAddTo, localPart);
-
+                        
                         final ELEMENT element;
 
                         if (existingElement == null) {
@@ -127,7 +127,6 @@ final class POMMerger<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
                         mergedElements.add(element);
                     }
                     else if (prevPathSize > mergedElements.size()) {
-                        System.out.println("## unknown path " + path);
 
                         throw new IllegalStateException();
                     }

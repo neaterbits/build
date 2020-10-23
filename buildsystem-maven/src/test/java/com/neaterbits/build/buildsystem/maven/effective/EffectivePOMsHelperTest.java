@@ -36,7 +36,7 @@ public class EffectivePOMsHelperTest {
             + "</project>";
     
     @Test
-    public void testMergePom() throws IOException, XMLReaderException {
+    public void testMergePomDependencies() throws IOException, XMLReaderException {
 
         final String rootGroupId = "rootGroupId";
         final String rootArtifactId = "rootArtifactId";
@@ -188,7 +188,107 @@ public class EffectivePOMsHelperTest {
         
     }
 
-	@Test
+    @Test
+    public void testMergePomProperties() throws IOException, XMLReaderException {
+
+        final String rootGroupId = "rootGroupId";
+        final String rootArtifactId = "rootArtifactId";
+        final String rootVersion = "rootVersion";
+
+        final String rootPomString =
+                "<project>"
+
+              + "  <groupId>" + rootGroupId + "</groupId>"
+              + "  <artifactId>" + rootArtifactId + "</artifactId>"
+              + "  <version>" + rootVersion + "</version>"
+
+              + "  <properties>"
+              + "    <rootProperty>rootValue</rootProperty>"
+              + "    <overrideProperty>overridable</overrideProperty>"
+              + "  </properties>"
+              
+              + "</project>";
+
+        final String subGroupId = "subGroupId";
+        final String subArtifactId = "subArtifactId";
+        final String subVersion = "subVersion";
+
+        final String subPomString =
+                "<project>"
+
+              + "  <parent>"
+              + "    <groupId>" + rootGroupId + "</groupId>"
+              + "    <artifactId>" + rootArtifactId + "</artifactId>"
+              + "    <version>" + rootVersion + "</version>"
+              + "  </parent>"
+
+              + "  <groupId>" + subGroupId + "</groupId>"
+              + "  <artifactId>" + subArtifactId + "</artifactId>"
+              + "  <version>" + subVersion + "</version>"
+
+              + "  <properties>"
+              + "    <subProperty>subValue</subProperty>"
+              + "    <overrideProperty>overridden</overrideProperty>"
+              + "  </properties>"
+
+              + "</project>";
+
+        final MavenXMLProject<Document> rootPom;
+        final MavenXMLProject<Document> subPom;
+
+        final File rootFile = File.createTempFile("rootpom", "xml");
+        final File subFile = File.createTempFile("subpom", "xml");
+
+        final DOMReaderFactory xmlReaderFactory = new DOMReaderFactory();
+
+        try {
+            rootFile.deleteOnExit();
+            subFile.deleteOnExit();
+        
+            IOUtils.write(rootFile, rootPomString);
+            IOUtils.write(subFile, subPomString);
+            
+            rootPom = PomTreeParser.readModule(rootFile, xmlReaderFactory);
+            subPom = PomTreeParser.readModule(subFile, xmlReaderFactory);
+        }
+        finally {
+            rootFile.delete();
+            subFile.delete();
+        }
+        
+        final List<MavenXMLProject<Document>> xmlProjects = Arrays.asList(rootPom, subPom);
+        
+        final List<MavenProject> effectiveProjects = EffectivePOMsHelper.computeEffectiveProjects(
+                        xmlProjects,
+                        DOMModel.INSTANCE,
+                        xmlReaderFactory,
+                        superPom);
+        
+        assertThat(effectiveProjects.size()).isEqualTo(2);
+        
+        final MavenProject rootProject = effectiveProjects.get(0);
+
+        assertThat(rootProject.getModuleId().getGroupId()).isEqualTo(rootGroupId);
+        assertThat(rootProject.getModuleId().getArtifactId()).isEqualTo(rootArtifactId);
+        assertThat(rootProject.getModuleId().getVersion()).isEqualTo(rootVersion);
+
+        assertThat(rootProject.getProperties().size()).isEqualTo(2);
+        assertThat(rootProject.getProperties().get("rootProperty")).isEqualTo("rootValue");
+        assertThat(rootProject.getProperties().get("overrideProperty")).isEqualTo("overridable");
+        
+        final MavenProject subProject = effectiveProjects.get(1);
+
+        assertThat(subProject.getModuleId().getGroupId()).isEqualTo(subGroupId);
+        assertThat(subProject.getModuleId().getArtifactId()).isEqualTo(subArtifactId);
+        assertThat(subProject.getModuleId().getVersion()).isEqualTo(subVersion);
+
+        assertThat(subProject.getProperties().size()).isEqualTo(3);
+        assertThat(subProject.getProperties().get("rootProperty")).isEqualTo("rootValue");
+        assertThat(subProject.getProperties().get("overrideProperty")).isEqualTo("overridden");
+        assertThat(subProject.getProperties().get("subProperty")).isEqualTo("subValue");
+    }
+
+    @Test
 	public void testMergeMavenBuildSystemPom() throws XMLReaderException, IOException {
 
 		final DOMReaderFactory xmlReaderFactory = new DOMReaderFactory();

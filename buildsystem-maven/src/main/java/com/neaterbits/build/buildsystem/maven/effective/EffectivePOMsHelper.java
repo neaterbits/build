@@ -112,7 +112,7 @@ public class EffectivePOMsHelper {
         if (DEBUG) {
             System.out.println("-- merge filter " + path);
         }
-    
+        
         // Find the first path that matches, if any
         for (MergePath mergePath : mergePaths) {
 
@@ -160,6 +160,10 @@ public class EffectivePOMsHelper {
                     break;
                 }
             }
+
+            if (DEBUG) {
+                System.out.println("## matches " + matches);
+            }
             
             // Matched all of merge path?
             if (matches && i == mergePath.path.length && i == path.size()) {
@@ -169,10 +173,26 @@ public class EffectivePOMsHelper {
                 }
 
                 // Matched complete path, see how to merge
-
                 mergeMode = findMergeModeFromMatchedPath(mergePath, path);
                 break;
             }
+            else if (    matches
+                      && i == mergePath.path.length
+                      && i == path.size() - 1
+                      && mergePath.mode == MergeMode.REPLACE_SUB) {
+                
+                if (DEBUG) {
+                    System.out.println("## matched REPLACE_SUB for " + Arrays.toString(mergePath.path));
+                }
+
+                // Matched complete path, see how to merge
+                mergeMode = findMergeModeFromMatchedPath(mergePath, path);
+                break;
+            }
+        }
+
+        if (DEBUG) {
+            System.out.println("-- merge filter " + path + " gives mode " + mergeMode);
         }
         
         return mergeMode;
@@ -197,6 +217,9 @@ public class EffectivePOMsHelper {
 	
 	private static MergeMode findMergeModeFromMatchedPath(MergePath mergePath, List<String> path) {
 		
+	    Objects.requireNonNull(mergePath);
+	    Objects.requireNonNull(path);
+	    
 		final MergeMode mergeMode;
 		
 		switch (mergePath.mode) {
@@ -225,7 +248,7 @@ public class EffectivePOMsHelper {
 		case REPLACE_SUB:
 			if (mergePath.path.length == path.size()) {
 			    // add nodes further up in path
-				mergeMode = MergeMode.ADD;
+				mergeMode = MergeMode.MERGE;
 			}
 			else if (mergePath.path.length + 1 == path.size()) {
 				// At node to be replaced since direct sub entry
