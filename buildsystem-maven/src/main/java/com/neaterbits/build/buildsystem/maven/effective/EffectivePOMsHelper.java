@@ -23,6 +23,7 @@ import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 import com.neaterbits.build.types.ModuleId;
+import com.neaterbits.util.StringUtils;
 
 public class EffectivePOMsHelper {
 
@@ -376,9 +377,21 @@ public class EffectivePOMsHelper {
 
         final Function<String, String> replaceVariables = text -> {
             
-            return properties != null
-                    ? VariableExpansion.expandVariables(text, properties::get)
-                    : text;
+            return VariableExpansion.expandVariables(text, var -> {
+               
+                final String [] parts = StringUtils.split(var, '.');
+                
+                final String result;
+                
+                if (parts.length == 2 && parts[0].equals("env")) {
+                    result = System.getenv(parts[1]);
+                }
+                else {
+                    result = properties.get(var);
+                }
+
+                return result;
+            });
         };
         
         final DOCUMENT updated = pomModel.copyDocument(

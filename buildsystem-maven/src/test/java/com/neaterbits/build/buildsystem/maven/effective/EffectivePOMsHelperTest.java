@@ -328,6 +328,7 @@ public class EffectivePOMsHelperTest {
 
               + "  <properties>"
               + "    <subProperty>subValue${replaceProperty}</subProperty>"
+              + "    <envProperty>${env.PATH}</envProperty>"
               + "  </properties>"
 
               + "</project>";
@@ -381,10 +382,11 @@ public class EffectivePOMsHelperTest {
         assertThat(subProject.getModuleId().getArtifactId()).isEqualTo(subArtifactId);
         assertThat(subProject.getModuleId().getVersion()).isEqualTo(subVersion);
 
-        assertThat(subProject.getProperties().size()).isEqualTo(3);
+        assertThat(subProject.getProperties().size()).isEqualTo(4);
         assertThat(subProject.getProperties().get("rootProperty")).isEqualTo("rootValue");
         assertThat(subProject.getProperties().get("replaceProperty")).isEqualTo("replaceWith");
         assertThat(subProject.getProperties().get("subProperty")).isEqualTo("subValuereplaceWith");
+        assertThat(subProject.getProperties().get("envProperty")).isEqualTo(System.getenv("PATH"));
     }
     
     @Test
