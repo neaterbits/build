@@ -16,7 +16,10 @@ import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 import com.neaterbits.build.buildsystem.maven.xml.dom.DOMModel;
 import com.neaterbits.build.buildsystem.maven.xml.dom.DOMReaderFactory;
+import com.neaterbits.build.common.tasks.TargetBuilderModules;
 import com.neaterbits.build.types.ModuleId;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetBuilderSpec;
+import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public final class MavenBuildSystem implements BuildSystem {
 
@@ -52,4 +55,11 @@ public final class MavenBuildSystem implements BuildSystem {
 
 		return (BuildSystemRoot)new MavenBuildRoot(mavenProjects, xmlReaderFactory);
 	}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <CONTEXT extends TaskContext> TargetBuilderSpec<CONTEXT> specifyBuild(String[] args) {
+
+        return (TargetBuilderSpec<CONTEXT>)new TargetBuilderModules();
+    }
 }
