@@ -10,12 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeFilter;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeMode;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.variables.VariableExpansion;
 import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
@@ -329,23 +331,61 @@ public class EffectivePOMsHelper {
 		    System.out.println("##----------------------------- merged effective");
 		    pomMerger.getModel().printDocument(mergedEffective, System.out);
 		}
-		
+	
 		final File rootDirectory = project.getProject().getRootDirectory();
 
-		final MavenProject parsed = PomTreeParser.parseToProject(
-                                        		        mergedEffective,
-                                        		        pomMerger.getModel(),
-                                        		        rootDirectory);
-
-		final MavenXMLProject<DOCUMENT> mavenXMLProject = new MavenXMLProject<DOCUMENT>(mergedEffective, parsed);
+		// Parse into effective
+		final MavenXMLProject<DOCUMENT> mavenXMLProject = parse(mergedEffective, pomMerger.getModel(), rootDirectory);
 		
-		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenXMLProject);
+		// Replace variables
+		final MavenXMLProject<DOCUMENT> mavenXMLProjectWithVarReplace
+		    = replaceVariables(mavenXMLProject, pomMerger.getModel(), rootDirectory);
+		
+		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenXMLProjectWithVarReplace);
 
 		if (computed.put(moduleId, effective) != null) {
 			throw new IllegalStateException();
 		}
 		
 		return effective;
+	}
+	
+	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
+	    MavenXMLProject<DOCUMENT> parse(
+	            DOCUMENT document,
+	            POMModel<NODE, ELEMENT, DOCUMENT> model,
+	            File rootDirectory) {
+	    
+        final MavenProject parsed = PomTreeParser.parseToProject(
+                document,
+                model,
+                rootDirectory);
+
+        final MavenXMLProject<DOCUMENT> mavenXMLProject = new MavenXMLProject<DOCUMENT>(document, parsed);
+
+        return mavenXMLProject;
+	}
+	
+	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
+	    MavenXMLProject<DOCUMENT> replaceVariables(
+	            MavenXMLProject<DOCUMENT> mavenXMLProject,
+	            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+	            File rootDirectory) {
+	    
+        final Map<String, String> properties = mavenXMLProject.getProject().getProperties();
+
+        final Function<String, String> replaceVariables = text -> {
+            
+            return properties != null
+                    ? VariableExpansion.expandVariables(text, properties::get)
+                    : text;
+        };
+        
+        final DOCUMENT updated = pomModel.copyDocument(
+                mavenXMLProject.getDocument(),
+                replaceVariables);
+
+        return parse(updated, pomModel, rootDirectory);
 	}
 	
 	// Find the parts from base POM that shall be merged with POM 

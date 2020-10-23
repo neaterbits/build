@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
 import com.neaterbits.util.Counter;
@@ -100,8 +101,12 @@ public interface POMModel<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
         iterate(document, eventListener, null, true);
 	}
 	
+    default DOCUMENT copyDocument(DOCUMENT toCopy) {
+        
+        return copyDocument(toCopy, null);
+    }
 
-	default DOCUMENT copyDocument(DOCUMENT toCopy) {
+	default DOCUMENT copyDocument(DOCUMENT toCopy, Function<String, String> replaceText) {
 		
 		Objects.requireNonNull(toCopy);
 		
@@ -139,7 +144,11 @@ public interface POMModel<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
 					throw new IllegalStateException();
 				}
 
-				addText(elements.get(elements.size() - 1), data, dst);
+				final String toAdd = replaceText != null
+				        ? replaceText.apply(data)
+		                : data;
+				
+				addText(elements.get(elements.size() - 1), toAdd, dst);
 			}
 			
 			@Override
