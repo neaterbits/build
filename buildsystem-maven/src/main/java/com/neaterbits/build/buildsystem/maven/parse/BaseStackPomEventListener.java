@@ -76,7 +76,6 @@ abstract class BaseStackPomEventListener implements PomEventListener {
         entitySetter.setGroupId(stackGroupId.getText());
     }
 
-
     @Override
     public final void onArtifactIdStart(Context context) {
 
@@ -125,6 +124,50 @@ abstract class BaseStackPomEventListener implements PomEventListener {
         final StackProject stackProject = get();
 
         stackProject.setParentModuleId(stackParent.makeModuleId());
+    }
+
+    @Override
+    public final void onPropertiesStart(Context context) {
+
+        push(new StackProperties(context));
+
+    }
+
+    @Override
+    public void onUnknownTagStart(Context context, String name) {
+
+        final Object cur = get();
+        
+        if (cur instanceof StackProperties) {
+            push(new StackProperty(context, name));
+        }
+    }
+
+    @Override
+    public void onUnknownTagEnd(Context context, String name) {
+        
+        final Object cur = get();
+        
+        if (cur instanceof StackProperty) {
+            final StackProperty stackProperty = pop();
+            
+            final StackProperties stackProperties = get();
+            
+            stackProperties.add(stackProperty.getName(), stackProperty.getText());
+        }
+    }
+
+    @Override
+    public void onPropertiesEnd(Context context) {
+
+        final StackProperties stackProperties = pop();
+        
+        if (!stackProperties.getProperties().isEmpty()) {
+            
+            final StackProject stackProject = get();
+            
+            stackProject.setProperties(stackProperties.getProperties());
+        }
     }
 
     @Override

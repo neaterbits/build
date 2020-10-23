@@ -9,6 +9,8 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 
 	private final PomEventListener delegate;
 	
+	private boolean inProperties;
+	
 	private int unknownTag;
 
 	public PomXMLEventListener(PomEventListener delegate) {
@@ -37,6 +39,11 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 			delegate.onParentStart(context);
 			break;
 
+		case "properties":
+		    delegate.onPropertiesStart(context);
+            this.inProperties = true;
+		    break;
+			
 		case "modules":
 			delegate.onModulesStart(context);
 			break;
@@ -98,14 +105,18 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 			break;
 			
 		default:
+		    
+		    delegate.onUnknownTagStart(context, localPart);
+		    
 			++ unknownTag;
 			break;
 		}
 	}
+
 	@Override
 	public void onText(Context context, String data, Void param) {
 
-		if (unknownTag == 0) {
+		if (unknownTag == 0 || inProperties) {
 			delegate.onText(context, data);
 		}
 	}
@@ -122,7 +133,12 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 		case "parent":
 			delegate.onParentEnd(context);
 			break;
-
+			
+		case "properties":
+		    delegate.onPropertiesEnd(context);
+            this.inProperties = false;
+		    break;
+		    
 		case "modules":
 			delegate.onModulesEnd(context);
 			break;
@@ -188,6 +204,8 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 				throw new IllegalStateException();
 			}
 		
+			delegate.onUnknownTagEnd(context, localPart);
+			
 			-- unknownTag;
 			break;
 		}

@@ -33,6 +33,7 @@ final class StackFilePomEventListener extends BaseStackPomEventListener {
 				project.makeModuleId(),
 				project.getParentModuleId(),
 				project.getPackaging(),
+				project.getProperties(),
 				project.getSubModules(),
 				project.getDependencies(),
 				project.getBuild());

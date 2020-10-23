@@ -2,7 +2,10 @@ package com.neaterbits.build.buildsystem.maven.elements;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
@@ -11,6 +14,8 @@ public class MavenModule extends MavenEntity {
 
 	private final File rootDirectory;
 	private final MavenModuleId parentModuleId;
+	
+	private final Map<String, String> properties;
 	
 	private final List<String> subModules;
 	private final List<MavenDependency> dependencies;
@@ -21,6 +26,7 @@ public class MavenModule extends MavenEntity {
 			MavenModuleId moduleId,
 			MavenModuleId parentModuleId,
 			String packaging,
+			Map<String, String> properties,
 			List<String> subModules,
 			List<MavenDependency> dependencies,
 			MavenBuild build) {
@@ -32,6 +38,10 @@ public class MavenModule extends MavenEntity {
 		this.rootDirectory = rootDirectory;
 
 		this.parentModuleId = parentModuleId;
+		
+		this.properties = properties != null
+		        ? Collections.unmodifiableMap(new HashMap<>(properties))
+                : null;
 		
 		this.subModules = subModules;
 		this.dependencies = dependencies;
@@ -59,7 +69,11 @@ public class MavenModule extends MavenEntity {
 		return parentModuleId;
 	}
 
-	public final List<String> getSubModules() {
+	public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public final List<String> getSubModules() {
 		return subModules;
 	}
 

@@ -2,6 +2,7 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
@@ -14,6 +15,7 @@ final class StackProject extends StackEntity {
 	private String name;
 
 	private MavenModuleId parentModuleId;
+	private Map<String, String> properties;
 	private List<String> subModules;
 	private List<MavenDependency> dependencies;
 	private MavenReporting reporting;
@@ -42,7 +44,15 @@ final class StackProject extends StackEntity {
 		this.parentModuleId = parentModuleId;
 	}
 
-	List<String> getSubModules() {
+	Map<String, String> getProperties() {
+        return properties;
+    }
+
+    void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
+    List<String> getSubModules() {
 		return subModules;
 	}
 

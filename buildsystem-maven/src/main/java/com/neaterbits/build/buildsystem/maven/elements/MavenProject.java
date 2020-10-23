@@ -2,6 +2,7 @@ package com.neaterbits.build.buildsystem.maven.elements;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
@@ -13,11 +14,12 @@ public class MavenProject extends MavenModule {
 			MavenModuleId moduleId,
 			MavenModuleId parentModuleId,
 			String packaging,
+			Map<String, String> properties,
 			List<String> modules,
 			List<MavenDependency> dependencies,
 			MavenBuild build) {
 		
-		super(rootDirectory, moduleId, parentModuleId, packaging, modules, dependencies, build);
+		super(rootDirectory, moduleId, parentModuleId, packaging, properties, modules, dependencies, build);
 		
 		Objects.requireNonNull(moduleId);
 	}

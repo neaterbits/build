@@ -22,6 +22,10 @@ public interface PomEventListener {
 
 	void onParentEnd(Context context);
 
+	void onPropertiesStart(Context context);
+	
+	void onPropertiesEnd(Context context);
+	
 	void onDependenciesStart(Context context);
 
 	void onDependencyStart(Context context);
@@ -72,5 +76,9 @@ public interface PomEventListener {
 
 	void onProjectEnd(Context context);
 
-	void onText(Context context, String text);
+	void onUnknownTagStart(Context context, String name);
+	
+    void onUnknownTagEnd(Context context, String name);
+
+    void onText(Context context, String text);
 }
