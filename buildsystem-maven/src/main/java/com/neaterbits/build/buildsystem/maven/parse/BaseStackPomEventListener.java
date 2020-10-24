@@ -308,7 +308,7 @@ abstract class BaseStackPomEventListener implements PomEventListener {
 
         final StackPlugin stackPlugin = pop();
 
-        final MavenPlugin mavenPlugin = new MavenPlugin(stackPlugin.makeModuleId(), null);
+        final MavenPlugin mavenPlugin = new MavenPlugin(stackPlugin.makeModuleId());
 
         final StackPlugins stackPlugins = get();
 
