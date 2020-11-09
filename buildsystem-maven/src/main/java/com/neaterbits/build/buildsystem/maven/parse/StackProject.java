@@ -10,7 +10,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackProject extends StackEntity {
+final class StackProject extends StackEntity implements DependenciesSetter {
 
 	private String name;
 
@@ -64,7 +64,8 @@ final class StackProject extends StackEntity {
 		return dependencies;
 	}
 
-	void setDependencies(List<MavenDependency> dependencies) {
+	@Override
+	public void setDependencies(List<MavenDependency> dependencies) {
 		this.dependencies = dependencies;
 	}
 

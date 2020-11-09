@@ -3,14 +3,14 @@ package com.neaterbits.build.buildsystem.maven.parse;
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.util.parse.context.Context;
 
-abstract class StackEntity extends StackBase implements EntitySetter {
+public abstract class StackEntity extends StackBase implements EntitySetter {
 
 	private String groupId;
 	private String artifactId;
 	private String version;
 	private String packaging;
 
-	StackEntity(Context context) {
+	protected StackEntity(Context context) {
 		super(context);
 	}
 
@@ -50,7 +50,7 @@ abstract class StackEntity extends StackBase implements EntitySetter {
 		this.packaging = packaging;
 	}
 
-	final MavenModuleId makeModuleId() {
+	protected final MavenModuleId makeModuleId() {
 		return new MavenModuleId(groupId, artifactId, version);
 	}
 }

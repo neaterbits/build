@@ -2,21 +2,13 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import com.neaterbits.util.parse.context.Context;
 
-public interface PomEventListener {
+public interface PomEventListener
+    extends
+        BaseEventListener,
+        EntityEventListener,
+        DependenciesListener {
 
 	void onProjectStart(Context context);
-
-	void onGroupIdStart(Context context);
-
-	void onGroupIdEnd(Context context);
-
-	void onArtifactIdStart(Context context);
-
-	void onArtifactIdEnd(Context context);
-
-	void onVersionStart(Context context);
-
-	void onVersionEnd(Context context);
 
 	void onParentStart(Context context);
 
@@ -26,22 +18,6 @@ public interface PomEventListener {
 	
 	void onPropertiesEnd(Context context);
 	
-	void onDependenciesStart(Context context);
-
-	void onDependencyStart(Context context);
-
-	void onScopeStart(Context context);
-
-	void onScopeEnd(Context context);
-
-	void onOptionalStart(Context context);
-
-	void onOptionalEnd(Context context);
-
-	void onDependencyEnd(Context context);
-
-	void onDependenciesEnd(Context context);
-
 	void onModulesStart(Context context);
 
 	void onModuleStart(Context context);
@@ -75,10 +51,4 @@ public interface PomEventListener {
 	void onBuildEnd(Context context);
 
 	void onProjectEnd(Context context);
-
-	void onUnknownTagStart(Context context, String name);
-	
-    void onUnknownTagEnd(Context context, String name);
-
-    void onText(Context context, String text);
 }

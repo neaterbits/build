@@ -4,15 +4,15 @@ import java.util.Objects;
 
 import com.neaterbits.util.parse.context.Context;
 
-abstract class StackText extends StackBase {
+public abstract class StackText extends StackBase {
 
 	private String text;
 
-	StackText(Context context) {
+	protected StackText(Context context) {
 		super(context);
 	}
 
-	final String getText() {
+	public final String getText() {
 		return text;
 	}
 

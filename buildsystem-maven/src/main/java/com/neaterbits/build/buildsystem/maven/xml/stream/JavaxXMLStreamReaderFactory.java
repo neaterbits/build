@@ -25,6 +25,6 @@ public class JavaxXMLStreamReaderFactory implements XMLReaderFactory<Void> {
 			throw new XMLReaderException("Failed to create reader", ex);
 		}
 
-		return new JavaxXMLStreamReader(filePath, eventReader);
+		return new JavaxXMLStreamReader(filePath, eventReader, true);
 	}
 }

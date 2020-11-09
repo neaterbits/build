@@ -3,13 +3,10 @@ package com.neaterbits.build.buildsystem.maven.plugins;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-
-import com.neaterbits.build.buildsystem.maven.plugins.model.MojoModel;
 
 public class MojoFinderTest {
 
@@ -39,8 +36,10 @@ public class MojoFinderTest {
         final File jarDir = new File(compilerPluginDir, newest);
         final File jarFile = new File(jarDir, "maven-compiler-plugin-" + newest + ".jar");
         
-        final List<MojoModel> mojoModels = MojoFinder.findMojos(jarFile);
+        final MavenPluginInfo pluginInfo = MojoFinder.findMojos(jarFile);
 
-        assertThat(mojoModels.isEmpty()).isFalse();
+        assertThat(pluginInfo).isNotNull();
+        assertThat(pluginInfo.getPluginDescriptor()).isNotNull();
+        assertThat(pluginInfo.getPluginDescriptor().getMojos().isEmpty()).isFalse();
     }
 }

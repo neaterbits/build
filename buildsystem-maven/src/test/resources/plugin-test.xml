@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+	
+	<description>Plugin description</description>
+	
+	<groupId>com.test.plugin</groupId>
+	<artifactId>test-plugin</artifactId>
+	<version>1.0</version>
+	
+	<goalPrefix>theGoalPrefix</goalPrefix>
+	<isolatedRealm>false</isolatedRealm>
+	<inheritedByDefault>false</inheritedByDefault>
+	
+	<mojos>
+		<mojo>
+			<goal>the-mojo-goal</goal>
+			<description>Plugin Mojo description</description>
+			<implementation>com.test.plugin.TestPlugin</implementation>
+			<language>Java</language>
+			<phase>compile</phase>
+			<executePhase>install</executePhase>
+			<executeGoal>the-execute-goal</executeGoal>
+			<executeLifecycle>the-execute-lifecycle</executeLifecycle>
+			<requiresDependencyResolution>requires-dependency-resolution</requiresDependencyResolution>
+			<requiresDependencyCollection>requires-dependency-collection</requiresDependencyCollection>
+		
+			<requiresDirectInvocation>true</requiresDirectInvocation>
+			<requiresProject>false</requiresProject>
+			<requiresReports>false</requiresReports>
+			<requiresOnline>false</requiresOnline>
+			
+			<aggregator>false</aggregator>
+
+			<inheritedByDefault>false</inheritedByDefault>
+			
+			<threadSafe>true</threadSafe>
+			
+			<instantiationStrategy>per-lookup</instantiationStrategy>
+			<executionStrategy>once-per-session</executionStrategy>
+
+			<since>0.9</since>
+			<deprecated>0.9.1</deprecated>
+			
+			<configurator>the-mojo-configurator</configurator>
+			
+			<composer>the-mojo-composer</composer>
+			
+			<parameters>
+				<parameter>
+					<name>The parameter</name>
+					<alias>theParameter</alias>
+					<type>java.lang.String</type>
+					<required>true</required>
+					<editable>false</editable>
+					<implementation>com.test.plugin.TestParam</implementation>
+					<description>The parameter description</description>				
+					<since>0.8</since>
+					<deprecated>0.8.1</deprecated>
+				</parameter>
+			</parameters>
+			
+			<configuration>
+				<testString
+					implementation='java.lang.String'
+					default-value="abc"></testString>
+				<testInteger
+					implementation="java.lang.Integer"
+					default-value="123"></testInteger>
+			</configuration>
+			
+			<requirements>
+				<requirement>
+					<role>the-mojo-role</role>
+					<role-hint>the-mojo-role-hint</role-hint>
+					<field-name>the-mojo-field-name</field-name>
+				</requirement>
+			</requirements>
+		</mojo>
+	</mojos>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.test.plugin-dependencies</groupId>
+			<artifactId>plugin-dependency</artifactId>
+			<version>0.1</version>
+		</dependency>
+	</dependencies>
+</plugin>

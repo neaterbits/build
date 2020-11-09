@@ -7,11 +7,11 @@ import java.util.Objects;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackDependencies extends StackBase {
+public final class StackDependencies extends StackBase {
 
 	private final List<MavenDependency> dependencies;
 
-	StackDependencies(Context context) {
+	public StackDependencies(Context context) {
 		super(context);
 
 		this.dependencies = new ArrayList<>();

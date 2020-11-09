@@ -1,33 +1,37 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import java.util.List;
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
+import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.util.parse.context.Context;
 
-public final class PomXMLEventListener implements XMLEventListener<Void> {
+public final class PomXMLEventListener
+    extends BaseXMLEventListener<Void> {
 
 	private final PomEventListener delegate;
 	
 	private boolean inProperties;
-	
-	private int unknownTag;
 
 	public PomXMLEventListener(PomEventListener delegate) {
-
+	    super(delegate);
+	    
 		Objects.requireNonNull(delegate);
 
 		this.delegate = delegate;
 	}
 
 	@Override
-	public void onStartDocument(Void param) {
+    protected boolean allowTextForUnknownTag() {
+	    
+	    // Within <properties>, call onText() for unknown tags
+	    // since property tag names may be user defined and do not follow any schema
+	    
+        return inProperties;
+    }
 
-		this.unknownTag = 0;
-	}
-
-	@Override
-	public void onStartElement(Context context, String localPart, Void param) {
+    @Override
+	public void onStartElement(Context context, String localPart, List<XMLAttribute> attributes, Void param) {
 
 		switch (localPart) {
 
@@ -105,19 +109,8 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 			break;
 			
 		default:
-		    
-		    delegate.onUnknownTagStart(context, localPart);
-		    
-			++ unknownTag;
-			break;
-		}
-	}
-
-	@Override
-	public void onText(Context context, String data, Void param) {
-
-		if (unknownTag == 0 || inProperties) {
-			delegate.onText(context, data);
+		    super.onStartElement(context, localPart, attributes, param);
+		    break;
 		}
 	}
 
@@ -200,22 +193,8 @@ public final class PomXMLEventListener implements XMLEventListener<Void> {
 			break;
 			
 		default:
-			if (unknownTag == 0) {
-				throw new IllegalStateException();
-			}
-		
-			delegate.onUnknownTagEnd(context, localPart);
-			
-			-- unknownTag;
+		    super.onEndElement(context, localPart, param);
 			break;
-		}
-	}
-
-	@Override
-	public void onEndDocument(Void param) {
-
-		if (unknownTag != 0) {
-			throw new IllegalStateException();
 		}
 	}
 }

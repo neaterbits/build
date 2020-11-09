@@ -4,13 +4,13 @@ import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 
-abstract class MavenEntity {
+public abstract class MavenEntity {
 
 	private final MavenModuleId moduleId;
 	
 	private final String packaging;
 
-	MavenEntity(MavenModuleId moduleId, String packaging) {
+	protected MavenEntity(MavenModuleId moduleId, String packaging) {
 		
 		Objects.requireNonNull(moduleId);
 		

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
 import com.neaterbits.util.Counter;
 import com.neaterbits.util.Indent;
@@ -48,7 +49,7 @@ public interface POMModel<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
             }
 
             @Override
-            public void onStartElement(Context context, String localPart, Void param) {
+            public void onStartElement(Context context, String localPart, List<XMLAttribute> attributes, Void param) {
 
                 final Integer last = lastType.get();
                 if (TEXT_ELEMENT.equals(last)) {
@@ -122,7 +123,7 @@ public interface POMModel<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
 			}
 
 			@Override
-			public void onStartElement(Context context, String localPart, Void param) {
+			public void onStartElement(Context context, String localPart, List<XMLAttribute> attributes, Void param) {
 
 				final NODE toAddTo = elements.isEmpty()
 						? dst

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
 import com.neaterbits.util.parse.context.Context;
 
@@ -57,7 +58,7 @@ final class POMMerger<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
 			}
 
 			@Override
-			public void onStartElement(Context context, String localPart, Void param) {
+			public void onStartElement(Context context, String localPart, List<XMLAttribute> attributes, Void param) {
 				
 				final int prevPathSize = path.size();
 				

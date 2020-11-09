@@ -113,6 +113,7 @@ public class MavenModule extends MavenEntity {
 				
 				dependency.getPackaging(),
 				dependency.getScope(),
+				dependency.getType(),
 				dependency.getOptional());
 		
 	}

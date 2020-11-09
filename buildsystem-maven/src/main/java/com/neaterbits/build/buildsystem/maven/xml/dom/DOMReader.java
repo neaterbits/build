@@ -2,15 +2,21 @@ package com.neaterbits.build.buildsystem.maven.xml.dom;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
+import javax.lang.model.element.Element;
 import javax.xml.parsers.DocumentBuilder;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
@@ -56,6 +62,39 @@ final class DOMReader implements XMLReader<Document> {
 		iterate(document, eventListener, param, false);
 	}
 	
+	private static List<XMLAttribute> makeAttributes(Node element) {
+	    
+	    final List<XMLAttribute> list;
+	    
+	    final int numAttributes = element.getAttributes().getLength();
+	    
+	    if (numAttributes == 0) {
+	        list = Collections.emptyList();
+	    }
+	    else {
+	        list = new ArrayList<>(numAttributes);
+	        
+	        for (int i = 0; i < numAttributes; ++ i) {
+	            final Attr attribute = (Attr)element.getAttributes().item(i);
+	            
+	            list.add(new XMLAttribute() {
+                    
+                    @Override
+                    public String getName() {
+                        return attribute.getLocalName();
+                    }
+
+                    @Override
+                    public String getValue() {
+                        return attribute.getValue();
+                    }
+                });
+	        }
+	    }
+
+	    return list;
+	}
+	
 	static <T> void iterate(
 			Document document,
 			XMLEventListener<T> eventListener,
@@ -66,7 +105,7 @@ final class DOMReader implements XMLReader<Document> {
 		
 		final Node rootElement = document.getDocumentElement();
 		
-		eventListener.onStartElement(null, rootElement.getNodeName(), param);
+		eventListener.onStartElement(null, rootElement.getNodeName(), makeAttributes(rootElement), param);
 
 		iterate(rootElement.getChildNodes(), eventListener, param, skipIgnoreableWhitespace);
 		
@@ -93,7 +132,7 @@ final class DOMReader implements XMLReader<Document> {
 				
 				final String localPart = node.getNodeName();
 				
-				eventListener.onStartElement(null, localPart, param);
+				eventListener.onStartElement(null, localPart, makeAttributes(node), param);
 				
 				if (node.hasChildNodes()) {
 					iterate(node.getChildNodes(), eventListener, param, skipIgnoreableWhitespace);

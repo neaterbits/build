@@ -5,12 +5,14 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 public class MavenDependency extends MavenEntity {
 
 	private final String scope;
+    private final String type;
 	private final String optional;
 	
-	public MavenDependency(MavenModuleId moduleId, String packaging, String scope, String optional) {
+	public MavenDependency(MavenModuleId moduleId, String packaging, String scope, String type, String optional) {
 		super(moduleId, packaging);
 	
 		this.scope = scope;
+		this.type = type;
 		this.optional = optional;
 	}
 
@@ -18,7 +20,11 @@ public class MavenDependency extends MavenEntity {
 		return scope;
 	}
 	
-	public String getOptional() {
+	public String getType() {
+        return type;
+    }
+
+    public String getOptional() {
 		return optional;
 	}
 

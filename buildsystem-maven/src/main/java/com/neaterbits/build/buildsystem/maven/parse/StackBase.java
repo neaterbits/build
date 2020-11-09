@@ -6,7 +6,7 @@ public abstract class StackBase {
 
 	private final Context context;
 
-	StackBase(Context context) {
+	protected StackBase(Context context) {
 
 		// Objects.requireNonNull(context);
 
