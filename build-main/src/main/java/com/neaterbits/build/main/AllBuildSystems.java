@@ -3,13 +3,14 @@ package com.neaterbits.build.main;
 import java.io.File;
 
 import com.neaterbits.build.buildsystem.common.BuildSystem;
+import com.neaterbits.build.buildsystem.common.BuildSystems;
 import com.neaterbits.build.buildsystem.maven.MavenBuildSystem;
 
-public class BuildSystems {
+public class AllBuildSystems implements BuildSystems {
 
 	private final BuildSystem [] buildSystems;
 	
-	BuildSystems() {
+	AllBuildSystems() {
 		this.buildSystems = new BuildSystem [] {
 				
 				new MavenBuildSystem()
@@ -17,7 +18,8 @@ public class BuildSystems {
 		};
 	}
 	
-	BuildSystem findBuildSystem(File projectDir) {
+	@Override
+	public BuildSystem findBuildSystem(File projectDir) {
 		
 		for (BuildSystem buildSystem : buildSystems) {
 			

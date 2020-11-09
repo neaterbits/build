@@ -12,6 +12,7 @@ import com.neaterbits.build.buildsystem.common.BuildSystemRootListener;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
@@ -23,22 +24,32 @@ import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, MavenProject, MavenDependency> {
 
 	private final List<MavenProject> projects;
+	private final XMLReaderFactory<?> xmlReaderFactory;
+	private final MavenRepositoryAccess repositoryAccess;
+
 	private final List<BuildSystemRootListener> listeners;
 
-	private final XMLReaderFactory<?> xmlReaderFactory;
-	
-	MavenBuildRoot(List<MavenProject> projects, XMLReaderFactory<?> xmlReaderFactory) {
+	MavenBuildRoot(
+	        List<MavenProject> projects,
+	        XMLReaderFactory<?> xmlReaderFactory,
+	        MavenRepositoryAccess repositoryAccess) {
 
 		Objects.requireNonNull(projects);
 		Objects.requireNonNull(xmlReaderFactory);
-
+		Objects.requireNonNull(repositoryAccess);
+		
 		this.projects = projects;
 		this.xmlReaderFactory = xmlReaderFactory;
+		this.repositoryAccess = repositoryAccess;
 
 		this.listeners = new ArrayList<>();
 	}
 
-	@Override
+	public MavenRepositoryAccess getRepositoryAccess() {
+        return repositoryAccess;
+    }
+
+    @Override
 	public Collection<MavenProject> getProjects() {
 		return projects;
 	}
@@ -66,7 +77,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		return project.getRootDirectory();
 	}
 
-	@Override
+    @Override
 	public String getNonScopedName(MavenProject project) {
 		return project.getModuleId().getArtifactId();
 	}
@@ -134,7 +145,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	@Override
 	public File getCompiledModuleFile(MavenProject project, File modulePath) {
 
-		final String fileName = compiledFileName(getModuleId(project), project.getPackaging());
+		final String fileName = getCompiledFileName(getModuleId(project), project.getPackaging());
 
 		return new File(getTargetDirectory(modulePath), fileName);
 	}
@@ -157,57 +168,21 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		return resourcePaths;
 	}
 
-	private String repositoryDirectory(MavenDependency mavenDependency) {
 
-		final MavenModuleId moduleId = mavenDependency.getModuleId();
-
-		final String path = System.getProperty("user.home") + "/.m2/repository/"
-					+ moduleId.getGroupId().replace('.', '/')
-					+ '/' + moduleId.getArtifactId()
-					+ '/' + moduleId.getVersion();
-
-		return path;
-	}
-
-	private File repositoryPomFile(MavenDependency mavenDependency) {
-
-		final File repositoryDirectory = new File(repositoryDirectory(mavenDependency));
-		final File pomFile = new File(repositoryDirectory, "pom.xml");
-
-		return pomFile;
-	}
-
-	private File repositoryExternalPomFile(MavenDependency mavenDependency) {
-
-		final File repositoryDirectory = new File(repositoryDirectory(mavenDependency));
-
-		final MavenModuleId moduleId = mavenDependency.getModuleId();
-
-		final File pomFile = new File(repositoryDirectory, moduleId.getArtifactId() + '-' + moduleId.getVersion() + '.' + "pom");
-
-		return pomFile;
-	}
-
-	@Override
-	public File repositoryJarFile(MavenDependency mavenDependency) {
-
-		final String path = repositoryDirectory(mavenDependency) + '/' + compiledFileName(mavenDependency);
-
-		try {
-			return new File(path).getCanonicalFile();
-		} catch (IOException ex) {
-			throw new IllegalStateException(ex);
-		}
-	}
-
-	@Override
+    @Override
 	public String compiledFileName(MavenDependency mavenDependency) {
+        
+        return getCompiledFileName(mavenDependency);
+    }
+
+    static String getCompiledFileName(MavenDependency mavenDependency) {
+    
 		final MavenModuleId moduleId = mavenDependency.getModuleId();
 
-		return compiledFileName(moduleId, mavenDependency.getPackaging());
+		return getCompiledFileName(moduleId, mavenDependency.getPackaging());
 	}
 
-	private String compiledFileName(MavenModuleId moduleId, String packaging) {
+	public static String getCompiledFileName(MavenModuleId moduleId, String packaging) {
 
 		if (moduleId.getVersion() == null) {
 			throw new IllegalArgumentException("No version for module " + moduleId);
@@ -222,7 +197,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 
 		Objects.requireNonNull(dependency);
 
-		final File pomFile = repositoryExternalPomFile(dependency);
+		final File pomFile = repositoryAccess.repositoryExternalPomFile(dependency);
 
 		final MavenProject mavenProject;
 
@@ -241,9 +216,21 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	}
 
 	@Override
+    public File repositoryJarFile(MavenDependency dependency) {
+	    
+        return repositoryAccess.repositoryJarFile(dependency);
+    }
+
+    @Override
+    public File repositoryJarFile(MavenModuleId moduleId) {
+
+        return repositoryAccess.repositoryJarFile(moduleId);
+    }
+
+    @Override
 	public void downloadExternalDependencyIfNotPresent(MavenDependency dependency) {
 
-		final File repositoryPomFile = repositoryExternalPomFile(dependency);
+		final File repositoryPomFile = repositoryAccess.repositoryExternalPomFile(dependency);
 
 		if (!repositoryPomFile.exists()) {
 			// Download from external repositories
@@ -252,6 +239,17 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	}
 
 	@Override
+    public void downloadExternalDependencyIfNotPresent(MavenModuleId moduleId) {
+
+	    throw new UnsupportedOperationException();
+    }
+
+    public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin) throws IOException {
+        
+        repositoryAccess.downloadPluginIfNotPresent(mavenPlugin);
+    }
+
+    @Override
 	public void addListener(BuildSystemRootListener listener) {
 
 		Objects.requireNonNull(listener);

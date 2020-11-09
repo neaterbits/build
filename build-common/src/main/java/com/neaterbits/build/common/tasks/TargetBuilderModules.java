@@ -18,6 +18,7 @@ import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.CommandLineActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.TargetBuilder;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 
@@ -147,7 +148,7 @@ public class TargetBuilderModules extends TargetBuilderSpec<ModulesBuildContext>
 			throw new BuildException(status.getIssues());
 		}
 		else {
-			return new ActionLog(status.getCommandLine(), status.getExitCode());
+			return new CommandLineActionLog(status.getCommandLine(), status.getExitCode());
 		}
 	}
 }

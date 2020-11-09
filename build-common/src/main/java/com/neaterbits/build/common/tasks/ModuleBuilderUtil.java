@@ -1,7 +1,9 @@
 package com.neaterbits.build.common.tasks;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.neaterbits.build.buildsystem.common.Scope;
@@ -16,24 +18,45 @@ public class ModuleBuilderUtil {
 
 		return transitiveProjectDependencies(context.getBuildRoot(), module);
 	}
-		
+
 	public static List<ProjectDependency> transitiveProjectDependencies(BuildRoot buildRoot, ProjectModuleResourcePath module) {
+
+	    return transitiveProjectDependencies(
+	            module,
+	            buildRoot::getProjectDependenciesForProjectModule,
+	            ProjectDependency::getModulePath);
+	}
 		
-		final List<ProjectDependency> dependencies = new ArrayList<>();
+	public static <PROJECT, DEPENDENCY>
+	List<DEPENDENCY> transitiveProjectDependencies(
+	        PROJECT module,
+	        Function<PROJECT, Collection<DEPENDENCY>> getDependencies,
+	        Function<DEPENDENCY, PROJECT> getProject) {
 		
-		transitiveProjectDependencies(buildRoot, module, dependencies);
+		final List<DEPENDENCY> dependencies = new ArrayList<>();
+		
+		transitiveProjectDependencies(module, dependencies, getDependencies, getProject);
 
 		return dependencies;
 	}
 
-	private static void transitiveProjectDependencies(BuildRoot buildRoot, ProjectModuleResourcePath module, List<ProjectDependency> dependencies) {
+	private static <PROJECT, DEPENDENCY>
+	void transitiveProjectDependencies(
+	        PROJECT module,
+	        List<DEPENDENCY> dependencies,
+	        Function<PROJECT, Collection<DEPENDENCY>> getDependencies,
+	        Function<DEPENDENCY, PROJECT> getProject) {
 		 
-		final List<ProjectDependency> moduleDependencies = buildRoot.getProjectDependenciesForProjectModule(module);
+		final Collection<DEPENDENCY> moduleDependencies = getDependencies.apply(module);
 		 
 		dependencies.addAll(moduleDependencies);
 
-		for (ProjectDependency dependency : moduleDependencies) {
-			transitiveProjectDependencies(buildRoot, dependency.getModulePath(), dependencies);
+		for (DEPENDENCY dependency : moduleDependencies) {
+			transitiveProjectDependencies(
+			        getProject.apply(dependency),
+			        dependencies,
+			        getDependencies,
+			        getProject);
 		}
 	}
 

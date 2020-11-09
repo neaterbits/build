@@ -24,13 +24,13 @@ import com.neaterbits.build.buildsystem.maven.xml.stream.JavaxXMLStreamReaderFac
 
 public class MojoFinder {
 
-    public static MavenPluginInfo findMojos(File jarFile) throws IOException {
+    public static MavenDescriptorPluginInfo findMojos(File jarFile) throws IOException {
         
         final JarFile jar = new JarFile(jarFile);
 
         final Map<String, Class<? extends Mojo>> mojos = new HashMap<>();
         
-        final MavenPluginInfo pluginInfo;
+        final MavenDescriptorPluginInfo pluginInfo;
         
         try {
             
@@ -100,7 +100,7 @@ public class MojoFinder {
                 }
             }
 
-            pluginInfo = new MavenPluginInfo(pluginDescriptor, mojos);
+            pluginInfo = new MavenDescriptorPluginInfo(pluginDescriptor, mojos);
         } catch (XMLReaderException ex) {
             throw new IllegalArgumentException("Failed to parse plugin.xml", ex);
         }

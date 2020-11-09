@@ -1,39 +1,25 @@
 package com.neaterbits.build.common.tasks;
 
-import java.util.Collection;
-
 import com.neaterbits.build.common.language.BuildableLanguage;
 import com.neaterbits.build.model.BuildRoot;
-import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
-import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
-import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
-public abstract class TaskBuilderContext extends TaskContext {
-	private final BuildRoot buildRoot;
-	private final BuildableLanguage language;
+public abstract class TaskBuilderContext extends BuildRootContext {
+
+    private final BuildableLanguage language;
 
 	protected TaskBuilderContext(BuildRoot buildRoot, BuildableLanguage language) {
-		this.buildRoot = buildRoot;
+	    super(buildRoot);
+	    
 		this.language = language;
 	}
 	
 	protected TaskBuilderContext(TaskBuilderContext context) {
-		this(context.buildRoot, context.language);
-	}
-
-	public final BuildRoot getBuildRoot() {
-		return buildRoot;
+		super(context);
+		
+		this.language = context.language;
 	}
 
 	public final BuildableLanguage getLanguage() {
 		return language;
-	}
-
-	public final Collection<ProjectModuleResourcePath> getModules() {
-		return buildRoot.getModules();
-	}
-
-	public final CompiledModuleFileResourcePath getCompiledModuleFile(ProjectModuleResourcePath module) {
-		return buildRoot.getCompiledModuleFile(module);
 	}
 }

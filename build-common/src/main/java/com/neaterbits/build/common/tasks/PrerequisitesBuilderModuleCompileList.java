@@ -26,7 +26,6 @@ public class PrerequisitesBuilderModuleCompileList extends PrerequisitesBuilderS
 					
 				.addInfoSubTarget(
 						SourceFolderResourcePath.class,
-						"compilelist",
 						sourceFolder -> sourceFolder.getModule().getName(),
 						sourceFolder -> "Class files for source folder " + sourceFolder.getName())
 				

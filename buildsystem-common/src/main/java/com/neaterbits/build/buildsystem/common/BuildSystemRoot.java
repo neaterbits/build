@@ -9,11 +9,29 @@ public interface BuildSystemRoot<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY
 
 	Collection<PROJECT> getProjects();
 
+	default PROJECT getProject(DEPENDENCY dependency) {
+	    
+	    final MODULE_ID moduleId = getDependencyModuleId(dependency);
+	    
+	    return getProjects().stream()
+	            .filter(p -> getModuleId(p).equals(moduleId))
+	            .findFirst()
+	            .orElse(null);
+	}
+	
 	MODULE_ID getModuleId(PROJECT project);
 
 	MODULE_ID getParentModuleId(PROJECT project);
 
 	File getRootDirectory(PROJECT project);
+	
+	default PROJECT getProject(File rootDirectory) {
+
+	    return getProjects().stream()
+	            .filter(project -> rootDirectory.equals(getRootDirectory(project)))
+	            .findFirst()
+	            .orElse(null);
+	}
 
 	String getNonScopedName(PROJECT project);
 
@@ -31,13 +49,17 @@ public interface BuildSystemRoot<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY
 
 	File repositoryJarFile(DEPENDENCY dependency);
 
+	File repositoryJarFile(MODULE_ID moduleId);
+
 	String compiledFileName(DEPENDENCY dependency);
 
 	void addListener(BuildSystemRootListener listener);
 
 	void downloadExternalDependencyIfNotPresent(DEPENDENCY dependency);
 
-	Collection<DEPENDENCY> getTransitiveExternalDependencies(DEPENDENCY dependency) throws ScanException;
+    void downloadExternalDependencyIfNotPresent(MODULE_ID moduleId);
+
+    Collection<DEPENDENCY> getTransitiveExternalDependencies(DEPENDENCY dependency) throws ScanException;
 
 	File getTargetDirectory(File modulePath);
 

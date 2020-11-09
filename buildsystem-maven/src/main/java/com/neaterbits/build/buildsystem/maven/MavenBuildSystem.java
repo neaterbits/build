@@ -3,27 +3,41 @@ package com.neaterbits.build.buildsystem.maven;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import org.w3c.dom.Document;
 
+import com.neaterbits.build.buildsystem.common.BuildSpecifier;
 import com.neaterbits.build.buildsystem.common.BuildSystem;
 import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMsHelper;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.targets.MavenBuildSpecifier;
 import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 import com.neaterbits.build.buildsystem.maven.xml.dom.DOMModel;
 import com.neaterbits.build.buildsystem.maven.xml.dom.DOMReaderFactory;
-import com.neaterbits.build.common.tasks.TargetBuilderModules;
 import com.neaterbits.build.types.ModuleId;
-import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetBuilderSpec;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public final class MavenBuildSystem implements BuildSystem {
 
-	@Override
+    private final MavenRepositoryAccess repositoryAccess; 
+    
+    public MavenBuildSystem() {
+        this(new URLMavenRepositoryAccess());
+    }
+    
+	MavenBuildSystem(MavenRepositoryAccess repositoryAccess) {
+    
+	    Objects.requireNonNull(repositoryAccess);
+	    
+	    this.repositoryAccess = repositoryAccess;
+    }
+
+    @Override
 	public boolean isBuildSystemFor(File rootDirectory) {
 
 		final File pomFile = new File(rootDirectory, "pom.xml");
@@ -53,13 +67,13 @@ public final class MavenBuildSystem implements BuildSystem {
 					xmlReaderFactory,
 					null);
 
-		return (BuildSystemRoot)new MavenBuildRoot(mavenProjects, xmlReaderFactory);
+		return (BuildSystemRoot)new MavenBuildRoot(mavenProjects, xmlReaderFactory, repositoryAccess);
 	}
 
     @SuppressWarnings("unchecked")
     @Override
-    public <CONTEXT extends TaskContext> TargetBuilderSpec<CONTEXT> specifyBuild(String[] args) {
-
-        return (TargetBuilderSpec<CONTEXT>)new TargetBuilderModules();
+    public <CONTEXT extends TaskContext> BuildSpecifier<CONTEXT> getBuildSpecifier() {
+        
+        return (BuildSpecifier<CONTEXT>)new MavenBuildSpecifier();
     }
 }

@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import javax.lang.model.element.Element;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.w3c.dom.Attr;

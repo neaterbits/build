@@ -36,7 +36,7 @@ public class MojoFinderTest {
         final File jarDir = new File(compilerPluginDir, newest);
         final File jarFile = new File(jarDir, "maven-compiler-plugin-" + newest + ".jar");
         
-        final MavenPluginInfo pluginInfo = MojoFinder.findMojos(jarFile);
+        final MavenDescriptorPluginInfo pluginInfo = MojoFinder.findMojos(jarFile);
 
         assertThat(pluginInfo).isNotNull();
         assertThat(pluginInfo.getPluginDescriptor()).isNotNull();
