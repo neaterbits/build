@@ -374,7 +374,12 @@ public class EffectivePOMsHelper {
 	    
         final Map<String, String> properties = mavenXMLProject.getProject().getProperties();
 
-        final Function<String, String> replaceVariables = text -> VariableExpansion.replaceVariable(text, properties);
+        final Function<String, String> replaceVariables
+            = text -> VariableExpansion.replaceVariable(
+                    text,
+                    properties,
+                    pomModel,
+                    mavenXMLProject.getDocument());
         
         final DOCUMENT updated = pomModel.copyDocument(
                 mavenXMLProject.getDocument(),

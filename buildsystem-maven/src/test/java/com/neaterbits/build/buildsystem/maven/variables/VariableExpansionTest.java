@@ -3,7 +3,19 @@ package com.neaterbits.build.buildsystem.maven.variables;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
+import org.w3c.dom.Document;
+
+import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
+import com.neaterbits.build.buildsystem.maven.xml.dom.DOMModel;
+import com.neaterbits.build.buildsystem.maven.xml.dom.DOMReaderFactory;
 
 public class VariableExpansionTest {
 
@@ -135,5 +147,45 @@ public class VariableExpansionTest {
                 });
                 
         assertThat(expanded).isEqualTo("${var1}x${var2}y");
+    }
+
+    @Test
+    public void testModel() throws XMLReaderException, IOException {
+        
+        final String groupId = "theGroupId";
+        final String artifactId = "theArtifactId";
+        final String version = "theVersion";
+
+        final String rootPomString =
+                "<project>"
+
+              + "  <groupId>" + groupId + "</groupId>"
+              + "  <artifactId>" + artifactId + "</artifactId>"
+              + "  <version>" + version + "</version>"
+
+              + "  <build>"
+              + "     <directory>file-${theProperty}</directory>"
+              + "     <outputDirectory>output-${project.build.directory}</outputDirectory>"
+              + "  </build>"
+
+              + "</project>";
+
+        final DOMReaderFactory xmlReaderFactory = new DOMReaderFactory();
+
+        final MavenXMLProject<Document> rootPom
+            = PomTreeParser.readModule(new ByteArrayInputStream(rootPomString.getBytes()), xmlReaderFactory, "pom.xml");
+
+        assertThat(VariableExpansion.replaceVariable("test-${project.groupId}-value", null, DOMModel.INSTANCE, rootPom.getDocument()))
+            .isEqualTo("test-" + groupId + "-value");
+
+        assertThat(VariableExpansion.replaceVariable("${project.version}", null, DOMModel.INSTANCE, rootPom.getDocument()))
+            .isEqualTo(version);
+        
+        final Map<String, String> properties = new HashMap<>();
+
+        properties.put("theProperty", "theValue-${project.groupId}-directory");
+        
+        assertThat(VariableExpansion.replaceVariable("${project.build.outputDirectory}", properties, DOMModel.INSTANCE, rootPom.getDocument()))
+            .isEqualTo("output-file-theValue-" + groupId + "-directory");
     }
 }

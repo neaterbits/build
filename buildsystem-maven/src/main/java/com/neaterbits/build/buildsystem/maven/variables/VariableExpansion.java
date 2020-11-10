@@ -3,6 +3,8 @@ package com.neaterbits.build.buildsystem.maven.variables;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.neaterbits.build.buildsystem.maven.effective.POMModel;
+import com.neaterbits.util.ArrayUtils;
 import com.neaterbits.util.StringUtils;
 
 public class VariableExpansion {
@@ -63,23 +65,131 @@ public class VariableExpansion {
                 : string;
     }
 
-    public static String replaceVariable(
+    public static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
+    String replaceVariable(
             String text,
-            Map<String, String> properties) {
+            Map<String, String> properties,
+            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+            DOCUMENT document) {
         
-        return expandVariables(text, var -> {
+        String cur = text;
+        
+        for (;;) {
             
-            final String [] parts = StringUtils.split(var, '.');
-            final String result;
+            final String expanded = expandVariables(cur, var -> {
             
-            if (parts.length == 2 && parts[0].equals("env")) {
-                result = System.getenv(parts[1]);
+                final String [] parts = StringUtils.split(var, '.');
+                final String result;
+                
+                String replacedFromModel;
+                
+                if (parts.length == 2 && parts[0].equals("env")) {
+                    result = System.getenv(parts[1]);
+                }
+                else if (null != (replacedFromModel = replaceFromModel(parts, pomModel, document))) {
+                    result = replacedFromModel;
+                }
+                else if (properties != null) {
+                    result = properties.get(var);
+                }
+                else {
+                    result = null;
+                }
+    
+                return result;
+            });
+
+            if (cur.equals(expanded)) {
+                break;
+            }
+            
+            cur = expanded;
+        }
+        
+        return cur;
+    }
+
+    private static String[][] SINGLE_ELEMENTS = new String [][] {
+        
+        merge("project", "modelVersion"),
+
+        merge("project", "groupId"),
+        merge("project", "artifactId"),
+        merge("project", "version"),
+        merge("project", "packaging"),
+
+        merge("project", "parent", "groupId"),
+        merge("project", "parent", "artifactId"),
+        merge("project", "parent", "version"),
+        merge("project", "parent", "relativePath"),
+        
+        merge("project", "build", "directory"),
+        merge("project", "build", "outputDirectory"),
+        merge("project", "build", "finalName"),
+        merge("project", "build", "testOutputDirectory"),
+        merge("project", "build", "sourceDirectory"),
+        merge("project", "build", "scriptSourceDirectory"),
+        merge("project", "build", "testSourceDirectory"),
+        
+        merge("project", "reporting", "outputDirectory"),
+
+        merge("project", "name"),
+        merge("project", "description"),
+        merge("project", "url"),
+        merge("project", "inceptionYear"),
+        
+    };
+    
+    private static String [] merge(String ... tags) {
+
+        return tags;
+    }
+    
+    private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
+    String replaceFromModel(
+            String [] parts,
+            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+            DOCUMENT document) {
+
+        String replaced = null;
+
+        // Search for a matching element
+        for (String [] singleElement : SINGLE_ELEMENTS) {
+            if (ArrayUtils.startsWith(parts, singleElement)) {
+
+                // Replace under here if can be found in model
+                replaced = findElementNode(parts, 0, pomModel, document);
+                break;
+            }
+        }
+
+        return replaced;
+    }
+
+    private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
+    String findElementNode(
+            String [] parts,
+            int index,
+            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+            NODE node) {
+        
+        final ELEMENT element = pomModel.getElement(node, parts[index]);
+        
+        final String result;
+        
+        if (element != null) {
+
+            if (index == parts.length - 1) {
+                result = pomModel.getText(element);
             }
             else {
-                result = properties.get(var);
+                result = findElementNode(parts, index + 1, pomModel, element);
             }
-
-            return result;
-        });
+        }
+        else {
+            result = null;
+        }
+        
+        return result;
     }
 }

@@ -128,4 +128,28 @@ public final class DOMModel implements POMModel<Node, Element, Document> {
 	    
 		element.appendChild(textNode);
 	}
+
+    private boolean hasText(Element element) {
+
+        return element.getChildNodes().getLength() == 1
+                && element.getFirstChild().getNodeType() == Node.TEXT_NODE;
+    }
+
+    @Override
+    public String getText(Element element) {
+        
+        final String text;
+        
+        if (hasText(element)) {
+           
+            final Text textNode = (Text)element.getFirstChild();
+            
+            text = textNode.getData();
+        }
+        else {
+            text = null;
+        }
+
+        return text;
+    }
 }

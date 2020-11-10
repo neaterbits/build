@@ -31,6 +31,8 @@ public interface POMModel<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
 
 	void addText(ELEMENT element, String text, DOCUMENT document);
 	
+	String getText(ELEMENT element);
+	
 	default void printDocument(DOCUMENT document, PrintStream out) {
 
 	    final Integer START_ELEMENT = 1;
