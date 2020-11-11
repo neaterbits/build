@@ -44,6 +44,7 @@ final class PhasesProjectDependenciesPrerequisiteBuilder extends PrerequisitesBu
 
         return deps.stream()
                 .map(buildRoot::getProject)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 }

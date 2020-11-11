@@ -39,6 +39,7 @@ public class BuildMain {
 
 	        // final TargetExecutorLogger logger = new PrintlnTargetExecutorLogger();
 	        final BinaryTargetExecutorLogger binaryTargetExecutorLogger = new BinaryTargetExecutorLogger(logContext);
+	        
 	        final DelegatingTargetExecutorLogger delegatingLogger = new DelegatingTargetExecutorLogger(
 	                structuredLogger,
 	                binaryTargetExecutorLogger);
@@ -48,7 +49,7 @@ public class BuildMain {
 	    
 	    try {
     		if (args.length >= 1) {
-    
+    		    
     		    // First argument may be project dir
     		    buildPerformed = BuildSystemMain.performBuild(
     		            buildSystems,
@@ -61,6 +62,7 @@ public class BuildMain {
     		if (!buildPerformed) {
     	        
     	        final String userDir = System.getProperty("user.dir");
+
     	        if (userDir != null) {
     
     	            buildPerformed = BuildSystemMain.performBuild(

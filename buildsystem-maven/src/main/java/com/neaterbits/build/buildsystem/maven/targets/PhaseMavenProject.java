@@ -9,6 +9,7 @@ import com.neaterbits.build.types.ModuleId;
 final class PhaseMavenProject {
 
     private final Phase phase;
+    
     private final MavenProject project;
     
     PhaseMavenProject(Phase phase, MavenProject project) {

@@ -46,17 +46,23 @@ public class ModuleBuilderUtil {
 	        List<DEPENDENCY> dependencies,
 	        Function<PROJECT, Collection<DEPENDENCY>> getDependencies,
 	        Function<DEPENDENCY, PROJECT> getProject) {
-		 
+	    
 		final Collection<DEPENDENCY> moduleDependencies = getDependencies.apply(module);
 		 
 		dependencies.addAll(moduleDependencies);
-
+		
 		for (DEPENDENCY dependency : moduleDependencies) {
-			transitiveProjectDependencies(
-			        getProject.apply(dependency),
-			        dependencies,
-			        getDependencies,
-			        getProject);
+	        
+		    final PROJECT sub = getProject.apply(dependency);
+
+		    if (sub != null) {
+
+		        transitiveProjectDependencies(
+    			        sub,
+    			        dependencies,
+    			        getDependencies,
+    			        getProject);
+		    }
 		}
 	}
 
