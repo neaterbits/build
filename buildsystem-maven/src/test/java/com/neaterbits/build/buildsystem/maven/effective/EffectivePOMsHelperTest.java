@@ -121,7 +121,8 @@ public class EffectivePOMsHelperTest {
                         xmlProjects,
                         DOMModel.INSTANCE,
                         xmlReaderFactory,
-                        superPom);
+                        superPom,
+                        MavenResolveContext.now());
         
         assertThat(effectiveProjects.size()).isEqualTo(2);
         
@@ -262,7 +263,8 @@ public class EffectivePOMsHelperTest {
                         xmlProjects,
                         DOMModel.INSTANCE,
                         xmlReaderFactory,
-                        superPom);
+                        superPom,
+                        MavenResolveContext.now());
         
         assertThat(effectiveProjects.size()).isEqualTo(2);
         
@@ -362,7 +364,8 @@ public class EffectivePOMsHelperTest {
                         xmlProjects,
                         DOMModel.INSTANCE,
                         xmlReaderFactory,
-                        superPom);
+                        superPom,
+                        MavenResolveContext.now());
         
         assertThat(effectiveProjects.size()).isEqualTo(2);
         
@@ -406,7 +409,8 @@ public class EffectivePOMsHelperTest {
 				        xmlProjects,
 				        DOMModel.INSTANCE,
 				        xmlReaderFactory,
-				        superPom);
+				        superPom,
+				        MavenResolveContext.now());
 
 		assertThat(effectiveProjects.size()).isEqualTo(2);
 	}

@@ -12,6 +12,7 @@ import com.neaterbits.build.buildsystem.common.BuildSystem;
 import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMsHelper;
+import com.neaterbits.build.buildsystem.maven.effective.MavenResolveContext;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.targets.MavenBuildSpecifier;
 import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
@@ -59,13 +60,16 @@ public final class MavenBuildSystem implements BuildSystem {
 		} catch (XMLReaderException | IOException ex) {
 			throw new ScanException("Failed to scan project", ex);
 		}
+		
+		final MavenResolveContext resolveContext = MavenResolveContext.now();
 	
 		final List<MavenProject> mavenProjects
 			= EffectivePOMsHelper.computeEffectiveProjects(
 					mavenXMLProjects,
 					DOMModel.INSTANCE,
 					xmlReaderFactory,
-					null);
+					null,
+					resolveContext);
 
 		return (BuildSystemRoot)new MavenBuildRoot(mavenProjects, xmlReaderFactory, repositoryAccess);
 	}

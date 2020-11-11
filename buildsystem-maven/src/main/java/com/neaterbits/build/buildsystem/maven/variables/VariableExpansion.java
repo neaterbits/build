@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.variables;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -65,6 +66,8 @@ public class VariableExpansion {
                 : string;
     }
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    
     public static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
     String replaceVariable(
             String text,
@@ -89,6 +92,31 @@ public class VariableExpansion {
                 }
                 else if (parts.length == 2 && parts[0].equals("project") && parts[1].equals("baseUri")) {
                     result = "file:/" + builtinVariables.getProjectBaseDir().getAbsolutePath();
+                }
+                else if (    parts.length == 3
+                          && parts[0].equals("maven")
+                          && parts[1].equals("build")
+                          && parts[2].equals("timestamp")) {
+                    
+                    String formatString;
+                    
+                    final DateTimeFormatter formatter;
+
+                    if (properties != null) {
+                        formatString = properties.get("maven.build.timestamp.format");
+
+                        if (formatString != null && !formatString.isEmpty()) {
+                            formatter = DateTimeFormatter.ofPattern(formatString);
+                        }
+                        else {
+                            formatter = FORMATTER;
+                        }
+                    }
+                    else {
+                        formatter = FORMATTER;
+                    }
+                    
+                    result = formatter.format(builtinVariables.getBuildStartTime());
                 }
                 else if (parts.length == 2 && parts[0].equals("env")) {
                     result = System.getenv(parts[1]);

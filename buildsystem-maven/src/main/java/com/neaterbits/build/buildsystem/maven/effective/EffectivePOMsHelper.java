@@ -68,7 +68,8 @@ public class EffectivePOMsHelper {
 			List<MavenXMLProject<DOCUMENT>> projects,
 			POMModel<NODE, ELEMENT, DOCUMENT> model,
 			XMLReaderFactory<DOCUMENT> xmlReaderFactory,
-			String superPomString) {
+			String superPomString,
+			MavenResolveContext resolveContext) {
 
 		final Map<MavenModuleId, Effective<DOCUMENT>> computed
 			= new HashMap<>(projects.size() + 1);
@@ -81,7 +82,7 @@ public class EffectivePOMsHelper {
 		
 		for (MavenXMLProject<DOCUMENT> project : projects) {
 
-			final Effective<DOCUMENT> resolved = resolve(project, projects, computed, pomMerger, superPom);
+			final Effective<DOCUMENT> resolved = resolve(project, projects, computed, pomMerger, superPom, resolveContext);
 
 			result.add(resolved.effective.getProject());
 		}
@@ -279,7 +280,8 @@ public class EffectivePOMsHelper {
 			List<MavenXMLProject<DOCUMENT>> projects,
 			Map<MavenModuleId, Effective<DOCUMENT>> computed,
 			POMMerger<NODE, ELEMENT, DOCUMENT> pomMerger,
-			DOCUMENT superPom) {
+			DOCUMENT superPom,
+			MavenResolveContext resolveContext) {
 
 	    if (DEBUG) {
 	        System.out.println("## resolve " + project.getProject().getModuleId().getArtifactId());
@@ -307,7 +309,8 @@ public class EffectivePOMsHelper {
 		                                            projects,
 		                                            computed,
 		                                            pomMerger,
-		                                            superPom);
+		                                            superPom,
+		                                            resolveContext);
 		
 		if (DEBUG) {
 		    System.out.println("##----------------------------- parent effective");
@@ -338,7 +341,8 @@ public class EffectivePOMsHelper {
 		// Parse into effective
 		final MavenXMLProject<DOCUMENT> mavenXMLProject = parse(mergedEffective, pomMerger.getModel(), rootDirectory);
 		
-		final MavenXMLProject<DOCUMENT> mavenXMLProjectWithVarReplace = replaceVariables(mavenXMLProject, pomMerger.getModel());
+		final MavenXMLProject<DOCUMENT> mavenXMLProjectWithVarReplace
+		    = replaceVariables(mavenXMLProject, pomMerger.getModel(), resolveContext);
 		
 		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenXMLProjectWithVarReplace);
 
@@ -368,12 +372,15 @@ public class EffectivePOMsHelper {
 	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 	    MavenXMLProject<DOCUMENT> replaceVariables(
 	            MavenXMLProject<DOCUMENT> mavenXMLProject,
-	            POMModel<NODE, ELEMENT, DOCUMENT> pomModel) {
+	            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+	            MavenResolveContext resolveContext) {
 	    
         final Map<String, String> properties = mavenXMLProject.getProject().getProperties();
 
         final MavenBuiltinVariables builtinVariables
-            = new MavenBuiltinVariables(mavenXMLProject.getProject().getRootDirectory());
+            = new MavenBuiltinVariables(
+                    mavenXMLProject.getProject().getRootDirectory(),
+                    resolveContext.getBuildStartTime());
         
         final Function<String, String> replaceVariables
             = text -> VariableExpansion.replaceVariable(
@@ -397,7 +404,8 @@ public class EffectivePOMsHelper {
 	            List<MavenXMLProject<DOCUMENT>> projects,
 	            Map<MavenModuleId, Effective<DOCUMENT>> computed,
 	            POMMerger<NODE, ELEMENT, DOCUMENT> pomMerger,
-	            DOCUMENT superPom) {
+	            DOCUMENT superPom,
+	            MavenResolveContext resolveContext) {
 	    
         final MavenXMLProject<DOCUMENT> parentProject = findParentProject(projects, project);
         
@@ -420,7 +428,7 @@ public class EffectivePOMsHelper {
                 }
                 
                 // resolve parent
-                parentEffective = resolve(parentProject, projects, computed, pomMerger, superPom);
+                parentEffective = resolve(parentProject, projects, computed, pomMerger, superPom, resolveContext);
                 
                 if (parentEffective == null) {
                     throw new IllegalStateException();

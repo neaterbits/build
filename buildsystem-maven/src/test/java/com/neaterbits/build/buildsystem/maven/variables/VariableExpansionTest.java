@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.fail;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -196,12 +197,26 @@ public class VariableExpansionTest {
         final String rootDirectoryString = "/the/root/directory";
         final File rootDirectory = new File(rootDirectoryString);
         
-        final MavenBuiltinVariables builtinVariables = new MavenBuiltinVariables(rootDirectory);
+        final String nowString = "2019-01-02T01:02:03Z";
+        
+        final ZonedDateTime now = ZonedDateTime.parse(nowString);
+        
+        final MavenBuiltinVariables builtinVariables = new MavenBuiltinVariables(rootDirectory, now);
         
         assertThat(VariableExpansion.replaceVariable("${project.basedir}", builtinVariables, null, null, null))
             .isEqualTo(rootDirectory.getAbsolutePath());
 
         assertThat(VariableExpansion.replaceVariable("${project.baseUri}", builtinVariables, null, null, null))
             .isEqualTo("file:/" + rootDirectory.getAbsolutePath());
+
+        assertThat(VariableExpansion.replaceVariable("${maven.build.timestamp}", builtinVariables, null, null, null))
+            .isEqualTo(nowString);
+        
+        final Map<String, String> properties = new HashMap<>();
+        
+        properties.put("maven.build.timestamp.format", "yyyy-MM-dd HH:mm:ss");
+        
+        assertThat(VariableExpansion.replaceVariable("${maven.build.timestamp}", builtinVariables, properties, null, null))
+            .isEqualTo("2019-01-02 01:02:03");
     }
 }
