@@ -68,6 +68,7 @@ public class VariableExpansion {
     public static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
     String replaceVariable(
             String text,
+            MavenBuiltinVariables builtinVariables,
             Map<String, String> properties,
             POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
             DOCUMENT document) {
@@ -82,8 +83,11 @@ public class VariableExpansion {
                 final String result;
                 
                 String replacedFromModel;
-                
-                if (parts.length == 2 && parts[0].equals("env")) {
+
+                if (parts.length == 2 && parts[0].equals("project") && parts[1].equals("basedir")) {
+                    result = builtinVariables.getProjectBaseDir().getAbsolutePath();
+                }
+                else if (parts.length == 2 && parts[0].equals("env")) {
                     result = System.getenv(parts[1]);
                 }
                 else if (null != (replacedFromModel = replaceFromModel(parts, pomModel, document))) {

@@ -17,6 +17,7 @@ import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeFilter;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeMode;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.variables.MavenBuiltinVariables;
 import com.neaterbits.build.buildsystem.maven.variables.VariableExpansion;
 import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
@@ -337,9 +338,7 @@ public class EffectivePOMsHelper {
 		// Parse into effective
 		final MavenXMLProject<DOCUMENT> mavenXMLProject = parse(mergedEffective, pomMerger.getModel(), rootDirectory);
 		
-		// Replace variables
-		final MavenXMLProject<DOCUMENT> mavenXMLProjectWithVarReplace
-		    = replaceVariables(mavenXMLProject, pomMerger.getModel(), rootDirectory);
+		final MavenXMLProject<DOCUMENT> mavenXMLProjectWithVarReplace = replaceVariables(mavenXMLProject, pomMerger.getModel());
 		
 		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenXMLProjectWithVarReplace);
 
@@ -369,14 +368,17 @@ public class EffectivePOMsHelper {
 	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 	    MavenXMLProject<DOCUMENT> replaceVariables(
 	            MavenXMLProject<DOCUMENT> mavenXMLProject,
-	            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
-	            File rootDirectory) {
+	            POMModel<NODE, ELEMENT, DOCUMENT> pomModel) {
 	    
         final Map<String, String> properties = mavenXMLProject.getProject().getProperties();
 
+        final MavenBuiltinVariables builtinVariables
+            = new MavenBuiltinVariables(mavenXMLProject.getProject().getRootDirectory());
+        
         final Function<String, String> replaceVariables
             = text -> VariableExpansion.replaceVariable(
                     text,
+                    builtinVariables,
                     properties,
                     pomModel,
                     mavenXMLProject.getDocument());
@@ -385,7 +387,7 @@ public class EffectivePOMsHelper {
                 mavenXMLProject.getDocument(),
                 replaceVariables);
 
-        return parse(updated, pomModel, rootDirectory);
+        return parse(updated, pomModel, builtinVariables.getProjectBaseDir());
 	}
 	
 	// Find the parts from base POM that shall be merged with POM 

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -175,17 +176,29 @@ public class VariableExpansionTest {
         final MavenXMLProject<Document> rootPom
             = PomTreeParser.readModule(new ByteArrayInputStream(rootPomString.getBytes()), xmlReaderFactory, "pom.xml");
 
-        assertThat(VariableExpansion.replaceVariable("test-${project.groupId}-value", null, DOMModel.INSTANCE, rootPom.getDocument()))
+        assertThat(VariableExpansion.replaceVariable("test-${project.groupId}-value", null, null, DOMModel.INSTANCE, rootPom.getDocument()))
             .isEqualTo("test-" + groupId + "-value");
 
-        assertThat(VariableExpansion.replaceVariable("${project.version}", null, DOMModel.INSTANCE, rootPom.getDocument()))
+        assertThat(VariableExpansion.replaceVariable("${project.version}", null, null, DOMModel.INSTANCE, rootPom.getDocument()))
             .isEqualTo(version);
         
         final Map<String, String> properties = new HashMap<>();
 
         properties.put("theProperty", "theValue-${project.groupId}-directory");
         
-        assertThat(VariableExpansion.replaceVariable("${project.build.outputDirectory}", properties, DOMModel.INSTANCE, rootPom.getDocument()))
+        assertThat(VariableExpansion.replaceVariable("${project.build.outputDirectory}", null, properties, DOMModel.INSTANCE, rootPom.getDocument()))
             .isEqualTo("output-file-theValue-" + groupId + "-directory");
+    }
+
+    @Test
+    public void testBuiltinVariables() {
+
+        final String rootDirectoryString = "/the/root/directory";
+        final File rootDirectory = new File(rootDirectoryString);
+        
+        final MavenBuiltinVariables builtinVariables = new MavenBuiltinVariables(rootDirectory);
+        
+        assertThat(VariableExpansion.replaceVariable("${project.basedir}", builtinVariables, null, null, null))
+            .isEqualTo(rootDirectory.getAbsolutePath());
     }
 }
