@@ -87,6 +87,9 @@ public class VariableExpansion {
                 if (parts.length == 2 && parts[0].equals("project") && parts[1].equals("basedir")) {
                     result = builtinVariables.getProjectBaseDir().getAbsolutePath();
                 }
+                else if (parts.length == 2 && parts[0].equals("project") && parts[1].equals("baseUri")) {
+                    result = "file:/" + builtinVariables.getProjectBaseDir().getAbsolutePath();
+                }
                 else if (parts.length == 2 && parts[0].equals("env")) {
                     result = System.getenv(parts[1]);
                 }

@@ -200,5 +200,8 @@ public class VariableExpansionTest {
         
         assertThat(VariableExpansion.replaceVariable("${project.basedir}", builtinVariables, null, null, null))
             .isEqualTo(rootDirectory.getAbsolutePath());
+
+        assertThat(VariableExpansion.replaceVariable("${project.baseUri}", builtinVariables, null, null, null))
+            .isEqualTo("file:/" + rootDirectory.getAbsolutePath());
     }
 }
