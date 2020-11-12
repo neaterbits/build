@@ -44,7 +44,25 @@ public class EffectivePOMsHelper {
 		}
 	}
 
-	private static final String SUPER_POM = "<project></project>";
+	private static final String SUPER_POM
+	  = "<project>"
+	  
+      + "  <pluginRepositories>"
+      + "    <pluginRepository>"
+      + "      <releases>"
+      + "        <updatePolicy>never</updatePolicy>"
+      + "      </releases>"
+      + "      <snapshots>"
+      + "        <enabled>false</enabled>"
+      + "      </snapshots>"
+      + "      <name>Central repository</name>"
+      + "      <id>central</id>"
+      + "      <url>https://repo.maven.org/maven2</url>"
+      + "      <layout>default</layout>"
+      + "    </pluginRepository>"
+      + "  </pluginRepositories>"
+      
+      + "</project>";
 
     private static <DOCUMENT> DOCUMENT makeSuperPOM(XMLReaderFactory<DOCUMENT> xmlReaderFactory, String superPomString) {
         
