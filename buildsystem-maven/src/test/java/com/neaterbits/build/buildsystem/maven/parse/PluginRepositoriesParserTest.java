@@ -17,7 +17,7 @@ import com.neaterbits.util.IOUtils;
 public class PluginRepositoriesParserTest {
 
     @Test
-    public void testParseProperties() throws IOException, XMLReaderException {
+    public void testParsePluginRepositories() throws IOException, XMLReaderException {
 
         final String groupId = "rootGroupId";
         final String artifactId = "rootArtifactId";
