@@ -7,20 +7,26 @@ import java.util.Map;
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackProject extends StackEntity implements DependenciesSetter {
+final class StackProject
+        extends StackEntity
+        implements DependenciesSetter, NameSetter, UrlSetter {
 
 	private String name;
 
+	private String url;
+	
 	private MavenModuleId parentModuleId;
 	private Map<String, String> properties;
 	private List<String> subModules;
 	private List<MavenDependency> dependencies;
 	private MavenReporting reporting;
 	private MavenBuild build;
-
+	private List<MavenPluginRepository> pluginRepositories;
+	
 	StackProject(Context context) {
 		super(context);
 
@@ -32,11 +38,21 @@ final class StackProject extends StackEntity implements DependenciesSetter {
 		return name;
 	}
 
-	void setName(String name) {
+	@Override
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public MavenModuleId getParentModuleId() {
+	String getUrl() {
+        return url;
+    }
+
+	@Override
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public MavenModuleId getParentModuleId() {
 		return parentModuleId;
 	}
 
@@ -84,4 +100,12 @@ final class StackProject extends StackEntity implements DependenciesSetter {
 	void setBuild(MavenBuild build) {
 		this.build = build;
 	}
+
+    List<MavenPluginRepository> getPluginRepositories() {
+        return pluginRepositories;
+    }
+
+    void setPluginRepositories(List<MavenPluginRepository> pluginRepositories) {
+        this.pluginRepositories = pluginRepositories;
+    }
 }

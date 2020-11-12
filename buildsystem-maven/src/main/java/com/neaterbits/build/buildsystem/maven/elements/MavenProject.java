@@ -17,9 +17,19 @@ public class MavenProject extends MavenModule {
 			Map<String, String> properties,
 			List<String> modules,
 			List<MavenDependency> dependencies,
-			MavenBuild build) {
+			MavenBuild build,
+			List<MavenPluginRepository> pluginRepositories) {
 		
-		super(rootDirectory, moduleId, parentModuleId, packaging, properties, modules, dependencies, build);
+		super(
+		        rootDirectory,
+		        moduleId,
+		        parentModuleId,
+		        packaging,
+		        properties,
+		        modules,
+		        dependencies,
+		        build,
+		        pluginRepositories);
 		
 		Objects.requireNonNull(moduleId);
 	}

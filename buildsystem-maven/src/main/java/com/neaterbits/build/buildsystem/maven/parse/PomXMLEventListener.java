@@ -100,15 +100,67 @@ public final class PomXMLEventListener
 			delegate.onPluginStart(context);
 			break;
 
-		case "extensions":
+        case "executions":
+            delegate.onExecutionsStart(context);
+            break;
+            
+        case "execution":
+            delegate.onExecutionStart(context);
+            break;
+
+        case "extensions":
 			delegate.onExtensionsStart(context);
 			break;
 
 		case "extension":
 			delegate.onExtensionStart(context);
 			break;
+
+		case "pluginRepositories":
+		    delegate.onPluginRepositoriesStart(context);
+		    break;
 			
-		default:
+        case "pluginRepository":
+            delegate.onPluginRepositoryStart(context);
+            break;
+            
+        case "releases":
+            delegate.onReleasesStart(context);
+            break;
+            
+        case "enabled":
+            delegate.onEnabledStart(context);
+            break;
+            
+        case "updatePolicy":
+            delegate.onUpdatePolicyStart(context);
+            break;
+            
+        case "checksumPolicy":
+            delegate.onChecksumPolicyStart(context);
+            break;
+            
+        case "snapshots":
+            delegate.onSnapshotsStart(context);
+            break;
+            
+        case "name":
+            delegate.onNameStart(context);
+            break;
+            
+        case "id":
+            delegate.onIdStart(context);
+            break;
+            
+        case "url":
+            delegate.onUrlStart(context);
+            break;
+            
+        case "layout":
+            delegate.onLayoutStart(context);
+            break;
+
+        default:
 		    super.onStartElement(context, localPart, attributes, param);
 		    break;
 		}
@@ -184,7 +236,15 @@ public final class PomXMLEventListener
 			delegate.onPluginEnd(context);
 			break;
 
-		case "extensions":
+        case "executions":
+            delegate.onExecutionsEnd(context);
+            break;
+            
+        case "execution":
+            delegate.onExecutionEnd(context);
+            break;
+
+        case "extensions":
 			delegate.onExtensionsEnd(context);
 			break;
 
@@ -192,7 +252,51 @@ public final class PomXMLEventListener
 			delegate.onExtensionEnd(context);
 			break;
 			
-		default:
+        case "pluginRepositories":
+            delegate.onPluginRepositoriesEnd(context);
+            break;
+
+        case "pluginRepository":
+            delegate.onPluginRepositoryEnd(context);
+            break;
+            
+        case "releases":
+            delegate.onReleasesEnd(context);
+            break;
+            
+        case "enabled":
+            delegate.onEnabledEnd(context);
+            break;
+            
+        case "updatePolicy":
+            delegate.onUpdatePolicyEnd(context);
+            break;
+            
+        case "checksumPolicy":
+            delegate.onChecksumPolicyEnd(context);
+            break;
+            
+        case "snapshots":
+            delegate.onSnapshotsEnd(context);
+            break;
+            
+        case "name":
+            delegate.onNameEnd(context);
+            break;
+            
+        case "id":
+            delegate.onIdEnd(context);
+            break;
+            
+        case "url":
+            delegate.onUrlEnd(context);
+            break;
+            
+        case "layout":
+            delegate.onLayoutEnd(context);
+            break;
+            
+        default:
 		    super.onEndElement(context, localPart, param);
 			break;
 		}

@@ -35,8 +35,16 @@ public interface PomEventListener
 	void onPluginsStart(Context context);
 
 	void onPluginStart(Context context);
+	
+	void onExecutionsStart(Context context);
+	
+	void onExecutionStart(Context context);
 
-	void onPluginEnd(Context context);
+	void onExecutionEnd(Context context);
+
+    void onExecutionsEnd(Context context);
+
+    void onPluginEnd(Context context);
 
 	void onPluginsEnd(Context context);
 
@@ -50,5 +58,49 @@ public interface PomEventListener
 
 	void onBuildEnd(Context context);
 
+	void onPluginRepositoriesStart(Context context);
+
+    void onPluginRepositoryStart(Context context);
+    
+    void onReleasesStart(Context context);
+    
+    void onReleasesEnd(Context context);
+
+    void onEnabledStart(Context context);
+    
+    void onEnabledEnd(Context context);
+    
+    void onUpdatePolicyStart(Context context);
+    
+    void onUpdatePolicyEnd(Context context);
+
+    void onChecksumPolicyStart(Context context);
+    
+    void onChecksumPolicyEnd(Context context);
+    
+    void onSnapshotsStart(Context context);
+    
+    void onSnapshotsEnd(Context context);
+    
+    void onNameStart(Context context);
+    
+    void onNameEnd(Context context);
+    
+    void onIdStart(Context context);
+    
+    void onIdEnd(Context context);
+    
+    void onUrlStart(Context context);
+    
+    void onUrlEnd(Context context);
+    
+    void onLayoutStart(Context context);
+    
+    void onLayoutEnd(Context context);
+    
+    void onPluginRepositoryEnd(Context context);
+
+    void onPluginRepositoriesEnd(Context context);
+    
 	void onProjectEnd(Context context);
 }
