@@ -5,9 +5,12 @@ import java.util.List;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackBuild extends StackBase implements PluginsSetter {
+final class StackBuild
+        extends StackBase
+        implements PluginsSetter, DirectorySetter {
 
     private String directory;
     private String outputDirectory;
@@ -16,6 +19,9 @@ final class StackBuild extends StackBase implements PluginsSetter {
     private String scriptSourceDirectory;
     private String testSourceDirectory;
     
+    private List<MavenResource> resources;
+    private List<MavenResource> testResources;
+
 	private List<MavenPlugin> plugins;
 	private List<MavenExtension> extensions;
 
@@ -29,7 +35,8 @@ final class StackBuild extends StackBase implements PluginsSetter {
         return directory;
     }
 
-    void setDirectory(String directory) {
+	@Override
+    public void setDirectory(String directory) {
         this.directory = directory;
     }
 
@@ -71,6 +78,22 @@ final class StackBuild extends StackBase implements PluginsSetter {
 
     void setTestSourceDirectory(String testSourceDirectory) {
         this.testSourceDirectory = testSourceDirectory;
+    }
+
+    List<MavenResource> getResources() {
+        return resources;
+    }
+
+    void setResources(List<MavenResource> resources) {
+        this.resources = resources;
+    }
+
+    List<MavenResource> getTestResources() {
+        return testResources;
+    }
+
+    void setTestResources(List<MavenResource> testResources) {
+        this.testResources = testResources;
     }
 
     List<MavenPlugin> getPlugins() {

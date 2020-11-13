@@ -55,8 +55,48 @@ public interface PomEventListener
     void onTestSourceDirectoryStart(Context context);
     
     void onTestSourceDirectoryEnd(Context context);
+    
+    void onResourcesStart(Context context);
+    
+    void onResourceStart(Context context);
 
-	void onPluginsStart(Context context);
+    void onTargetPathStart(Context context);
+    
+    void onTargetPathEnd(Context context);
+    
+    void onFilteringStart(Context context);
+    
+    void onFilteringEnd(Context context);
+    
+    void onIncludesStart(Context context);
+    
+    void onIncludeStart(Context context);
+    
+    void onIncludeEnd(Context context);
+
+    void onIncludesEnd(Context context);
+
+    void onExcludesStart(Context context);
+    
+    void onExcludeStart(Context context);
+    
+    void onExcludeEnd(Context context);
+
+    void onExcludesEnd(Context context);
+
+    void onResourceEnd(Context context);
+
+    void onResourcesEnd(Context context);
+    
+    void onTestResourcesStart(Context context);
+    
+    void onTestResourceStart(Context context);
+
+    void onTestResourceEnd(Context context);
+
+    void onTestResourcesEnd(Context context);
+
+    void onPluginsStart(Context context);
 
 	void onPluginStart(Context context);
 	

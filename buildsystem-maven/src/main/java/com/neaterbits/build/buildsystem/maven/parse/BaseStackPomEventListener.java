@@ -9,6 +9,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
+import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
 import com.neaterbits.build.buildsystem.maven.elements.MavenSnapshots;
 import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.util.parse.context.Context;
@@ -148,9 +149,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackDirectory stackDirectory = pop();
         
-        final StackBuild stackBuild = get();
+        final DirectorySetter directorySetter = get();
         
-        stackBuild.setDirectory(stackDirectory.getText());
+        directorySetter.setDirectory(stackDirectory.getText());
     }
 
     @Override
@@ -226,6 +227,164 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackBuild stackBuild = get();
         
         stackBuild.setTestSourceDirectory(stackTestSourceDirectory.getText());
+    }
+
+    @Override
+    public void onResourcesStart(Context context) {
+        push(new StackResources(context));
+    }
+
+    @Override
+    public void onResourceStart(Context context) {
+        push(new StackResource(context));
+    }
+
+    @Override
+    public void onTargetPathStart(Context context) {
+        push(new StackTargetPath(context));
+    }
+
+    @Override
+    public void onTargetPathEnd(Context context) {
+
+        final StackTargetPath stackTargetPath = pop();
+        
+        final StackResource stackResource = get();
+        
+        stackResource.setTargetPath(stackTargetPath.getText());
+    }
+
+    @Override
+    public void onFilteringStart(Context context) {
+        push(new StackFiltering(context));
+    }
+
+    @Override
+    public void onFilteringEnd(Context context) {
+
+        final StackFiltering stackFiltering = pop();
+        
+        final StackResource stackResource = get();
+        
+        stackResource.setFiltering(stackFiltering.getValue());
+    }
+
+    @Override
+    public void onIncludesStart(Context context) {
+        push(new StackIncludes(context));
+    }
+
+    @Override
+    public void onIncludeStart(Context context) {
+        push(new StackInclude(context));
+    }
+
+    @Override
+    public void onIncludeEnd(Context context) {
+
+        final StackInclude stackInclude = pop();
+        
+        final StackIncludes stackIncludes = get();
+        
+        stackIncludes.add(stackInclude.getText());
+    }
+
+    @Override
+    public void onIncludesEnd(Context context) {
+
+        final StackIncludes stackIncludes = pop();
+        
+        final StackResource stackResource = get();
+        
+        stackResource.setIncludes(stackIncludes.getStrings());
+    }
+
+    @Override
+    public void onExcludesStart(Context context) {
+        push(new StackExcludes(context));
+    }
+
+    @Override
+    public void onExcludeStart(Context context) {
+        push(new StackExclude(context));
+    }
+
+    @Override
+    public void onExcludeEnd(Context context) {
+
+        final StackExclude stackExclude = pop();
+        
+        final StackExcludes stackExcludes = get();
+        
+        stackExcludes.add(stackExclude.getText());
+    }
+
+    @Override
+    public void onExcludesEnd(Context context) {
+
+        final StackExcludes stackExcludes = pop();
+        
+        final StackResource stackResource = get();
+        
+        stackResource.setExcludes(stackExcludes.getStrings());
+    }
+
+    @Override
+    public void onResourceEnd(Context context) {
+    
+        addResource();
+    }
+    
+
+    private void addResource() {
+        
+        final StackResource stackResource = pop();
+        
+        final StackResources stackResources = get();
+        
+        final MavenResource resource = new MavenResource(
+                stackResource.getTargetPath(),
+                stackResource.getFiltering(),
+                stackResource.getDirectory(),
+                stackResource.getIncludes(),
+                stackResource.getExcludes());
+        
+        stackResources.add(resource);
+    }
+
+    @Override
+    public void onResourcesEnd(Context context) {
+        final StackResources stackResources = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setResources(stackResources.getResources());
+    }
+
+    @Override
+    public void onTestResourcesStart(Context context) {
+        push(new StackResources(context));
+    }
+
+    @Override
+    public void onTestResourceStart(Context context) {
+        push(new StackResource(context));
+    }
+
+    @Override
+    public void onTestResourceEnd(Context context) {
+
+        addResource();
+    }
+
+    @Override
+    public void onTestResourcesEnd(Context context) {
+        
+        final StackResources stackResources = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setTestResources(stackResources.getResources());
     }
 
     @Override
@@ -332,6 +491,8 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                 stackBuild.getSourceDirectory(),
                 stackBuild.getScriptSourceDirectory(),
                 stackBuild.getTestSourceDirectory(),
+                stackBuild.getResources(),
+                stackBuild.getTestResources(),
                 stackBuild.getPlugins());
 
         final StackProject stackProject = get();

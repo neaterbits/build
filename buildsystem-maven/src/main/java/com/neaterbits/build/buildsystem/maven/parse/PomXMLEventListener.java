@@ -123,7 +123,47 @@ public final class PomXMLEventListener
         case "testSourceDirectory":
             delegate.onTestSourceDirectoryStart(context);
             break;
+            
+        case "resources":
+            delegate.onResourcesStart(context);
+            break;
+            
+        case "resource":
+            delegate.onResourceStart(context);
+            break;
+            
+        case "targetPath":
+            delegate.onTargetPathStart(context);
+            break;
+            
+        case "filtering":
+            delegate.onFilteringStart(context);
+            break;
 
+        case "includes":
+            delegate.onIncludesStart(context);
+            break;
+            
+        case "include":
+            delegate.onIncludeStart(context);
+            break;
+            
+        case "excludes":
+            delegate.onExcludesStart(context);
+            break;
+            
+        case "exclude":
+            delegate.onExcludeStart(context);
+            break;
+            
+        case "testResources":
+            delegate.onTestResourcesStart(context);
+            break;
+            
+        case "testResource":
+            delegate.onTestResourceStart(context);
+            break;
+            
         case "plugins":
 			delegate.onPluginsStart(context);
 			break;
@@ -298,6 +338,46 @@ public final class PomXMLEventListener
 
         case "testSourceDirectory":
             delegate.onTestSourceDirectoryEnd(context);
+            break;
+
+        case "resources":
+            delegate.onResourcesEnd(context);
+            break;
+            
+        case "resource":
+            delegate.onResourceEnd(context);
+            break;
+            
+        case "targetPath":
+            delegate.onTargetPathEnd(context);
+            break;
+            
+        case "filtering":
+            delegate.onFilteringEnd(context);
+            break;
+
+        case "includes":
+            delegate.onIncludesEnd(context);
+            break;
+            
+        case "include":
+            delegate.onIncludeEnd(context);
+            break;
+            
+        case "excludes":
+            delegate.onExcludesEnd(context);
+            break;
+            
+        case "exclude":
+            delegate.onExcludeEnd(context);
+            break;
+            
+        case "testResources":
+            delegate.onTestResourcesEnd(context);
+            break;
+            
+        case "testResource":
+            delegate.onTestResourceEnd(context);
             break;
 
         case "plugins":
