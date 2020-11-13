@@ -32,6 +32,30 @@ public interface PomEventListener
 
 	void onBuildStart(Context context);
 
+    void onDirectoryStart(Context context);
+    
+    void onDirectoryEnd(Context context);
+    
+    void onOutputDirectoryStart(Context context);
+    
+    void onOutputDirectoryEnd(Context context);
+
+    void onFinalNameStart(Context context);
+    
+    void onFinalNameEnd(Context context);
+
+    void onSourceDirectoryStart(Context context);
+    
+    void onSourceDirectoryEnd(Context context);
+
+    void onScriptSourceDirectoryStart(Context context);
+    
+    void onScriptSourceDirectoryEnd(Context context);
+
+    void onTestSourceDirectoryStart(Context context);
+    
+    void onTestSourceDirectoryEnd(Context context);
+
 	void onPluginsStart(Context context);
 
 	void onPluginStart(Context context);

@@ -99,8 +99,32 @@ public final class PomXMLEventListener
 		case "build":
 			delegate.onBuildStart(context);
 			break;
+			
+		case "directory":
+		    delegate.onDirectoryStart(context);
+		    break;
+		    
+		case "outputDirectory":
+            delegate.onOutputDirectoryStart(context);
+            break;
 
-		case "plugins":
+        case "finalName":
+            delegate.onFinalNameStart(context);
+            break;
+
+        case "sourceDirectory":
+            delegate.onSourceDirectoryStart(context);
+            break;
+            
+        case "scriptSourceDirectory":
+            delegate.onScriptSourceDirectoryStart(context);
+            break;
+
+        case "testSourceDirectory":
+            delegate.onTestSourceDirectoryStart(context);
+            break;
+
+        case "plugins":
 			delegate.onPluginsStart(context);
 			break;
 
@@ -252,7 +276,31 @@ public final class PomXMLEventListener
 			delegate.onBuildEnd(context);
 			break;
 
-		case "plugins":
+        case "directory":
+            delegate.onDirectoryEnd(context);
+            break;
+            
+        case "outputDirectory":
+            delegate.onOutputDirectoryEnd(context);
+            break;
+
+        case "finalName":
+            delegate.onFinalNameEnd(context);
+            break;
+
+        case "sourceDirectory":
+            delegate.onSourceDirectoryEnd(context);
+            break;
+            
+        case "scriptSourceDirectory":
+            delegate.onScriptSourceDirectoryEnd(context);
+            break;
+
+        case "testSourceDirectory":
+            delegate.onTestSourceDirectoryEnd(context);
+            break;
+
+        case "plugins":
 			delegate.onPluginsEnd(context);
 			break;
 

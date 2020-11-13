@@ -24,7 +24,6 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     public final void onParentStart(Context context) {
 
         push(new StackParent(context));
-
     }
 
     @Override
@@ -41,7 +40,6 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     public final void onPropertiesStart(Context context) {
 
         push(new StackProperties(context));
-
     }
 
     @Override
@@ -85,14 +83,12 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     public final void onModulesStart(Context context) {
 
         push(new StackModules(context));
-
     }
 
     @Override
     public final void onModuleStart(Context context) {
 
         push(new StackModule(context));
-
     }
 
     @Override
@@ -140,6 +136,96 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public final void onPluginsStart(Context context) {
         push(new StackPlugins(context));
+    }
+
+    @Override
+    public final void onDirectoryStart(Context context) {
+        push(new StackDirectory(context));
+    }
+
+    @Override
+    public final void onDirectoryEnd(Context context) {
+
+        final StackDirectory stackDirectory = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setDirectory(stackDirectory.getText());
+    }
+
+    @Override
+    public final void onOutputDirectoryStart(Context context) {
+        push(new StackOutputDirectory(context));
+    }
+
+    @Override
+    public final void onOutputDirectoryEnd(Context context) {
+
+        final StackOutputDirectory stackOutputDirectory = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setOutputDirectory(stackOutputDirectory.getText());
+    }
+
+    @Override
+    public final void onFinalNameStart(Context context) {
+        push(new StackFinalName(context));
+    }
+
+    @Override
+    public final void onFinalNameEnd(Context context) {
+
+        final StackFinalName stackFinalName = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setFinalName(stackFinalName.getText());
+    }
+
+    @Override
+    public final void onSourceDirectoryStart(Context context) {
+        push(new StackSourceDirectory(context));
+    }
+
+    @Override
+    public final void onSourceDirectoryEnd(Context context) {
+
+        final StackSourceDirectory stackSourceDirectory = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setSourceDirectory(stackSourceDirectory.getText());
+    }
+
+    @Override
+    public final void onScriptSourceDirectoryStart(Context context) {
+        push(new StackScriptSourceDirectory(context));
+    }
+
+    @Override
+    public final void onScriptSourceDirectoryEnd(Context context) {
+
+        final StackScriptSourceDirectory stackScriptSourceDirectory = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setScriptSourceDirectory(stackScriptSourceDirectory.getText());
+    }
+
+    @Override
+    public final void onTestSourceDirectoryStart(Context context) {
+        push(new StackTestSourceDirectory(context));
+    }
+
+    @Override
+    public final void onTestSourceDirectoryEnd(Context context) {
+
+        final StackTestSourceDirectory stackTestSourceDirectory = pop();
+        
+        final StackBuild stackBuild = get();
+        
+        stackBuild.setTestSourceDirectory(stackTestSourceDirectory.getText());
     }
 
     @Override
@@ -239,7 +325,14 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackBuild stackBuild = pop();
 
-        final MavenBuild build = new MavenBuild(stackBuild.getPlugins());
+        final MavenBuild build = new MavenBuild(
+                stackBuild.getDirectory(),
+                stackBuild.getOutputDirectory(),
+                stackBuild.getFinalName(),
+                stackBuild.getSourceDirectory(),
+                stackBuild.getScriptSourceDirectory(),
+                stackBuild.getTestSourceDirectory(),
+                stackBuild.getPlugins());
 
         final StackProject stackProject = get();
 
