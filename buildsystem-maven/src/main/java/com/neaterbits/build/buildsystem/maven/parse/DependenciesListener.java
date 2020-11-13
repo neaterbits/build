@@ -15,6 +15,14 @@ public interface DependenciesListener {
     void onOptionalStart(Context context);
 
     void onOptionalEnd(Context context);
+    
+    void onExclusionsStart(Context context);
+    
+    void onExclusionStart(Context context);
+
+    void onExclusionEnd(Context context);
+
+    void onExclusionsEnd(Context context);
 
     void onDependencyEnd(Context context);
 

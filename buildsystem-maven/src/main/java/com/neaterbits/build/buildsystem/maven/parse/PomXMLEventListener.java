@@ -83,6 +83,14 @@ public final class PomXMLEventListener
 		case "optional":
 			delegate.onOptionalStart(context);
 			break;
+			
+		case "exclusions":
+		    delegate.onExclusionsStart(context);
+		    break;
+	
+		case "exclusion":
+		    delegate.onExclusionStart(context);
+		    break;
 
 		case "reporting":
 			delegate.onReportingStart(context);
@@ -228,7 +236,15 @@ public final class PomXMLEventListener
 			delegate.onOptionalEnd(context);
 			break;
 
-		case "reporting":
+        case "exclusions":
+            delegate.onExclusionsEnd(context);
+            break;
+    
+        case "exclusion":
+            delegate.onExclusionEnd(context);
+            break;
+
+        case "reporting":
 			delegate.onReportingEnd(context);
 			break;
 

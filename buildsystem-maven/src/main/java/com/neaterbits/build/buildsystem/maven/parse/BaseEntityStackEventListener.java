@@ -1,6 +1,7 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.elements.MavenExclusion;
 import com.neaterbits.util.parse.context.Context;
 
 public abstract class BaseEntityStackEventListener
@@ -98,6 +99,43 @@ public abstract class BaseEntityStackEventListener
     }
 
     @Override
+    public void onExclusionsStart(Context context) {
+
+        push(new StackExclusions(context));
+        
+    }
+
+    @Override
+    public void onExclusionStart(Context context) {
+
+        push(new StackExclusion(context));
+        
+    }
+
+    @Override
+    public void onExclusionEnd(Context context) {
+
+        final StackExclusion stackExclusion = pop();
+        
+        final StackExclusions stackExclusions = get();
+        
+        final MavenExclusion exclusion = new MavenExclusion(stackExclusion.getGroupId(), stackExclusion.getArtifactId());
+        
+        stackExclusions.add(exclusion);
+        
+    }
+
+    @Override
+    public void onExclusionsEnd(Context context) {
+
+        final StackExclusions stackExclusions = pop();
+        
+        final StackDependency stackDependency = get();
+        
+        stackDependency.setExclusions(stackExclusions.getExclusions());
+    }
+
+    @Override
     public final void onDependencyEnd(Context context) {
 
         final StackDependency stackDependency = pop();
@@ -107,7 +145,8 @@ public abstract class BaseEntityStackEventListener
                 stackDependency.getPackaging(),
                 stackDependency.getScope(),
                 stackDependency.getType(),
-                stackDependency.getOptional());
+                stackDependency.getOptional(),
+                stackDependency.getExclusions());
 
         final StackDependencies stackDependencies = get();
 

@@ -1,5 +1,8 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import java.util.List;
+
+import com.neaterbits.build.buildsystem.maven.elements.MavenExclusion;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackDependency extends StackEntity implements TypeSetter {
@@ -7,6 +10,8 @@ final class StackDependency extends StackEntity implements TypeSetter {
 	private String scope;
     private String type;
 	private String optional;
+	
+	private List<MavenExclusion> exclusions;
 
 	StackDependency(Context context) {
 		super(context);
@@ -36,4 +41,12 @@ final class StackDependency extends StackEntity implements TypeSetter {
 	void setOptional(String optional) {
 		this.optional = optional;
 	}
+
+    List<MavenExclusion> getExclusions() {
+        return exclusions;
+    }
+
+    void setExclusions(List<MavenExclusion> exclusions) {
+        this.exclusions = exclusions;
+    }
 }
