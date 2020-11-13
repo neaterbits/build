@@ -240,6 +240,58 @@ public final class PomXMLEventListener
             delegate.onLayoutStart(context);
             break;
 
+        case "profiles":
+            delegate.onProfilesStart(context);
+            break;
+            
+        case "profile":
+            delegate.onProfileStart(context);
+            break;
+            
+        case "activation":
+            delegate.onActivationStart(context);
+            break;
+
+        case "activeByDefault":
+            delegate.onActiveByDefaultStart(context);
+            break;
+            
+        case "jdk":
+            delegate.onJdkStart(context);
+            break;
+            
+        case "os":
+            delegate.onOsStart(context);
+            break;
+            
+        case "family":
+            delegate.onFamilyStart(context);
+            break;
+            
+        case "arch":
+            delegate.onArchStart(context);
+            break;
+            
+        case "property":
+            delegate.onPropertyStart(context);
+            break;
+
+        case "value":
+            delegate.onValueStart(context);
+            break;
+            
+        case "file":
+            delegate.onFileStart(context);
+            break;
+            
+        case "exists":
+            delegate.onExistsStart(context);
+            break;
+            
+        case "missing":
+            delegate.onMissingStart(context);
+            break;
+            
         default:
 		    super.onStartElement(context, localPart, attributes, param);
 		    break;
@@ -456,6 +508,58 @@ public final class PomXMLEventListener
             delegate.onLayoutEnd(context);
             break;
             
+        case "profiles":
+            delegate.onProfilesEnd(context);
+            break;
+            
+        case "profile":
+            delegate.onProfileEnd(context);
+            break;
+            
+        case "activation":
+            delegate.onActivationEnd(context);
+            break;
+
+        case "activeByDefault":
+            delegate.onActiveByDefaultEnd(context);
+            break;
+            
+        case "jdk":
+            delegate.onJdkEnd(context);
+            break;
+
+        case "os":
+            delegate.onOsEnd(context);
+            break;
+            
+        case "family":
+            delegate.onFamilyEnd(context);
+            break;
+            
+        case "arch":
+            delegate.onArchEnd(context);
+            break;
+            
+        case "property":
+            delegate.onPropertyEnd(context);
+            break;
+
+        case "value":
+            delegate.onValueEnd(context);
+            break;
+            
+        case "file":
+            delegate.onFileEnd(context);
+            break;
+            
+        case "exists":
+            delegate.onExistsEnd(context);
+            break;
+            
+        case "missing":
+            delegate.onMissingEnd(context);
+            break;
+
         default:
 		    super.onEndElement(context, localPart, param);
 			break;

@@ -40,7 +40,7 @@ public class MavenModulesReader {
 		
 		modules.add(mavenProject);
 		
-		final List<String> subModules = mavenProject.getProject().getSubModules();
+		final List<String> subModules = mavenProject.getProject().getModules();
 		
 		if (subModules != null) {
 			

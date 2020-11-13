@@ -2,10 +2,15 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.maven.elements.MavenActivation;
+import com.neaterbits.build.buildsystem.maven.elements.MavenActivationFile;
+import com.neaterbits.build.buildsystem.maven.elements.MavenActivationOS;
+import com.neaterbits.build.buildsystem.maven.elements.MavenActivationProperty;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
+import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
@@ -106,9 +111,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackModules stackModules = pop();
 
-        final StackProject stackProject = get();
+        final ModulesSetter modulesSetter = get();
 
-        stackProject.setSubModules(stackModules.getModules());
+        modulesSetter.setModules(stackModules.getModules());
     }
 
     @Override
@@ -495,9 +500,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                 stackBuild.getTestResources(),
                 stackBuild.getPlugins());
 
-        final StackProject stackProject = get();
+        final BuildSetter buildSetter = get();
 
-        stackProject.setBuild(build);
+        buildSetter.setBuild(build);
     }
 
     
@@ -704,9 +709,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackRepositories<MavenRepository> stackRepositories = pop();
         
-        final StackProject stackProject = get();
+        final RepositoriesSetter repositoriesSetter = get();
         
-        stackProject.setRepositories(stackRepositories.getRepositories());
+        repositoriesSetter.setRepositories(stackRepositories.getRepositories());
     }
 
     @Override
@@ -732,8 +737,233 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackRepositories<MavenPluginRepository> stackRepositories = pop();
         
+        final PluginRepositoriesSetter pluginRepositoriesSetter = get();
+        
+        pluginRepositoriesSetter.setPluginRepositories(stackRepositories.getRepositories());
+    }
+
+    @Override
+    public void onProfilesStart(Context context) {
+        push(new StackProfiles(context));
+    }
+
+    @Override
+    public void onProfileStart(Context context) {
+        push(new StackProfile(context));
+    }
+
+    @Override
+    public void onActivationStart(Context context) {
+        push(new StackActivation(context));
+    }
+
+    @Override
+    public void onActiveByDefaultStart(Context context) {
+        push(new StackActiveByDefault(context));
+    }
+
+    @Override
+    public void onActiveByDefaultEnd(Context context) {
+
+        final StackActiveByDefault stackActiveByDefault = pop();
+        
+        final StackActivation stackActivation = get();
+        
+        stackActivation.setActiveByDefault(stackActiveByDefault.getValue());
+    }
+
+    @Override
+    public void onJdkStart(Context context) {
+        push(new StackJdk(context));
+    }
+
+    @Override
+    public void onJdkEnd(Context context) {
+
+        final StackJdk stackJdk = pop();
+        
+        final StackActivation stackActivation = get();
+    
+        stackActivation.setJdk(stackJdk.getText());
+    }
+
+    @Override
+    public void onOsStart(Context context) {
+        push(new StackOs(context));
+    }
+
+    @Override
+    public void onFamilyStart(Context context) {
+        push(new StackFamily(context));
+    }
+
+    @Override
+    public void onFamilyEnd(Context context) {
+
+        final StackFamily stackFamily = pop();
+        
+        final StackOs stackOs = get();
+        
+        stackOs.setFamily(stackFamily.getText());
+    }
+
+    @Override
+    public void onArchStart(Context context) {
+        push(new StackArch(context));
+    }
+
+    @Override
+    public void onArchEnd(Context context) {
+
+        final StackArch stackArch = pop();
+        
+        final StackOs stackOs = get();
+        
+        stackOs.setArch(stackArch.getText());
+    }
+
+    @Override
+    public void onOsEnd(Context context) {
+
+        final StackOs stackOs = pop();
+        
+        final StackActivation stackActivation = get();
+    
+        final MavenActivationOS os = new MavenActivationOS(
+                stackOs.getName(),
+                stackOs.getFamily(),
+                stackOs.getArch(),
+                stackOs.getVersion());
+        
+        stackActivation.setOs(os);
+    }
+
+    @Override
+    public void onPropertyStart(Context context) {
+        push(new StackActivationProperty(context));
+    }
+
+    @Override
+    public void onValueStart(Context context) {
+        push(new StackValue(context));
+    }
+
+    @Override
+    public void onValueEnd(Context context) {
+
+        final StackValue stackValue = pop();
+        
+        final StackActivationProperty stackActivationProperty = get();
+    
+        stackActivationProperty.setValue(stackValue.getText());
+    }
+
+    @Override
+    public void onPropertyEnd(Context context) {
+
+        final StackActivationProperty stackActivationProperty = pop();
+        
+        final StackActivation stackActivation = get();
+        
+        final MavenActivationProperty activationProperty
+                = new MavenActivationProperty(
+                        stackActivationProperty.getName(),
+                        stackActivationProperty.getValue());
+    
+        stackActivation.setProperty(activationProperty);
+    }
+
+    @Override
+    public void onFileStart(Context context) {
+        push(new StackFile(context));
+    }
+
+    @Override
+    public void onExistsStart(Context context) {
+        push(new StackExists(context));
+    }
+
+    @Override
+    public void onExistsEnd(Context context) {
+
+        final StackExists stackExists = pop();
+        
+        final StackFile stackFile = get();
+        
+        stackFile.setExists(stackExists.getText());
+    }
+
+    @Override
+    public void onMissingStart(Context context) {
+        push(new StackMissing(context));
+    }
+
+    @Override
+    public void onMissingEnd(Context context) {
+
+        final StackMissing stackMissing = pop();
+        
+        final StackFile stackFile = get();
+        
+        stackFile.setMissing(stackMissing.getText());
+    }
+
+    @Override
+    public void onFileEnd(Context context) {
+
+        final StackFile stackFile = pop();
+        
+        final StackActivation stackActivation = get();
+        
+        final MavenActivationFile activationFile
+                = new MavenActivationFile(stackFile.getExists(), stackFile.getMissing());
+    
+        stackActivation.setFile(activationFile);
+    }
+
+    @Override
+    public void onActivationEnd(Context context) {
+
+        final StackActivation stackActivation = pop();
+        
+        final StackProfile stackProfile = get();
+        
+        final MavenActivation activation = new MavenActivation(
+                                                stackActivation.getActiveByDefault(),
+                                                stackActivation.getJdk(),
+                                                stackActivation.getOs(),
+                                                stackActivation.getProperty(),
+                                                stackActivation.getFile());
+        
+        stackProfile.setActivation(activation);
+    }
+
+    @Override
+    public void onProfileEnd(Context context) {
+
+        final StackProfile stackProfile = pop();
+        
+        final StackProfiles stackProfiles = get();
+        
+        final MavenProfile profile = new MavenProfile(
+                                            stackProfile.getId(),
+                                            stackProfile.getActivation(),
+                                            stackProfile.getBuild(),
+                                            stackProfile.getModules(),
+                                            stackProfile.getRepositories(),
+                                            stackProfile.getPluginRepositories(),
+                                            stackProfile.getDependencies());
+        
+        stackProfiles.add(profile);
+    }
+
+    @Override
+    public void onProfilesEnd(Context context) {
+
+        final StackProfiles stackProfiles = pop();
+        
         final StackProject stackProject = get();
         
-        stackProject.setPluginRepositories(stackRepositories.getRepositories());
+        stackProject.setProfiles(stackProfiles.getProfiles());
     }
 }

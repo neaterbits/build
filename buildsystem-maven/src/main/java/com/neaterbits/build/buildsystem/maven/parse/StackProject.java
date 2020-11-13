@@ -8,13 +8,14 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
+import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackProject
         extends StackEntity
-        implements DependenciesSetter, NameSetter, UrlSetter {
+        implements DependenciesSetter, NameSetter, UrlSetter, ProfileSetter {
 
 	private String name;
 
@@ -22,17 +23,18 @@ final class StackProject
 	
 	private MavenModuleId parentModuleId;
 	private Map<String, String> properties;
-	private List<String> subModules;
+	private List<String> modules;
 	private List<MavenDependency> dependencies;
 	private MavenReporting reporting;
 	private MavenBuild build;
     private List<MavenRepository> repositories;
 	private List<MavenPluginRepository> pluginRepositories;
+	private List<MavenProfile> profiles;
 	
 	StackProject(Context context) {
 		super(context);
 
-		this.subModules = new ArrayList<>();
+		this.modules = new ArrayList<>();
 		this.dependencies = new ArrayList<>();
 	}
 
@@ -70,12 +72,13 @@ final class StackProject
         this.properties = properties;
     }
 
-    List<String> getSubModules() {
-		return subModules;
+    List<String> getModules() {
+		return modules;
 	}
 
-	void setSubModules(List<String> subModules) {
-		this.subModules = subModules;
+    @Override
+	public void setModules(List<String> modules) {
+		this.modules = modules;
 	}
 
 	List<MavenDependency> getDependencies() {
@@ -99,7 +102,8 @@ final class StackProject
 		return build;
 	}
 
-	void setBuild(MavenBuild build) {
+	@Override
+	public void setBuild(MavenBuild build) {
 		this.build = build;
 	}
 
@@ -107,7 +111,8 @@ final class StackProject
         return repositories;
     }
 
-    void setRepositories(List<MavenRepository> repositories) {
+    @Override
+    public void setRepositories(List<MavenRepository> repositories) {
         this.repositories = repositories;
     }
 
@@ -115,7 +120,16 @@ final class StackProject
         return pluginRepositories;
     }
 
-    void setPluginRepositories(List<MavenPluginRepository> pluginRepositories) {
+    @Override
+    public void setPluginRepositories(List<MavenPluginRepository> pluginRepositories) {
         this.pluginRepositories = pluginRepositories;
+    }
+
+    List<MavenProfile> getProfiles() {
+        return profiles;
+    }
+
+    void setProfiles(List<MavenProfile> profiles) {
+        this.profiles = profiles;
     }
 }

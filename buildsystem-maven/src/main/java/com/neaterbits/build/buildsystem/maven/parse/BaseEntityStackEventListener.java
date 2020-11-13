@@ -45,7 +45,6 @@ public abstract class BaseEntityStackEventListener
     public final void onVersionStart(Context context) {
 
         push(new StackVersion(context));
-
     }
 
     @Override
@@ -53,9 +52,9 @@ public abstract class BaseEntityStackEventListener
 
         final StackVersion stackVersion = pop();
 
-        final EntitySetter entitySetter = get();
+        final VersionSetter versionSetter = get();
 
-        entitySetter.setVersion(stackVersion.getText());
+        versionSetter.setVersion(stackVersion.getText());
     }
 
     @Override

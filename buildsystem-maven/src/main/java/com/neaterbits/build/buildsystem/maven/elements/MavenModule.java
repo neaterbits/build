@@ -17,11 +17,12 @@ public class MavenModule extends MavenEntity {
 	
 	private final Map<String, String> properties;
 	
-	private final List<String> subModules;
+	private final List<String> modules;
 	private final List<MavenDependency> dependencies;
 	private final MavenBuild build;
     private final List<MavenRepository> repositories;
 	private final List<MavenPluginRepository> pluginRepositories;
+	private final List<MavenProfile> profiles;
 	
 	public MavenModule(
 			File rootDirectory,
@@ -29,11 +30,12 @@ public class MavenModule extends MavenEntity {
 			MavenModuleId parentModuleId,
 			String packaging,
 			Map<String, String> properties,
-			List<String> subModules,
+			List<String> modules,
 			List<MavenDependency> dependencies,
 			MavenBuild build,
 			List<MavenRepository> repositories,
-			List<MavenPluginRepository> pluginRepositories) {
+			List<MavenPluginRepository> pluginRepositories,
+			List<MavenProfile> profiles) {
 
 		super(moduleId, packaging);
 		
@@ -47,7 +49,7 @@ public class MavenModule extends MavenEntity {
 		        ? Collections.unmodifiableMap(new HashMap<>(properties))
                 : null;
 		
-		this.subModules = subModules;
+		this.modules = modules;
 		this.dependencies = dependencies;
 		this.build = build;
 
@@ -57,6 +59,10 @@ public class MavenModule extends MavenEntity {
 
 		this.pluginRepositories = pluginRepositories != null
 		        ? Collections.unmodifiableList(pluginRepositories)
+                : null;
+		        
+        this.profiles = profiles != null
+                ? Collections.unmodifiableList(profiles)
                 : null;
 	}
 	
@@ -85,8 +91,8 @@ public class MavenModule extends MavenEntity {
         return properties;
     }
 
-    public final List<String> getSubModules() {
-		return subModules;
+    public final List<String> getModules() {
+		return modules;
 	}
 
 	public final List<MavenDependency> getDependencies() {
@@ -141,5 +147,9 @@ public class MavenModule extends MavenEntity {
 
     public final List<MavenPluginRepository> getPluginRepositories() {
         return pluginRepositories;
+    }
+
+    public final List<MavenProfile> getProfiles() {
+        return profiles;
     }
 }

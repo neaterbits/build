@@ -174,5 +174,57 @@ public interface PomEventListener
 
     void onPluginRepositoriesEnd(Context context);
     
-	void onProjectEnd(Context context);
+    void onProfilesStart(Context context);
+    
+    void onProfileStart(Context context);
+
+    void onActivationStart(Context context);
+
+    void onActiveByDefaultStart(Context context);
+    
+    void onActiveByDefaultEnd(Context context);
+    
+    void onJdkStart(Context context);
+    
+    void onJdkEnd(Context context);
+
+    void onOsStart(Context context);
+    
+    void onFamilyStart(Context context);
+    
+    void onFamilyEnd(Context context);
+    
+    void onArchStart(Context context);
+
+    void onArchEnd(Context context);
+    
+    void onOsEnd(Context context);
+    
+    void onPropertyStart(Context context);
+
+    void onValueStart(Context context);
+    
+    void onValueEnd(Context context);
+    
+    void onPropertyEnd(Context context);
+    
+    void onFileStart(Context context);
+    
+    void onExistsStart(Context context);
+
+    void onExistsEnd(Context context);
+    
+    void onMissingStart(Context context);
+    
+    void onMissingEnd(Context context);
+    
+    void onFileEnd(Context context);
+    
+    void onActivationEnd(Context context);
+    
+    void onProfileEnd(Context context);
+    
+    void onProfilesEnd(Context context);
+
+    void onProjectEnd(Context context);
 }

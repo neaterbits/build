@@ -19,7 +19,8 @@ public class MavenProject extends MavenModule {
 			List<MavenDependency> dependencies,
 			MavenBuild build,
 			List<MavenRepository> repositories,
-			List<MavenPluginRepository> pluginRepositories) {
+			List<MavenPluginRepository> pluginRepositories,
+			List<MavenProfile> profiles) {
 		
 		super(
 		        rootDirectory,
@@ -31,7 +32,8 @@ public class MavenProject extends MavenModule {
 		        dependencies,
 		        build,
 		        repositories,
-		        pluginRepositories);
+		        pluginRepositories,
+		        profiles);
 		
 		Objects.requireNonNull(moduleId);
 	}
