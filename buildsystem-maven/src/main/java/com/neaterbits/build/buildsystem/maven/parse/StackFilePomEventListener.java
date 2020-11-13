@@ -37,6 +37,7 @@ final class StackFilePomEventListener extends BaseStackPomEventListener {
 				project.getSubModules(),
 				project.getDependencies(),
 				project.getBuild(),
+				project.getRepositories(),
 				project.getPluginRepositories());
 
 		this.mavenProject = mavenProject;

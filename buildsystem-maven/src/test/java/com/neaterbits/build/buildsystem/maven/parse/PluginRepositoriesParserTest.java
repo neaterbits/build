@@ -2,26 +2,21 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
-import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
-import com.neaterbits.build.buildsystem.maven.xml.dom.DOMReaderFactory;
-import com.neaterbits.util.IOUtils;
 
-public class PluginRepositoriesParserTest {
+public class PluginRepositoriesParserTest extends BasePomParserTest {
 
     @Test
     public void testParsePluginRepositories() throws IOException, XMLReaderException {
 
-        final String groupId = "rootGroupId";
-        final String artifactId = "rootArtifactId";
-        final String version = "rootVersion";
+        final String groupId = "theGroupId";
+        final String artifactId = "theArtifactId";
+        final String version = "theVersion";
 
         final String pomString =
                 "<project>"
@@ -68,25 +63,9 @@ public class PluginRepositoriesParserTest {
               + "  </pluginRepositories>"
               + "</project>";
 
-        final MavenXMLProject<Document> pom;
 
-        final File file = File.createTempFile("pom", "xml");
-
-        final DOMReaderFactory xmlReaderFactory = new DOMReaderFactory();
-
-        try {
-            file.deleteOnExit();
+        final MavenProject project = parse(pomString);
         
-            IOUtils.write(file, pomString);
-            
-            pom = PomTreeParser.readModule(file, xmlReaderFactory);
-        }
-        finally {
-            file.delete();
-        }
-
-        final MavenProject project = pom.getProject();
-
         assertThat(project.getPluginRepositories()).isNotNull();
         assertThat(project.getPluginRepositories().size()).isEqualTo(2);
         

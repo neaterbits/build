@@ -1,8 +1,8 @@
 package com.neaterbits.build.buildsystem.maven.elements;
 
-public final class MavenPluginRepository extends BaseMavenRepository {
+public final class MavenRepository extends BaseMavenRepository {
 
-    public MavenPluginRepository(
+    public MavenRepository(
             MavenReleases releases,
             MavenSnapshots snapshots,
             String name,

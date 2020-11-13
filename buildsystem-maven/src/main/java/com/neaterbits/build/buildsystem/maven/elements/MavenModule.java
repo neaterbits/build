@@ -20,6 +20,7 @@ public class MavenModule extends MavenEntity {
 	private final List<String> subModules;
 	private final List<MavenDependency> dependencies;
 	private final MavenBuild build;
+    private final List<MavenRepository> repositories;
 	private final List<MavenPluginRepository> pluginRepositories;
 	
 	public MavenModule(
@@ -31,6 +32,7 @@ public class MavenModule extends MavenEntity {
 			List<String> subModules,
 			List<MavenDependency> dependencies,
 			MavenBuild build,
+			List<MavenRepository> repositories,
 			List<MavenPluginRepository> pluginRepositories) {
 
 		super(moduleId, packaging);
@@ -48,7 +50,14 @@ public class MavenModule extends MavenEntity {
 		this.subModules = subModules;
 		this.dependencies = dependencies;
 		this.build = build;
-		this.pluginRepositories = pluginRepositories;
+
+		this.repositories = repositories != null
+		        ? Collections.unmodifiableList(repositories)
+                : null;
+
+		this.pluginRepositories = pluginRepositories != null
+		        ? Collections.unmodifiableList(pluginRepositories)
+                : null;
 	}
 	
 	private String getGroupId() {
@@ -124,6 +133,10 @@ public class MavenModule extends MavenEntity {
 	public final MavenBuild getBuild() {
 		return build;
 	}
+
+    public final List<MavenRepository> getRepositories() {
+        return repositories;
+    }
 
     public final List<MavenPluginRepository> getPluginRepositories() {
         return pluginRepositories;

@@ -58,10 +58,10 @@ public interface PomEventListener
 
 	void onBuildEnd(Context context);
 
-	void onPluginRepositoriesStart(Context context);
+	void onRepositoriesStart(Context context);
 
-    void onPluginRepositoryStart(Context context);
-    
+    void onRepositoryStart(Context context);
+
     void onReleasesStart(Context context);
     
     void onReleasesEnd(Context context);
@@ -98,6 +98,14 @@ public interface PomEventListener
     
     void onLayoutEnd(Context context);
     
+    void onRepositoryEnd(Context context);
+
+    void onRepositoriesEnd(Context context);
+
+    void onPluginRepositoriesStart(Context context);
+
+    void onPluginRepositoryStart(Context context);
+
     void onPluginRepositoryEnd(Context context);
 
     void onPluginRepositoriesEnd(Context context);

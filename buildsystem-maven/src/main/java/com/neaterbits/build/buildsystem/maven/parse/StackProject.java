@@ -9,6 +9,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
+import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackProject
@@ -25,6 +26,7 @@ final class StackProject
 	private List<MavenDependency> dependencies;
 	private MavenReporting reporting;
 	private MavenBuild build;
+    private List<MavenRepository> repositories;
 	private List<MavenPluginRepository> pluginRepositories;
 	
 	StackProject(Context context) {
@@ -100,6 +102,14 @@ final class StackProject
 	void setBuild(MavenBuild build) {
 		this.build = build;
 	}
+
+    List<MavenRepository> getRepositories() {
+        return repositories;
+    }
+
+    void setRepositories(List<MavenRepository> repositories) {
+        this.repositories = repositories;
+    }
 
     List<MavenPluginRepository> getPluginRepositories() {
         return pluginRepositories;

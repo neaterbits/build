@@ -8,6 +8,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
+import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenSnapshots;
 import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.util.parse.context.Context;
@@ -245,15 +246,16 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         stackProject.setBuild(build);
     }
 
+    
     @Override
-    public void onPluginRepositoriesStart(Context context) {
-
+    public void onRepositoriesStart(Context context) {
+        
         push(new StackRepositories<>(context));
     }
 
     @Override
-    public void onPluginRepositoryStart(Context context) {
-
+    public void onRepositoryStart(Context context) {
+        
         push(new StackRepository(context));
     }
 
@@ -411,6 +413,46 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackRepository stackRepository = get();
         
         stackRepository.setLayout(stackLayout.getText());
+    }
+
+    @Override
+    public void onRepositoryEnd(Context context) {
+
+        final StackRepository stackRepository = pop();
+        
+        final StackRepositories<MavenRepository> stackRepositories = get();
+        
+        final MavenRepository repository = new MavenRepository(
+                stackRepository.getReleases(),
+                stackRepository.getSnapshots(),
+                stackRepository.getName(),
+                stackRepository.getId(),
+                stackRepository.getUrl(),
+                stackRepository.getLayout());
+        
+        stackRepositories.add(repository);
+    }
+
+    @Override
+    public void onPluginRepositoriesStart(Context context) {
+
+        push(new StackRepositories<>(context));
+    }
+
+    @Override
+    public void onPluginRepositoryStart(Context context) {
+
+        push(new StackRepository(context));
+    }
+
+    @Override
+    public void onRepositoriesEnd(Context context) {
+
+        final StackRepositories<MavenRepository> stackRepositories = pop();
+        
+        final StackProject stackProject = get();
+        
+        stackProject.setRepositories(stackRepositories.getRepositories());
     }
 
     @Override

@@ -116,7 +116,15 @@ public final class PomXMLEventListener
 			delegate.onExtensionStart(context);
 			break;
 
-		case "pluginRepositories":
+        case "repositories":
+            delegate.onRepositoriesStart(context);
+            break;
+            
+        case "repository":
+            delegate.onRepositoryStart(context);
+            break;
+
+        case "pluginRepositories":
 		    delegate.onPluginRepositoriesStart(context);
 		    break;
 			
@@ -252,6 +260,14 @@ public final class PomXMLEventListener
 			delegate.onExtensionEnd(context);
 			break;
 			
+        case "repositories":
+            delegate.onRepositoriesEnd(context);
+            break;
+
+        case "repository":
+            delegate.onRepositoryEnd(context);
+            break;
+
         case "pluginRepositories":
             delegate.onPluginRepositoriesEnd(context);
             break;
