@@ -8,6 +8,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenActivationOS;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationProperty;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
+import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
@@ -531,6 +532,39 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         buildSetter.setBuild(build);
     }
     
+    @Override
+    public void onIssueManagementStart(Context context) {
+        push(new StackIssueManagement(context));
+    }
+
+    @Override
+    public void onSystemStart(Context context) {
+        push(new StackSystem(context));
+    }
+
+    @Override
+    public void onSystemEnd(Context context) {
+
+        final StackSystem stackSystem = pop();
+        
+        final StackIssueManagement stackIssueManagement = get();
+        
+        stackIssueManagement.setSystem(stackSystem.getText());
+    }
+
+    @Override
+    public void onIssueManagementEnd(Context context) {
+
+        final StackIssueManagement stackIssueManagement = pop();
+        
+        final StackProject stackProject = get();
+        
+        final MavenIssueManagement issueManagement
+                = new MavenIssueManagement(stackIssueManagement.getSystem(), stackIssueManagement.getUrl());
+        
+        stackProject.setIssueManagement(issueManagement);
+    }
+
     @Override
     public void onRepositoriesStart(Context context) {
         

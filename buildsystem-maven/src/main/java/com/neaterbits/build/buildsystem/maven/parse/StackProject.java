@@ -6,6 +6,7 @@ import java.util.Map;
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
@@ -24,6 +25,8 @@ final class StackProject
 	private Map<String, String> properties;
 	
 	private final StackCommon common;
+	
+	private MavenIssueManagement issueManagement;
 	
 	private List<MavenProfile> profiles;
 	
@@ -105,6 +108,14 @@ final class StackProject
     public void setDependencies(List<MavenDependency> dependencies) {
 
         common.setDependencies(dependencies);
+    }
+
+    MavenIssueManagement getIssueManagement() {
+        return issueManagement;
+    }
+
+    void setIssueManagement(MavenIssueManagement issueManagement) {
+        this.issueManagement = issueManagement;
     }
 
     List<MavenProfile> getProfiles() {

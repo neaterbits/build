@@ -16,6 +16,7 @@ public class MavenProject extends MavenModule {
 			String packaging,
 			Map<String, String> properties,
 			MavenCommon common,
+			MavenIssueManagement issueManagement,
 			List<MavenProfile> profiles) {
 		
 		super(
@@ -25,6 +26,7 @@ public class MavenProject extends MavenModule {
 		        packaging,
 		        properties,
 		        common,
+		        issueManagement,
 		        profiles);
 		
 		Objects.requireNonNull(moduleId);

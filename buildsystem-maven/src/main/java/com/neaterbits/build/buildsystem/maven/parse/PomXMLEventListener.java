@@ -192,6 +192,14 @@ public final class PomXMLEventListener
 			delegate.onExtensionStart(context);
 			break;
 
+		case "issueManagement":
+		    delegate.onIssueManagementStart(context);
+		    break;
+		    
+		case "system":
+		    delegate.onSystemStart(context);
+		    break;
+			
         case "repositories":
             delegate.onRepositoriesStart(context);
             break;
@@ -464,6 +472,14 @@ public final class PomXMLEventListener
 			delegate.onExtensionEnd(context);
 			break;
 			
+        case "issueManagement":
+            delegate.onIssueManagementEnd(context);
+            break;
+            
+        case "system":
+            delegate.onSystemEnd(context);
+            break;
+
         case "repositories":
             delegate.onRepositoriesEnd(context);
             break;

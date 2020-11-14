@@ -125,6 +125,14 @@ public interface PomEventListener
 	void onExtensionsEnd(Context context);
 
 	void onBuildEnd(Context context);
+	
+	void onIssueManagementStart(Context context);
+	
+	void onSystemStart(Context context);
+	
+	void onSystemEnd(Context context);
+	
+    void onIssueManagementEnd(Context context);
 
 	void onRepositoriesStart(Context context);
 

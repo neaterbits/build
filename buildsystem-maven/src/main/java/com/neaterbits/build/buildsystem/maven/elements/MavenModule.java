@@ -19,6 +19,8 @@ public class MavenModule extends MavenEntity {
 
 	private final MavenCommon common;
 
+	private final MavenIssueManagement issueManagement;
+	
 	private final List<MavenProfile> profiles;
 
 	public MavenModule(
@@ -28,6 +30,7 @@ public class MavenModule extends MavenEntity {
 			String packaging,
 			Map<String, String> properties,
 			MavenCommon common,
+			MavenIssueManagement issueManagement,
 			List<MavenProfile> profiles) {
 
 		super(moduleId, packaging);
@@ -37,6 +40,8 @@ public class MavenModule extends MavenEntity {
 		this.rootDirectory = rootDirectory;
 		this.parentModuleId = parentModuleId;
 
+		this.issueManagement = issueManagement;
+		
 		this.properties = properties != null
 		        ? Collections.unmodifiableMap(new HashMap<>(properties))
                 : null;
@@ -113,6 +118,10 @@ public class MavenModule extends MavenEntity {
 				dependency.getExclusions());
 		
 	}
+
+    public final MavenIssueManagement getIssueManagement() {
+        return issueManagement;
+    }
 
     public final List<MavenProfile> getProfiles() {
         return profiles;
