@@ -11,7 +11,12 @@ public interface MavenRepositoryAccess {
 
     public static String repositoryDirectory(MavenModuleId moduleId) {
 
-        final String path = System.getProperty("user.home") + "/.m2/repository/"
+        return repositoryDirectory(System.getProperty("user.home"), moduleId);
+    }
+
+    public static String repositoryDirectory(String baseDir, MavenModuleId moduleId) {
+
+        final String path = baseDir + "/.m2/repository/"
                     + moduleId.getGroupId().replace('.', '/')
                     + '/' + moduleId.getArtifactId()
                     + '/' + moduleId.getVersion();

@@ -31,10 +31,9 @@ public class MavenBuildTest {
 
         final MavenRepositoryAccess repositoryAccess = Mockito.mock(MavenRepositoryAccess.class);
 
-        final PluginMocks plugins = preparePlugins(repositoryAccess);
+        final PluginMocks plugins = preparePlugins(tempDirectory, repositoryAccess);
         
         try {
-            
             writePoms(tempDirectory);
 
             final MavenBuildSystem buildSystem = new MavenBuildSystem(repositoryAccess);
@@ -153,9 +152,9 @@ public class MavenBuildTest {
         return new File [] { rootFile, subFile };
     }
 
-    private PluginMocks preparePlugins(MavenRepositoryAccess repositoryAccess) throws IOException {
+    private PluginMocks preparePlugins(File tempDirectory, MavenRepositoryAccess repositoryAccess) throws IOException {
 
-        final PluginMocks plugins = new PluginMocks();
+        final PluginMocks plugins = new PluginMocks(tempDirectory);
         
         // Expectations for getting plugin files
         Mockito.when(repositoryAccess.getPluginJarFile(plugins.mavenCompilePlugin))
@@ -294,31 +293,12 @@ public class MavenBuildTest {
                 "maven-install-plugin",
                 "3.0.0-M1");
 
-        final String compileJarFilePath = 
-                MavenRepositoryAccess.repositoryDirectory(mavenCompilePlugin.getModuleId())
-              + '/'
-              + MavenBuildRoot.getCompiledFileName(mavenCompilePlugin.getModuleId(), null);
+        final String compileJarFilePath; 
+        final String testJarFilePath;
+        final String resourcesJarFilePath; 
+        final String packageJarFilePath; 
+        final String installJarFilePath; 
 
-        final String testJarFilePath = 
-              MavenRepositoryAccess.repositoryDirectory(mavenTestPlugin.getModuleId())
-            + '/'
-            + MavenBuildRoot.getCompiledFileName(mavenTestPlugin.getModuleId(), null);
-
-        final String resourcesJarFilePath = 
-              MavenRepositoryAccess.repositoryDirectory(mavenResourcesPlugin.getModuleId())
-            + '/'
-            + MavenBuildRoot.getCompiledFileName(mavenResourcesPlugin.getModuleId(), null);
-
-        final String packageJarFilePath = 
-              MavenRepositoryAccess.repositoryDirectory(mavenPackageJarPlugin.getModuleId())
-            + '/'
-            + MavenBuildRoot.getCompiledFileName(mavenPackageJarPlugin.getModuleId(), null);
-
-        final String installJarFilePath = 
-              MavenRepositoryAccess.repositoryDirectory(mavenInstallPlugin.getModuleId())
-            + '/'
-            + MavenBuildRoot.getCompiledFileName(mavenInstallPlugin.getModuleId(), null);
-        
         
         private final MavenPluginInfo compilePluginInfo;
         private final MavenPluginInfo testPluginInfo;
@@ -334,7 +314,34 @@ public class MavenBuildTest {
         private final Mojo packageJarMojo;
         private final Mojo installMojo;
         
-        PluginMocks() {
+        PluginMocks(File tempDirectory) {
+
+            final String path = tempDirectory.getAbsolutePath();
+
+            this.compileJarFilePath = 
+                    MavenRepositoryAccess.repositoryDirectory(path, mavenCompilePlugin.getModuleId())
+                  + '/'
+                  + MavenBuildRoot.getCompiledFileName(mavenCompilePlugin.getModuleId(), null);
+
+            this.testJarFilePath = 
+                  MavenRepositoryAccess.repositoryDirectory(path, mavenTestPlugin.getModuleId())
+                + '/'
+                + MavenBuildRoot.getCompiledFileName(mavenTestPlugin.getModuleId(), null);
+
+            this.resourcesJarFilePath = 
+                  MavenRepositoryAccess.repositoryDirectory(path, mavenResourcesPlugin.getModuleId())
+                + '/'
+                + MavenBuildRoot.getCompiledFileName(mavenResourcesPlugin.getModuleId(), null);
+
+            this.packageJarFilePath = 
+                  MavenRepositoryAccess.repositoryDirectory(path, mavenPackageJarPlugin.getModuleId())
+                + '/'
+                + MavenBuildRoot.getCompiledFileName(mavenPackageJarPlugin.getModuleId(), null);
+
+            this.installJarFilePath = 
+                  MavenRepositoryAccess.repositoryDirectory(path, mavenInstallPlugin.getModuleId())
+                + '/'
+                + MavenBuildRoot.getCompiledFileName(mavenInstallPlugin.getModuleId(), null);
 
             this.compilePluginInfo = Mockito.mock(MavenPluginInfo.class);
             this.testPluginInfo = Mockito.mock(MavenPluginInfo.class);
