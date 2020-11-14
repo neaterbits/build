@@ -1,17 +1,16 @@
 package com.neaterbits.build.buildsystem.maven.elements;
 
-import java.util.Collections;
 import java.util.List;
 
-public final class MavenReporting {
+public final class MavenReporting extends MavenBaseBuild {
 
-	private final List<MavenPlugin> plugins;
+	public MavenReporting(
+	        String directory,
+	        String finalName,
+	        List<MavenResource> resources,
+	        List<MavenResource> testResources,
+            List<MavenPlugin> plugins) {
 
-	public MavenReporting(List<MavenPlugin> plugins) {
-		this.plugins = plugins != null ? Collections.unmodifiableList(plugins) : null;
-	}
-
-	public List<MavenPlugin> getPlugins() {
-		return plugins;
-	}
+	    super(directory, finalName, resources, testResources, plugins);
+    }
 }

@@ -127,7 +127,12 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackReporting stackReporting = pop();
 
-        final MavenReporting reporting = new MavenReporting(stackReporting.getPlugins());
+        final MavenReporting reporting = new MavenReporting(
+                                            stackReporting.getDirectory(),
+                                            stackReporting.getFinalName(),
+                                            stackReporting.getResources(),
+                                            stackReporting.getTestResources(),
+                                            stackReporting.getPlugins());
 
         final StackProject stackProject = get();
 
@@ -184,9 +189,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackFinalName stackFinalName = pop();
         
-        final StackBuild stackBuild = get();
+        final StackBaseBuild stackBaseBuild = get();
         
-        stackBuild.setFinalName(stackFinalName.getText());
+        stackBaseBuild.setFinalName(stackFinalName.getText());
     }
 
     @Override
@@ -442,9 +447,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackPlugins stackPlugins = pop();
 
-        final PluginsSetter pluginsSetter = get();
+        final StackBaseBuild stackBaseBuild = get();
 
-        pluginsSetter.setPlugins(stackPlugins.getPlugins());
+        stackBaseBuild.setPlugins(stackPlugins.getPlugins());
     }
 
     @Override
@@ -491,8 +496,8 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final MavenBuild build = new MavenBuild(
                 stackBuild.getDirectory(),
-                stackBuild.getOutputDirectory(),
                 stackBuild.getFinalName(),
+                stackBuild.getOutputDirectory(),
                 stackBuild.getSourceDirectory(),
                 stackBuild.getScriptSourceDirectory(),
                 stackBuild.getTestSourceDirectory(),
@@ -504,7 +509,6 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         buildSetter.setBuild(build);
     }
-
     
     @Override
     public void onRepositoriesStart(Context context) {
