@@ -52,6 +52,10 @@ public class ProfilesParserTest extends BasePomParserTest {
               + "      <modules></modules>"
               + "      <repositories></repositories>"
               + "      <pluginRepositories></pluginRepositories>"
+              + "      <dependencyManagement>"
+              + "        <dependencies>"
+              + "        </dependencies>"
+              + "      </dependencyManagement>"
               + "      <dependencies></dependencies>"
               + "    </profile>"
               + "  </profiles>"
@@ -84,6 +88,7 @@ public class ProfilesParserTest extends BasePomParserTest {
         assertThat(base.getModules()).isEmpty();
         assertThat(base.getRepositories()).isEmpty();
         assertThat(base.getPluginRepositories()).isEmpty();
+        assertThat(base.getDependencyManagement().getDependencies()).isEmpty();
         assertThat(base.getDependencies()).isEmpty();
     }    
 }

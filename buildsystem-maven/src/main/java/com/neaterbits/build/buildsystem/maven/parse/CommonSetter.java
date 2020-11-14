@@ -6,6 +6,7 @@ interface CommonSetter
             ReportingSetter,
             RepositoriesSetter,
             PluginRepositoriesSetter,
+            DependencyManagementSetter,
             DependenciesSetter {
     
 }

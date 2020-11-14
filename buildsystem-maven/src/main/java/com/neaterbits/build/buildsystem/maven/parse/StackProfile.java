@@ -8,6 +8,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenDependencyManagement;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackProfile
@@ -74,6 +75,11 @@ final class StackProfile
     public void setPluginRepositories(List<MavenPluginRepository> pluginRepositories) {
 
         common.setPluginRepositories(pluginRepositories);
+    }
+
+    @Override
+    public void setDependencyManagement(MavenDependencyManagement dependencyManagement) {
+        common.setDependencyManagement(dependencyManagement);
     }
 
     @Override

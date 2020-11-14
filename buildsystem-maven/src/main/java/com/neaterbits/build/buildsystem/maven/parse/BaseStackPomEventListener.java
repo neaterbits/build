@@ -17,6 +17,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
 import com.neaterbits.build.buildsystem.maven.elements.MavenSnapshots;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenDependencyManagement;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
 import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.util.parse.context.Context;
@@ -146,6 +147,24 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public final void onBuildStart(Context context) {
         push(new StackBuild(context));
+    }
+
+    @Override
+    public void onDependencyManagementStart(Context context) {
+        push(new StackDependencyManagement(context));
+    }
+
+    @Override
+    public void onDependencyManagementEnd(Context context) {
+
+        final StackDependencyManagement stackDependencyManagement = pop();
+        
+        final DependencyManagementSetter dependencyManagementSetter = get();
+        
+        final MavenDependencyManagement dependencyManagement
+                = new MavenDependencyManagement(stackDependencyManagement.getDependencies());
+        
+        dependencyManagementSetter.setDependencyManagement(dependencyManagement);
     }
 
     @Override

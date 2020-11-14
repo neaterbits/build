@@ -37,6 +37,11 @@ public class BuildParserTest extends BasePomParserTest {
               + "    <testSourceDirectory>theTestSourceDirectory</testSourceDirectory>"
               + "  </build>"
 
+              + "  <dependencyManagement>"
+              + "     <dependencies>"
+              + "     </dependencies>"
+              + "  </dependencyManagement>"
+
               + "</project>";
 
 
@@ -51,5 +56,7 @@ public class BuildParserTest extends BasePomParserTest {
         assertThat(build.getSourceDirectory()).isEqualTo("theSourceDirectory");
         assertThat(build.getScriptSourceDirectory()).isEqualTo("theScriptSourceDirectory");
         assertThat(build.getTestSourceDirectory()).isEqualTo("theTestSourceDirectory");
+    
+        assertThat(project.getCommon().getDependencyManagement().getDependencies()).isEmpty();
     }
 }
