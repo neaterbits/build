@@ -2,6 +2,9 @@ package com.neaterbits.build.buildsystem.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -13,6 +16,7 @@ import com.neaterbits.build.buildsystem.common.ArgumentException;
 import com.neaterbits.build.buildsystem.common.BuildSystemMain;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.util.Files;
@@ -23,6 +27,17 @@ import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.Targ
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 
 public class MavenBuildTest {
+
+    private static final List<MavenPluginRepository> PLUGIN_REPOSITORIES;
+    
+    static {
+        
+        final List<MavenPluginRepository> list = new ArrayList<>();
+        
+        list.add(new MavenPluginRepository(null, null, null, null, MavenConstants.PLUGIN_REPOSITORY_URL, null));
+        
+        PLUGIN_REPOSITORIES = Collections.unmodifiableList(list);
+    }
 
     @Test
     public void testBuildSourceFiles() throws ScanException, ArgumentException, IOException, XMLReaderException, MojoExecutionException, MojoFailureException {
@@ -157,20 +172,12 @@ public class MavenBuildTest {
         final PluginMocks plugins = new PluginMocks(tempDirectory);
         
         // Expectations for getting plugin files
-        Mockito.when(repositoryAccess.getPluginJarFile(plugins.mavenCompilePlugin))
-            .thenReturn(new File(plugins.compileJarFilePath));
 
-        Mockito.when(repositoryAccess.getPluginJarFile(plugins.mavenTestPlugin))
-            .thenReturn(new File(plugins.testJarFilePath));
-
-        Mockito.when(repositoryAccess.getPluginJarFile(plugins.mavenResourcesPlugin))
-            .thenReturn(new File(plugins.resourcesJarFilePath));
-
-        Mockito.when(repositoryAccess.getPluginJarFile(plugins.mavenPackageJarPlugin))
-            .thenReturn(new File(plugins.packageJarFilePath));
-
-        Mockito.when(repositoryAccess.getPluginJarFile(plugins.mavenInstallPlugin))
-            .thenReturn(new File(plugins.installJarFilePath));
+        Mockito.when(repositoryAccess.isPluginPresent(plugins.mavenCompilePlugin)).thenReturn(false);
+        Mockito.when(repositoryAccess.isPluginPresent(plugins.mavenTestPlugin)).thenReturn(false);
+        Mockito.when(repositoryAccess.isPluginPresent(plugins.mavenResourcesPlugin)).thenReturn(false);
+        Mockito.when(repositoryAccess.isPluginPresent(plugins.mavenPackageJarPlugin)).thenReturn(false);
+        Mockito.when(repositoryAccess.isPluginPresent(plugins.mavenInstallPlugin)).thenReturn(false);
 
         // Expectations for plugin descriptor for each plugin
         Mockito.when(repositoryAccess.getPluginInfo(plugins.mavenCompilePlugin))
@@ -215,17 +222,25 @@ public class MavenBuildTest {
 
     private void verifyPlugins(PluginMocks plugins, MavenRepositoryAccess repositoryAccess) throws IOException, MojoExecutionException, MojoFailureException {
         
+        /*
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).getPluginJarFile(plugins.mavenCompilePlugin);
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).getPluginJarFile(plugins.mavenTestPlugin);
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).getPluginJarFile(plugins.mavenResourcesPlugin);
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).getPluginJarFile(plugins.mavenPackageJarPlugin);
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).getPluginJarFile(plugins.mavenInstallPlugin);
+        */
 
-        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenCompilePlugin);
-        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenTestPlugin);
-        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenResourcesPlugin);
-        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenPackageJarPlugin);
-        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenInstallPlugin);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).isPluginPresent(plugins.mavenCompilePlugin);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).isPluginPresent(plugins.mavenTestPlugin);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).isPluginPresent(plugins.mavenResourcesPlugin);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).isPluginPresent(plugins.mavenPackageJarPlugin);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).isPluginPresent(plugins.mavenInstallPlugin);
+
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenCompilePlugin, PLUGIN_REPOSITORIES);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenTestPlugin, PLUGIN_REPOSITORIES);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenResourcesPlugin, PLUGIN_REPOSITORIES);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenPackageJarPlugin, PLUGIN_REPOSITORIES);
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).downloadPluginIfNotPresent(plugins.mavenInstallPlugin, PLUGIN_REPOSITORIES);
 
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).getPluginInfo(plugins.mavenCompilePlugin);
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).getPluginInfo(plugins.mavenTestPlugin);
@@ -293,13 +308,6 @@ public class MavenBuildTest {
                 "maven-install-plugin",
                 "3.0.0-M1");
 
-        final String compileJarFilePath; 
-        final String testJarFilePath;
-        final String resourcesJarFilePath; 
-        final String packageJarFilePath; 
-        final String installJarFilePath; 
-
-        
         private final MavenPluginInfo compilePluginInfo;
         private final MavenPluginInfo testPluginInfo;
         private final MavenPluginInfo resourcesPluginInfo;
@@ -315,33 +323,6 @@ public class MavenBuildTest {
         private final Mojo installMojo;
         
         PluginMocks(File tempDirectory) {
-
-            final String path = tempDirectory.getAbsolutePath();
-
-            this.compileJarFilePath = 
-                    MavenRepositoryAccess.repositoryDirectory(path, mavenCompilePlugin.getModuleId())
-                  + '/'
-                  + MavenBuildRoot.getCompiledFileName(mavenCompilePlugin.getModuleId(), null);
-
-            this.testJarFilePath = 
-                  MavenRepositoryAccess.repositoryDirectory(path, mavenTestPlugin.getModuleId())
-                + '/'
-                + MavenBuildRoot.getCompiledFileName(mavenTestPlugin.getModuleId(), null);
-
-            this.resourcesJarFilePath = 
-                  MavenRepositoryAccess.repositoryDirectory(path, mavenResourcesPlugin.getModuleId())
-                + '/'
-                + MavenBuildRoot.getCompiledFileName(mavenResourcesPlugin.getModuleId(), null);
-
-            this.packageJarFilePath = 
-                  MavenRepositoryAccess.repositoryDirectory(path, mavenPackageJarPlugin.getModuleId())
-                + '/'
-                + MavenBuildRoot.getCompiledFileName(mavenPackageJarPlugin.getModuleId(), null);
-
-            this.installJarFilePath = 
-                  MavenRepositoryAccess.repositoryDirectory(path, mavenInstallPlugin.getModuleId())
-                + '/'
-                + MavenBuildRoot.getCompiledFileName(mavenInstallPlugin.getModuleId(), null);
 
             this.compilePluginInfo = Mockito.mock(MavenPluginInfo.class);
             this.testPluginInfo = Mockito.mock(MavenPluginInfo.class);

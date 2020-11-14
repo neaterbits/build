@@ -2,6 +2,7 @@ package com.neaterbits.build.buildsystem.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ import com.neaterbits.build.buildsystem.common.BuildSpecifier;
 import com.neaterbits.build.buildsystem.common.BuildSystem;
 import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.ScanException;
+import com.neaterbits.build.buildsystem.common.http.HTTPDownloader;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMsHelper;
 import com.neaterbits.build.buildsystem.maven.effective.MavenResolveContext;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
@@ -28,7 +30,13 @@ public final class MavenBuildSystem implements BuildSystem {
     private final MavenRepositoryAccess repositoryAccess; 
     
     public MavenBuildSystem() {
-        this(new URLMavenRepositoryAccess());
+        this(
+                new URLMavenRepositoryAccess(
+                        Path.of(System.getProperty("user.home"))
+                            .resolve(".build")
+                            .resolve("maven")
+                            .toFile(),
+                        HTTPDownloader.create()));
     }
     
 	MavenBuildSystem(MavenRepositoryAccess repositoryAccess) {

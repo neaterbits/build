@@ -1,6 +1,7 @@
 package com.neaterbits.build.buildsystem.maven.targets;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -9,6 +10,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
 import com.neaterbits.build.buildsystem.maven.MavenRepositoryAccess;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
@@ -46,17 +48,20 @@ class PluginUtil {
         mojo.execute();
     }
 
-    static ActionLog downloadPlugin(MavenBuildRoot mavenBuildRoot, MavenPlugin mavenPlugin) {
+    static ActionLog downloadPlugin(
+            MavenBuildRoot mavenBuildRoot,
+            MavenPlugin mavenPlugin,
+            List<MavenPluginRepository> pluginRepositories) {
         
         ActionLog actionLog;
         
         try {
-            mavenBuildRoot.downloadPluginIfNotPresent(mavenPlugin);
+            mavenBuildRoot.downloadPluginIfNotPresent(mavenPlugin, pluginRepositories);
             
             actionLog = FunctionActionLog.OK;
             
         } catch (IOException ex) {
-            actionLog = new FunctionActionLog(ex);
+            throw new IllegalStateException(ex);
         }
         
         return actionLog;

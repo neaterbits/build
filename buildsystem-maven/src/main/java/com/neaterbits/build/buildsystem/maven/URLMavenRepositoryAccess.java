@@ -2,15 +2,36 @@ package com.neaterbits.build.buildsystem.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
+import com.neaterbits.build.buildsystem.common.http.HTTPDownloader;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.MojoFinder;
+import com.neaterbits.util.IOUtils;
 
-class URLMavenRepositoryAccess implements MavenRepositoryAccess {
+final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
 
+    private final Path repository;
+    private final HTTPDownloader downloader;
     
+    URLMavenRepositoryAccess(File repository, HTTPDownloader downloader) {
+    
+        Objects.requireNonNull(repository);
+        Objects.requireNonNull(downloader);
+        
+        this.repository = repository.toPath();
+        this.downloader = downloader;
+    }
+
     @Override
     public MavenPluginInfo getPluginInfo(MavenPlugin mavenPlugin) throws IOException {
         
@@ -22,48 +43,63 @@ class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         return pluginInfo;
     }
 
-    @Override
-    public File getPluginJarFile(MavenPlugin mavenPlugin) {
+    private File getPluginJarFile(MavenPlugin mavenPlugin) {
         
         return repositoryJarFile(mavenPlugin.getModuleId());
     }
 
-    private String repositoryDirectory(MavenDependency mavenDependency) {
+    private Path repositoryDirectory(MavenDependency mavenDependency) {
 
         final MavenModuleId moduleId = mavenDependency.getModuleId();
     
         return repositoryDirectory(moduleId);
     }
 
-    private String repositoryDirectory(MavenModuleId moduleId) {
+    private Path repositoryDirectory(MavenModuleId moduleId) {
         
-        return MavenRepositoryAccess.repositoryDirectory(moduleId);
+        return MavenRepositoryAccess.repositoryDirectory(repository, moduleId);
     }
 
-    private File repositoryPomFile(MavenDependency mavenDependency) {
+    private Path repositoryPomFile(MavenDependency mavenDependency) {
 
-        final File repositoryDirectory = new File(repositoryDirectory(mavenDependency));
-        final File pomFile = new File(repositoryDirectory, "pom.xml");
+        return repositoryDirectory(mavenDependency).resolve("pom.xml");
+    }
 
-        return pomFile;
+    private static String getPomFileName(MavenModuleId moduleId) {
+
+        return moduleId.getArtifactId() + '-' + moduleId.getVersion() + '.' + "pom";
+    }
+    
+    private File repositoryExternalPomFile(Path repositoryDirectory, MavenModuleId moduleId) {
+
+        return repositoryDirectory.resolve(getPomFileName(moduleId)).toFile();
+    }
+
+    private File repositoryExternalPomFile(MavenModuleId moduleId) {
+        
+        final Path repositoryDirectory = repositoryDirectory(moduleId);
+    
+        return repositoryExternalPomFile(repositoryDirectory, moduleId);
+    }
+
+    private File repositoryExternalPomSha1File(MavenModuleId moduleId) {
+        
+        return repositoryDirectory(moduleId).resolve(getPomFileName(moduleId) + ".sha1").toFile();
     }
 
     @Override
     public File repositoryExternalPomFile(MavenDependency mavenDependency) {
 
-        final File repositoryDirectory = new File(repositoryDirectory(mavenDependency));
-
-        final MavenModuleId moduleId = mavenDependency.getModuleId();
-
-        final File pomFile = new File(repositoryDirectory, moduleId.getArtifactId() + '-' + moduleId.getVersion() + '.' + "pom");
-
-        return pomFile;
+        final Path repositoryDirectory = repositoryDirectory(mavenDependency);
+        
+        return repositoryExternalPomFile(repositoryDirectory, mavenDependency.getModuleId());
     }
+
     
-    private static File getFile(String path) {
+    private static File getFile(Path path) {
 
         try {
-            return new File(path).getCanonicalFile();
+            return path.toFile().getCanonicalFile();
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
@@ -72,22 +108,112 @@ class URLMavenRepositoryAccess implements MavenRepositoryAccess {
     @Override
     public File repositoryJarFile(MavenDependency mavenDependency) {
 
-        final String path = repositoryDirectory(mavenDependency) + '/' + MavenBuildRoot.getCompiledFileName(mavenDependency);
+        final Path path = repositoryDirectory(mavenDependency).resolve(MavenBuildRoot.getCompiledFileName(mavenDependency));
 
         return getFile(path);
     }
 
+    private static String getJarFileName(MavenModuleId moduleId) {
+
+        return MavenBuildRoot.getCompiledFileName(moduleId, null);
+    }
+    
     @Override
     public File repositoryJarFile(MavenModuleId moduleId) {
 
-        final String path = repositoryDirectory(moduleId) + '/' + MavenBuildRoot.getCompiledFileName(moduleId, null);
+        final Path path = repositoryDirectory(moduleId).resolve(getJarFileName(moduleId));
+
+        return getFile(path);
+    }
+    
+    private File repositoryJarSha1File(MavenModuleId moduleId) {
+
+        final Path path = repositoryDirectory(moduleId).resolve(getJarFileName(moduleId) + ".sha1");
 
         return getFile(path);
     }
 
-    @Override
-    public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin) throws IOException {
+    private static boolean isPresent(File file) {
+        
+        return file.exists();
+    }
+    
+    private boolean isModulePresent(MavenModuleId moduleId) {
 
-        throw new UnsupportedOperationException();
+        // Must verify that all jar and sha1 files are present
+
+        return    isPresent(repositoryJarFile(moduleId))
+               && isPresent(repositoryJarSha1File(moduleId))
+               && isPresent(repositoryExternalPomFile(moduleId))
+               && isPresent(repositoryExternalPomSha1File(moduleId));
+    }
+
+    private boolean downloadFileIfNotPresent(MavenModuleId moduleId, File file, URL repository) {
+
+        final URL url;
+
+        boolean ok = false;
+        
+        final String repositoryFilePath = MavenRepositoryAccess.repositoryDirectoryPart(moduleId) + '/' + file.getName();
+
+        try {
+            url = new URL(repository, repository.getFile() + '/' + repositoryFilePath);
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException(ex);
+        }
+
+        try (InputStream stream = downloader.download(url)) {
+
+            file.getParentFile().mkdirs();
+            
+            IOUtils.write(file, stream);
+
+            ok = true;
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        return ok;
+    }
+
+    private void downloadModuleIfNotPresent(MavenModuleId moduleId, List<URL> repositories) throws IOException {
+
+        boolean downloadedOk = false;
+        
+        for (URL repository : repositories) {
+            
+            if (    downloadFileIfNotPresent(moduleId, repositoryJarFile(moduleId), repository)
+                 && downloadFileIfNotPresent(moduleId, repositoryJarSha1File(moduleId), repository)    
+                 && downloadFileIfNotPresent(moduleId, repositoryExternalPomFile(moduleId), repository)
+                 && downloadFileIfNotPresent(moduleId, repositoryExternalPomSha1File(moduleId), repository)) {
+                
+                // TODO validate sha1
+                downloadedOk = true;
+                break;
+            }
+        }
+
+        if (!downloadedOk) {
+            throw new IOException("Failed to download module " + moduleId);
+        }
+    }
+    
+    @Override
+    public boolean isPluginPresent(MavenPlugin mavenPlugin) {
+
+        return isModulePresent(mavenPlugin.getModuleId());
+    }
+
+    @Override
+    public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin, List<MavenPluginRepository> repositories) throws IOException {
+
+        final List<URL> urls = new ArrayList<>(repositories.size());
+        
+        for (MavenPluginRepository repository : repositories) {
+            urls.add(new URL(repository.getUrl()));
+        }
+        
+        downloadModuleIfNotPresent(mavenPlugin.getModuleId(), urls);
     }
 }

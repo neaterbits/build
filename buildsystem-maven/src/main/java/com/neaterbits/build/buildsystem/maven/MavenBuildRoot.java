@@ -13,6 +13,7 @@ import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
@@ -244,9 +245,9 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	    throw new UnsupportedOperationException();
     }
 
-    public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin) throws IOException {
+    public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin, List<MavenPluginRepository> pluginRepositories) throws IOException {
         
-        repositoryAccess.downloadPluginIfNotPresent(mavenPlugin);
+        repositoryAccess.downloadPluginIfNotPresent(mavenPlugin, pluginRepositories);
     }
 
     @Override

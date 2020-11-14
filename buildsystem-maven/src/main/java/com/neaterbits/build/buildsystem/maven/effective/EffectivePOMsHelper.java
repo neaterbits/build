@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.neaterbits.build.buildsystem.maven.MavenConstants;
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeFilter;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeMode;
@@ -57,7 +58,7 @@ public class EffectivePOMsHelper {
       + "      </snapshots>"
       + "      <name>Central repository</name>"
       + "      <id>central</id>"
-      + "      <url>https://repo.maven.org/maven2</url>"
+      + "      <url>" + MavenConstants.PLUGIN_REPOSITORY_URL + "</url>"
       + "      <layout>default</layout>"
       + "    </pluginRepository>"
       + "  </pluginRepositories>"

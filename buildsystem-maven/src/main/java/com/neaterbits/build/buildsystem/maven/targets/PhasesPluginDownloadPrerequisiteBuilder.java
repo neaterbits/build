@@ -1,10 +1,11 @@
 package com.neaterbits.build.buildsystem.maven.targets;
 
-import java.io.File;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.phases.Phases;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
@@ -29,19 +30,26 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
         builder.withPrerequisites("Download required plugins")
             .fromIterating(
                     Constraint.CPU,
-                    (tc, target) -> PluginFinder.getPluginsForModule(
-                                        target.getProject(),
-                                        phases))
+                    (tc, target) -> {
+                        
+                        final MavenProject project = target.getProject();
+                        
+                        final List<MavenPlugin> plugins
+                                = PluginFinder.getPluginsForModule(project, phases);
+                        
+                        return plugins.stream()
+                                .map(plugin -> new PluginDownload(plugin, project.getCommon().getPluginRepositories()))
+                                .collect(Collectors.toList());
+                        })
             .buildBy(pt -> pt
-                    .addFileSubTarget(
-                            MavenPlugin.class,
-                            File.class, // No intermediate mapping, just does this to get access to MavenBuilderContext below
-                            (tc, target) -> tc.getBuildSystemRoot().getRepositoryAccess().getPluginJarFile(target),
-                            Function.identity(),
-                            target -> "Download plugin " + target.getModuleId().getId())
+                    .addFilesSubTarget(
+                            PluginDownload.class,
+                            (c, t, p) -> c.getBuildSystemRoot().getRepositoryAccess().isPluginPresent(t.getPlugin()),
+                            t -> t.getPlugin().getModuleId().getId(),
+                            t -> "Download plugin " + t.getPlugin().getModuleId().getId())
 
             .action(
                     Constraint.NETWORK,
-                    (tc, target, params) -> PluginUtil.downloadPlugin(tc.getBuildSystemRoot(), target)));
+                    (tc, target, params) -> PluginUtil.downloadPlugin(tc.getBuildSystemRoot(), target.getPlugin(), target.getRepositories())));
     }
 }
