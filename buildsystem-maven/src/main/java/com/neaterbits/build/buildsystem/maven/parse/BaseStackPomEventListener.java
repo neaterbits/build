@@ -948,11 +948,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final MavenProfile profile = new MavenProfile(
                                             stackProfile.getId(),
                                             stackProfile.getActivation(),
-                                            stackProfile.getBuild(),
-                                            stackProfile.getModules(),
-                                            stackProfile.getRepositories(),
-                                            stackProfile.getPluginRepositories(),
-                                            stackProfile.getDependencies());
+                                            stackProfile.getCommon().makeMavenCommon());
         
         stackProfiles.add(profile);
     }

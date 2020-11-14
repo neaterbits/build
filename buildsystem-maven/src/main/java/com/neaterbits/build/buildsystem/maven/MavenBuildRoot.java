@@ -124,7 +124,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 
 	@Override
 	public Collection<MavenDependency> getDependencies(MavenProject project) {
-		return project.getDependencies();
+		return project.getCommon().getDependencies();
 	}
 
 	@Override

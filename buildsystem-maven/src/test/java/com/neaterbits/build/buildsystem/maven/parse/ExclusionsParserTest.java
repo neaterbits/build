@@ -52,9 +52,9 @@ public class ExclusionsParserTest extends BasePomParserTest {
 
         final MavenProject project = parse(pomString);
 
-        assertThat(project.getDependencies().size()).isEqualTo(1);
+        assertThat(project.getCommon().getDependencies().size()).isEqualTo(1);
 
-        final MavenDependency dependency = project.getDependencies().get(0);
+        final MavenDependency dependency = project.getCommon().getDependencies().get(0);
         
         assertThat(dependency.getExclusions().size()).isEqualTo(3);
 

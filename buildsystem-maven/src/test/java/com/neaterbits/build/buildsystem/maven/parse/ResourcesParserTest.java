@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
@@ -49,19 +50,21 @@ public class ResourcesParserTest extends BasePomParserTest {
 
         final MavenProject project = parse(pomString);
         
-        assertThat(project.getBuild().getResources().size()).isEqualTo(1);
-        assertThat(project.getBuild().getResources().get(0).getTargetPath()).isEqualTo("theTargetPath");
-        assertThat(project.getBuild().getResources().get(0).getFiltering()).isEqualTo(Boolean.TRUE);
-        assertThat(project.getBuild().getResources().get(0).getDirectory()).isEqualTo("theDirectory");
+        final MavenBuild build = project.getCommon().getBuild();
         
-        assertThat(project.getBuild().getResources().get(0).getIncludes().size()).isEqualTo(3);
-        assertThat(project.getBuild().getResources().get(0).getIncludes().get(0)).isEqualTo("include1");
-        assertThat(project.getBuild().getResources().get(0).getIncludes().get(1)).isEqualTo("include2");
-        assertThat(project.getBuild().getResources().get(0).getIncludes().get(2)).isEqualTo("include3");
+        assertThat(build.getResources().size()).isEqualTo(1);
+        assertThat(build.getResources().get(0).getTargetPath()).isEqualTo("theTargetPath");
+        assertThat(build.getResources().get(0).getFiltering()).isEqualTo(Boolean.TRUE);
+        assertThat(build.getResources().get(0).getDirectory()).isEqualTo("theDirectory");
         
-        assertThat(project.getBuild().getResources().get(0).getExcludes().size()).isEqualTo(3);
-        assertThat(project.getBuild().getResources().get(0).getExcludes().get(0)).isEqualTo("exclude1");
-        assertThat(project.getBuild().getResources().get(0).getExcludes().get(1)).isEqualTo("exclude2");
-        assertThat(project.getBuild().getResources().get(0).getExcludes().get(2)).isEqualTo("exclude3");
+        assertThat(build.getResources().get(0).getIncludes().size()).isEqualTo(3);
+        assertThat(build.getResources().get(0).getIncludes().get(0)).isEqualTo("include1");
+        assertThat(build.getResources().get(0).getIncludes().get(1)).isEqualTo("include2");
+        assertThat(build.getResources().get(0).getIncludes().get(2)).isEqualTo("include3");
+        
+        assertThat(build.getResources().get(0).getExcludes().size()).isEqualTo(3);
+        assertThat(build.getResources().get(0).getExcludes().get(0)).isEqualTo("exclude1");
+        assertThat(build.getResources().get(0).getExcludes().get(1)).isEqualTo("exclude2");
+        assertThat(build.getResources().get(0).getExcludes().get(2)).isEqualTo("exclude3");
     }    
 }

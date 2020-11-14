@@ -1,8 +1,9 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
-interface ProfileSetter 
+interface CommonSetter 
     extends ModulesSetter,
             BuildSetter,
+            ReportingSetter,
             RepositoriesSetter,
             PluginRepositoriesSetter,
             DependenciesSetter {

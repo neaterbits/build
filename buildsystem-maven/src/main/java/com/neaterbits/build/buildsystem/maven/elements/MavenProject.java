@@ -15,11 +15,7 @@ public class MavenProject extends MavenModule {
 			MavenModuleId parentModuleId,
 			String packaging,
 			Map<String, String> properties,
-			List<String> modules,
-			List<MavenDependency> dependencies,
-			MavenBuild build,
-			List<MavenRepository> repositories,
-			List<MavenPluginRepository> pluginRepositories,
+			MavenCommon common,
 			List<MavenProfile> profiles) {
 		
 		super(
@@ -28,11 +24,7 @@ public class MavenProject extends MavenModule {
 		        parentModuleId,
 		        packaging,
 		        properties,
-		        modules,
-		        dependencies,
-		        build,
-		        repositories,
-		        pluginRepositories,
+		        common,
 		        profiles);
 		
 		Objects.requireNonNull(moduleId);

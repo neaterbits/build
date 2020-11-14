@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.phases.Phases;
@@ -44,8 +45,10 @@ public class PluginFinder {
 
         // Load any other plugin from effective POM
 
-        final int numProjectPlugins = mavenProject.getBuild() != null && mavenProject.getBuild().getPlugins() != null
-                ? mavenProject.getBuild().getPlugins().size()
+        final MavenBuild build = mavenProject.getCommon().getBuild();
+        
+        final int numProjectPlugins = build != null && build.getPlugins() != null
+                ? build.getPlugins().size()
                 : 0;
 
         final List<MavenPlugin> plugins = new ArrayList<>(builtinPlugins.size() + numProjectPlugins);
@@ -53,7 +56,7 @@ public class PluginFinder {
         plugins.addAll(builtinPlugins);
 
         if (numProjectPlugins > 0) {
-            plugins.addAll(mavenProject.getBuild().getPlugins());
+            plugins.addAll(build.getPlugins());
         }
 
         return plugins;
@@ -64,11 +67,13 @@ public class PluginFinder {
         MavenPlugin found = BuiltinPlugins.findPlugin(pluginPrefix);
         
         if (found == null) {
-            
-            // Load any other plugin from effective POM
-            if (mavenProject.getBuild() != null && mavenProject.getBuild().getPlugins() != null) {
 
-                for (MavenPlugin plugin : mavenProject.getBuild().getPlugins()) {
+            final MavenBuild build = mavenProject.getCommon().getBuild();
+
+            // Load any other plugin from effective POM
+            if (build != null && build.getPlugins() != null) {
+
+                for (MavenPlugin plugin : build.getPlugins()) {
                     
                     final String prefix = getPluginPrefix(plugin);
                     

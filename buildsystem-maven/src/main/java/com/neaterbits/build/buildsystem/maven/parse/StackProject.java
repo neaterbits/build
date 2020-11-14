@@ -1,6 +1,5 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ import com.neaterbits.util.parse.context.Context;
 
 final class StackProject
         extends StackEntity
-        implements DependenciesSetter, NameSetter, UrlSetter, ProfileSetter {
+        implements NameSetter, UrlSetter, CommonSetter {
 
 	private String name;
 
@@ -23,19 +22,15 @@ final class StackProject
 	
 	private MavenModuleId parentModuleId;
 	private Map<String, String> properties;
-	private List<String> modules;
-	private List<MavenDependency> dependencies;
-	private MavenReporting reporting;
-	private MavenBuild build;
-    private List<MavenRepository> repositories;
-	private List<MavenPluginRepository> pluginRepositories;
+	
+	private final StackCommon common;
+	
 	private List<MavenProfile> profiles;
 	
 	StackProject(Context context) {
 		super(context);
-
-		this.modules = new ArrayList<>();
-		this.dependencies = new ArrayList<>();
+		
+		this.common = new StackCommon();
 	}
 
 	String getName() {
@@ -72,57 +67,44 @@ final class StackProject
         this.properties = properties;
     }
 
-    List<String> getModules() {
-		return modules;
-	}
+    StackCommon getCommon() {
+        return common;
+    }
 
     @Override
-	public void setModules(List<String> modules) {
-		this.modules = modules;
-	}
+    public void setBuild(MavenBuild build) {
+        
+        common.setBuild(build);
+    }
 
-	List<MavenDependency> getDependencies() {
-		return dependencies;
-	}
+    @Override
+    public void setReporting(MavenReporting reporting) {
 
-	@Override
-	public void setDependencies(List<MavenDependency> dependencies) {
-		this.dependencies = dependencies;
-	}
+        common.setReporting(reporting);
+    }
 
-	MavenReporting getReporting() {
-		return reporting;
-	}
+    @Override
+    public void setModules(List<String> modules) {
 
-	void setReporting(MavenReporting reporting) {
-		this.reporting = reporting;
-	}
-
-	MavenBuild getBuild() {
-		return build;
-	}
-
-	@Override
-	public void setBuild(MavenBuild build) {
-		this.build = build;
-	}
-
-    List<MavenRepository> getRepositories() {
-        return repositories;
+        common.setModules(modules);
     }
 
     @Override
     public void setRepositories(List<MavenRepository> repositories) {
-        this.repositories = repositories;
-    }
 
-    List<MavenPluginRepository> getPluginRepositories() {
-        return pluginRepositories;
+        common.setRepositories(repositories);
     }
 
     @Override
     public void setPluginRepositories(List<MavenPluginRepository> pluginRepositories) {
-        this.pluginRepositories = pluginRepositories;
+
+        common.setPluginRepositories(pluginRepositories);
+    }
+
+    @Override
+    public void setDependencies(List<MavenDependency> dependencies) {
+
+        common.setDependencies(dependencies);
     }
 
     List<MavenProfile> getProfiles() {

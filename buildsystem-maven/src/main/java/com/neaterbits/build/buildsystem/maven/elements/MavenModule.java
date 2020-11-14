@@ -14,71 +14,53 @@ public class MavenModule extends MavenEntity {
 
 	private final File rootDirectory;
 	private final MavenModuleId parentModuleId;
-	
+
 	private final Map<String, String> properties;
-	
-	private final List<String> modules;
-	private final List<MavenDependency> dependencies;
-	private final MavenBuild build;
-    private final List<MavenRepository> repositories;
-	private final List<MavenPluginRepository> pluginRepositories;
+
+	private final MavenCommon common;
+
 	private final List<MavenProfile> profiles;
-	
+
 	public MavenModule(
 			File rootDirectory,
 			MavenModuleId moduleId,
 			MavenModuleId parentModuleId,
 			String packaging,
 			Map<String, String> properties,
-			List<String> modules,
-			List<MavenDependency> dependencies,
-			MavenBuild build,
-			List<MavenRepository> repositories,
-			List<MavenPluginRepository> pluginRepositories,
+			MavenCommon common,
 			List<MavenProfile> profiles) {
 
 		super(moduleId, packaging);
-		
-		Objects.requireNonNull(rootDirectory);
-		
-		this.rootDirectory = rootDirectory;
 
+		Objects.requireNonNull(rootDirectory);
+
+		this.rootDirectory = rootDirectory;
 		this.parentModuleId = parentModuleId;
-		
+
 		this.properties = properties != null
 		        ? Collections.unmodifiableMap(new HashMap<>(properties))
                 : null;
-		
-		this.modules = modules;
-		this.dependencies = dependencies;
-		this.build = build;
 
-		this.repositories = repositories != null
-		        ? Collections.unmodifiableList(repositories)
-                : null;
+        this.common = common;
 
-		this.pluginRepositories = pluginRepositories != null
-		        ? Collections.unmodifiableList(pluginRepositories)
-                : null;
-		        
         this.profiles = profiles != null
                 ? Collections.unmodifiableList(profiles)
                 : null;
 	}
-	
+
 	private String getGroupId() {
+	    
 		return getModuleId().getGroupId() != null
 				? getModuleId().getGroupId()
 				: getParentModuleId().getGroupId();
-						
 	}
-	
+
 	private String getVersion() {
 		return getModuleId().getVersion() != null
 				? getModuleId().getVersion()
 				: getParentModuleId().getVersion();
 	}
-	
+
 	public final File getRootDirectory() {
 		return rootDirectory;
 	}
@@ -91,25 +73,21 @@ public class MavenModule extends MavenEntity {
         return properties;
     }
 
-    public final List<String> getModules() {
-		return modules;
-	}
+	public final MavenCommon getCommon() {
+        return common;
+    }
 
-	public final List<MavenDependency> getDependencies() {
-		return dependencies;
-	}
-	
-	public final List<MavenDependency> resolveDependencies() {
+    public final List<MavenDependency> resolveDependencies() {
 		
 		final List<MavenDependency> resolvedDependencies;
 		
-		if (dependencies == null) {
+		if (common.getDependencies() == null) {
 			resolvedDependencies = null;
 		}
 		else {
-			resolvedDependencies = new ArrayList<>(dependencies.size());
+			resolvedDependencies = new ArrayList<>(common.getDependencies().size());
 			
-			for (MavenDependency dependency : dependencies) {
+			for (MavenDependency dependency : common.getDependencies()) {
 				final MavenDependency resolved = resolveDependency(dependency, getGroupId(), getVersion());
 				resolvedDependencies.add(resolved);
 			}
@@ -119,10 +97,9 @@ public class MavenModule extends MavenEntity {
 	}
 	
 	static MavenDependency resolveDependency(MavenDependency dependency, String groupId, String version) {
-		
-		
+
 		final MavenModuleId moduleId = dependency.getModuleId();
-		
+
 		return new MavenDependency(
 				new MavenModuleId(
 						moduleId.getGroupId().replace("${project.groupId}", groupId),
@@ -136,18 +113,6 @@ public class MavenModule extends MavenEntity {
 				dependency.getExclusions());
 		
 	}
-
-	public final MavenBuild getBuild() {
-		return build;
-	}
-
-    public final List<MavenRepository> getRepositories() {
-        return repositories;
-    }
-
-    public final List<MavenPluginRepository> getPluginRepositories() {
-        return pluginRepositories;
-    }
 
     public final List<MavenProfile> getProfiles() {
         return profiles;

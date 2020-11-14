@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
@@ -39,11 +40,13 @@ public class BuildParserTest extends BasePomParserTest {
 
         final MavenProject project = parse(pomString);
 
-        assertThat(project.getBuild().getDirectory()).isEqualTo("theDirectory");
-        assertThat(project.getBuild().getFinalName()).isEqualTo("theFinalName");
-        assertThat(project.getBuild().getOutputDirectory()).isEqualTo("theOutputDirectory");
-        assertThat(project.getBuild().getSourceDirectory()).isEqualTo("theSourceDirectory");
-        assertThat(project.getBuild().getScriptSourceDirectory()).isEqualTo("theScriptSourceDirectory");
-        assertThat(project.getBuild().getTestSourceDirectory()).isEqualTo("theTestSourceDirectory");
+        final MavenBuild build = project.getCommon().getBuild();
+        
+        assertThat(build.getDirectory()).isEqualTo("theDirectory");
+        assertThat(build.getFinalName()).isEqualTo("theFinalName");
+        assertThat(build.getOutputDirectory()).isEqualTo("theOutputDirectory");
+        assertThat(build.getSourceDirectory()).isEqualTo("theSourceDirectory");
+        assertThat(build.getScriptSourceDirectory()).isEqualTo("theScriptSourceDirectory");
+        assertThat(build.getTestSourceDirectory()).isEqualTo("theTestSourceDirectory");
     }
 }

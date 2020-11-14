@@ -3,10 +3,12 @@ package com.neaterbits.build.buildsystem.maven.parse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
 public class RepositoriesParserTest extends BasePomParserTest {
@@ -66,33 +68,35 @@ public class RepositoriesParserTest extends BasePomParserTest {
 
         final MavenProject project = parse(pomString);
         
-        assertThat(project.getRepositories()).isNotNull();
-        assertThat(project.getRepositories().size()).isEqualTo(2);
+        final List<MavenRepository> repositories = project.getCommon().getRepositories();
         
-        assertThat(project.getRepositories().get(0).getReleases().getEnabled()).isTrue();
-        assertThat(project.getRepositories().get(0).getReleases().getUpdatePolicy()).isEqualTo("never");
-        assertThat(project.getRepositories().get(0).getReleases().getChecksumPolicy()).isEqualTo("warn");
-
-        assertThat(project.getRepositories().get(0).getSnapshots().getEnabled()).isFalse();
-        assertThat(project.getRepositories().get(0).getSnapshots().getUpdatePolicy()).isEqualTo("always");
-        assertThat(project.getRepositories().get(0).getSnapshots().getChecksumPolicy()).isEqualTo("ignore");
+        assertThat(repositories).isNotNull();
+        assertThat(repositories.size()).isEqualTo(2);
         
-        assertThat(project.getRepositories().get(0).getName()).isEqualTo("Plugin repository 1");
-        assertThat(project.getRepositories().get(0).getId()).isEqualTo("plugin_repository_1");
-        assertThat(project.getRepositories().get(0).getUrl()).isEqualTo("https://plugin.repository1");
-        assertThat(project.getRepositories().get(0).getLayout()).isEqualTo("classic");
+        assertThat(repositories.get(0).getReleases().getEnabled()).isTrue();
+        assertThat(repositories.get(0).getReleases().getUpdatePolicy()).isEqualTo("never");
+        assertThat(repositories.get(0).getReleases().getChecksumPolicy()).isEqualTo("warn");
 
-        assertThat(project.getRepositories().get(1).getReleases().getEnabled()).isFalse();
-        assertThat(project.getRepositories().get(1).getReleases().getUpdatePolicy()).isEqualTo("daily");
-        assertThat(project.getRepositories().get(1).getReleases().getChecksumPolicy()).isEqualTo("ignore");
-
-        assertThat(project.getRepositories().get(1).getSnapshots().getEnabled()).isTrue();
-        assertThat(project.getRepositories().get(1).getSnapshots().getUpdatePolicy()).isEqualTo("interval:60");
-        assertThat(project.getRepositories().get(1).getSnapshots().getChecksumPolicy()).isEqualTo("warn");
+        assertThat(repositories.get(0).getSnapshots().getEnabled()).isFalse();
+        assertThat(repositories.get(0).getSnapshots().getUpdatePolicy()).isEqualTo("always");
+        assertThat(repositories.get(0).getSnapshots().getChecksumPolicy()).isEqualTo("ignore");
         
-        assertThat(project.getRepositories().get(1).getName()).isEqualTo("Plugin repository 2");
-        assertThat(project.getRepositories().get(1).getId()).isEqualTo("plugin_repository_2");
-        assertThat(project.getRepositories().get(1).getUrl()).isEqualTo("https://plugin.repository2");
-        assertThat(project.getRepositories().get(1).getLayout()).isEqualTo("default");
+        assertThat(repositories.get(0).getName()).isEqualTo("Plugin repository 1");
+        assertThat(repositories.get(0).getId()).isEqualTo("plugin_repository_1");
+        assertThat(repositories.get(0).getUrl()).isEqualTo("https://plugin.repository1");
+        assertThat(repositories.get(0).getLayout()).isEqualTo("classic");
+
+        assertThat(repositories.get(1).getReleases().getEnabled()).isFalse();
+        assertThat(repositories.get(1).getReleases().getUpdatePolicy()).isEqualTo("daily");
+        assertThat(repositories.get(1).getReleases().getChecksumPolicy()).isEqualTo("ignore");
+
+        assertThat(repositories.get(1).getSnapshots().getEnabled()).isTrue();
+        assertThat(repositories.get(1).getSnapshots().getUpdatePolicy()).isEqualTo("interval:60");
+        assertThat(repositories.get(1).getSnapshots().getChecksumPolicy()).isEqualTo("warn");
+        
+        assertThat(repositories.get(1).getName()).isEqualTo("Plugin repository 2");
+        assertThat(repositories.get(1).getId()).isEqualTo("plugin_repository_2");
+        assertThat(repositories.get(1).getUrl()).isEqualTo("https://plugin.repository2");
+        assertThat(repositories.get(1).getLayout()).isEqualTo("default");
     }
 }

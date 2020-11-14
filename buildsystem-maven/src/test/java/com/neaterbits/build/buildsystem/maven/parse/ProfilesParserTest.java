@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.neaterbits.build.buildsystem.maven.elements.MavenCommon;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
@@ -77,10 +78,12 @@ public class ProfilesParserTest extends BasePomParserTest {
         assertThat(profile.getActivation().getFile().getExists()).isEqualTo("existsFile");
         assertThat(profile.getActivation().getFile().getMissing()).isEqualTo("missingFile");
 
-        assertThat(profile.getBuild()).isNotNull();
-        assertThat(profile.getModules()).isEmpty();
-        assertThat(profile.getRepositories()).isEmpty();
-        assertThat(profile.getPluginRepositories()).isEmpty();
-        assertThat(profile.getDependencies()).isEmpty();
+        final MavenCommon base = profile.getCommon();
+
+        assertThat(base.getBuild()).isNotNull();
+        assertThat(base.getModules()).isEmpty();
+        assertThat(base.getRepositories()).isEmpty();
+        assertThat(base.getPluginRepositories()).isEmpty();
+        assertThat(base.getDependencies()).isEmpty();
     }    
 }

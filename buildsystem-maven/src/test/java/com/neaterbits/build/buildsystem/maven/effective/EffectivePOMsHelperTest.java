@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
@@ -132,24 +133,26 @@ public class EffectivePOMsHelperTest {
         assertThat(rootProject.getModuleId().getArtifactId()).isEqualTo(rootArtifactId);
         assertThat(rootProject.getModuleId().getVersion()).isEqualTo(rootVersion);
 
-        assertThat(rootProject.getDependencies().size()).isEqualTo(2);
+        final List<MavenDependency> rootDependencies = rootProject.getCommon().getDependencies();
         
-        assertThat(rootProject.getDependencies().get(0).getModuleId().getGroupId())
+        assertThat(rootDependencies.size()).isEqualTo(2);
+        
+        assertThat(rootDependencies.get(0).getModuleId().getGroupId())
                 .isEqualTo(superPomDependencyGroupId);
 
-        assertThat(rootProject.getDependencies().get(0).getModuleId().getArtifactId())
+        assertThat(rootDependencies.get(0).getModuleId().getArtifactId())
                 .isEqualTo(superPomDependencyArtifactId);
 
-        assertThat(rootProject.getDependencies().get(0).getModuleId().getVersion())
+        assertThat(rootDependencies.get(0).getModuleId().getVersion())
                 .isEqualTo(superPomDependencyVersion);
 
-        assertThat(rootProject.getDependencies().get(1).getModuleId().getGroupId())
+        assertThat(rootDependencies.get(1).getModuleId().getGroupId())
                 .isEqualTo(rootPomDependencyGroupId);
 
-        assertThat(rootProject.getDependencies().get(1).getModuleId().getArtifactId())
+        assertThat(rootDependencies.get(1).getModuleId().getArtifactId())
                 .isEqualTo(rootPomDependencyArtifactId);
 
-        assertThat(rootProject.getDependencies().get(1).getModuleId().getVersion())
+        assertThat(rootDependencies.get(1).getModuleId().getVersion())
                 .isEqualTo(rootPomDependencyVersion);
 
         final MavenProject subProject = effectiveProjects.get(1);
@@ -158,35 +161,36 @@ public class EffectivePOMsHelperTest {
         assertThat(subProject.getModuleId().getArtifactId()).isEqualTo(subArtifactId);
         assertThat(subProject.getModuleId().getVersion()).isEqualTo(subVersion);
 
-        assertThat(subProject.getDependencies().size()).isEqualTo(3);
+        final List<MavenDependency> subDependencies = subProject.getCommon().getDependencies();
+
+        assertThat(subDependencies.size()).isEqualTo(3);
         
-        assertThat(subProject.getDependencies().get(0).getModuleId().getGroupId())
+        assertThat(subDependencies.get(0).getModuleId().getGroupId())
                 .isEqualTo(superPomDependencyGroupId);
 
-        assertThat(subProject.getDependencies().get(0).getModuleId().getArtifactId())
+        assertThat(subDependencies.get(0).getModuleId().getArtifactId())
                 .isEqualTo(superPomDependencyArtifactId);
 
-        assertThat(subProject.getDependencies().get(0).getModuleId().getVersion())
+        assertThat(subDependencies.get(0).getModuleId().getVersion())
                 .isEqualTo(superPomDependencyVersion);
 
-        assertThat(subProject.getDependencies().get(1).getModuleId().getGroupId())
+        assertThat(subDependencies.get(1).getModuleId().getGroupId())
                 .isEqualTo(rootPomDependencyGroupId);
 
-        assertThat(subProject.getDependencies().get(1).getModuleId().getArtifactId())
+        assertThat(subDependencies.get(1).getModuleId().getArtifactId())
                 .isEqualTo(rootPomDependencyArtifactId);
 
-        assertThat(subProject.getDependencies().get(1).getModuleId().getVersion())
+        assertThat(subDependencies.get(1).getModuleId().getVersion())
                 .isEqualTo(rootPomDependencyVersion);
 
-        assertThat(subProject.getDependencies().get(2).getModuleId().getGroupId())
+        assertThat(subDependencies.get(2).getModuleId().getGroupId())
             .isEqualTo(subPomDependencyGroupId);
 
-        assertThat(subProject.getDependencies().get(2).getModuleId().getArtifactId())
+        assertThat(subDependencies.get(2).getModuleId().getArtifactId())
             .isEqualTo(subPomDependencyArtifactId);
 
-        assertThat(subProject.getDependencies().get(2).getModuleId().getVersion())
+        assertThat(subDependencies.get(2).getModuleId().getVersion())
             .isEqualTo(subPomDependencyVersion);
-        
     }
 
     @Test
