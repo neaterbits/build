@@ -130,6 +130,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackReporting stackReporting = pop();
 
         final MavenReporting reporting = new MavenReporting(
+                                            stackReporting.getDefaultGoal(),
                                             stackReporting.getDirectory(),
                                             stackReporting.getFinalName(),
                                             stackReporting.getResources(),
@@ -168,6 +169,21 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public final void onPluginsStart(Context context) {
         push(new StackPlugins(context));
+    }
+
+    @Override
+    public void onDefaultGoalStart(Context context) {
+        push(new StackDefaultGoal(context));
+    }
+
+    @Override
+    public void onDefaultGoalEnd(Context context) {
+        
+        final StackDefaultGoal stackDefaultGoal = pop();
+        
+        final StackBaseBuild stackBaseBuild = get();
+        
+        stackBaseBuild.setDefaultGoal(stackDefaultGoal.getText());
     }
 
     @Override
@@ -516,6 +532,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackBuild stackBuild = pop();
 
         final MavenBuild build = new MavenBuild(
+                stackBuild.getDefaultGoal(),
                 stackBuild.getDirectory(),
                 stackBuild.getFinalName(),
                 stackBuild.getOutputDirectory(),

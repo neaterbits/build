@@ -36,6 +36,10 @@ public interface PomEventListener
     
     void onDirectoryEnd(Context context);
     
+    void onDefaultGoalStart(Context context);
+    
+    void onDefaultGoalEnd(Context context);
+    
     void onOutputDirectoryStart(Context context);
     
     void onOutputDirectoryEnd(Context context);

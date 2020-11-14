@@ -104,6 +104,10 @@ public final class PomXMLEventListener
 		    delegate.onDirectoryStart(context);
 		    break;
 		    
+		case "defaultGoal":
+		    delegate.onDefaultGoalStart(context);
+		    break;
+
 		case "outputDirectory":
             delegate.onOutputDirectoryStart(context);
             break;
@@ -384,6 +388,10 @@ public final class PomXMLEventListener
             delegate.onDirectoryEnd(context);
             break;
             
+        case "defaultGoal":
+            delegate.onDefaultGoalEnd(context);
+            break;
+
         case "outputDirectory":
             delegate.onOutputDirectoryEnd(context);
             break;

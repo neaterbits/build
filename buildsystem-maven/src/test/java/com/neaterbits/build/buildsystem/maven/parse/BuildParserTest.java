@@ -27,8 +27,10 @@ public class BuildParserTest extends BasePomParserTest {
               + "  <version>" + version + "</version>"
 
               + "  <build>"
+              + "    <defaultGoal>install</defaultGoal>"
               + "    <directory>theDirectory</directory>"
               + "    <finalName>theFinalName</finalName>"
+              
               + "    <outputDirectory>theOutputDirectory</outputDirectory>"
               + "    <sourceDirectory>theSourceDirectory</sourceDirectory>"
               + "    <scriptSourceDirectory>theScriptSourceDirectory</scriptSourceDirectory>"
@@ -42,6 +44,7 @@ public class BuildParserTest extends BasePomParserTest {
 
         final MavenBuild build = project.getCommon().getBuild();
         
+        assertThat(build.getDefaultGoal()).isEqualTo("install");
         assertThat(build.getDirectory()).isEqualTo("theDirectory");
         assertThat(build.getFinalName()).isEqualTo("theFinalName");
         assertThat(build.getOutputDirectory()).isEqualTo("theOutputDirectory");

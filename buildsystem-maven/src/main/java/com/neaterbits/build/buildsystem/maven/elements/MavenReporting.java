@@ -7,6 +7,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPlug
 public final class MavenReporting extends MavenBaseBuild {
 
 	public MavenReporting(
+            String defaultGoal,
 	        String directory,
 	        String finalName,
 	        List<MavenResource> resources,
@@ -14,6 +15,6 @@ public final class MavenReporting extends MavenBaseBuild {
             MavenPluginManagement pluginManagement,
 	        List<MavenPlugin> plugins) {
 
-	    super(directory, finalName, resources, testResources, pluginManagement, plugins);
+	    super(defaultGoal, directory, finalName, resources, testResources, pluginManagement, plugins);
     }
 }

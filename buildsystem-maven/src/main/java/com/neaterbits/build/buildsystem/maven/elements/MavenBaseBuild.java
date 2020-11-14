@@ -6,7 +6,8 @@ import java.util.List;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
 
 public abstract class MavenBaseBuild {
-
+    
+    private final String defaultGoal;
     private final String directory;
     private final String finalName;
 
@@ -17,6 +18,7 @@ public abstract class MavenBaseBuild {
     private final List<MavenPlugin> plugins;
 
     public MavenBaseBuild(
+            String defaultGoal,
             String directory,
             String finalName,
             List<MavenResource> resources,
@@ -24,6 +26,8 @@ public abstract class MavenBaseBuild {
             MavenPluginManagement pluginManagement,
             List<MavenPlugin> plugins) {
 
+        this.defaultGoal = defaultGoal;
+        
         this.directory = directory;
         this.finalName = finalName;
 
@@ -40,6 +44,10 @@ public abstract class MavenBaseBuild {
         this.plugins = plugins != null
                 ? Collections.unmodifiableList(plugins)
                 : null;
+    }
+
+    public final String getDefaultGoal() {
+        return defaultGoal;
     }
 
     public final String getDirectory() {

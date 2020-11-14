@@ -9,6 +9,8 @@ import com.neaterbits.util.parse.context.Context;
 
 abstract class StackBaseBuild extends StackBase implements DirectorySetter, PluginsSetter {
 
+    private String defaultGoal;
+    
     private String directory;
     private String finalName;
 
@@ -20,6 +22,14 @@ abstract class StackBaseBuild extends StackBase implements DirectorySetter, Plug
 
     StackBaseBuild(Context context) {
         super(context);
+    }
+
+    final String getDefaultGoal() {
+        return defaultGoal;
+    }
+
+    final void setDefaultGoal(String defaultGoal) {
+        this.defaultGoal = defaultGoal;
     }
 
     final String getDirectory() {
