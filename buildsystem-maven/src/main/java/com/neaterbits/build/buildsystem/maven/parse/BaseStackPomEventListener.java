@@ -16,6 +16,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
 import com.neaterbits.build.buildsystem.maven.elements.MavenSnapshots;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
 import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.util.parse.context.Context;
 
@@ -132,6 +133,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                                             stackReporting.getFinalName(),
                                             stackReporting.getResources(),
                                             stackReporting.getTestResources(),
+                                            stackReporting.getPluginManagement(),
                                             stackReporting.getPlugins());
 
         final StackProject stackProject = get();
@@ -142,6 +144,24 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public final void onBuildStart(Context context) {
         push(new StackBuild(context));
+    }
+
+    @Override
+    public void onPluginManagementStart(Context context) {
+        push(new StackPluginManagement(context));
+    }
+
+    @Override
+    public void onPluginManagementEnd(Context context) {
+
+        final StackPluginManagement stackPluginManagement = pop();
+        
+        final StackBaseBuild stackBuildLike = get();
+        
+        final MavenPluginManagement pluginManagement
+                = new MavenPluginManagement(stackPluginManagement.getPlugins());
+        
+        stackBuildLike.setPluginManagement(pluginManagement);
     }
 
     @Override
@@ -447,9 +467,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackPlugins stackPlugins = pop();
 
-        final StackBaseBuild stackBaseBuild = get();
+        final PluginsSetter pluginsSetter = get();
 
-        stackBaseBuild.setPlugins(stackPlugins.getPlugins());
+        pluginsSetter.setPlugins(stackPlugins.getPlugins());
     }
 
     @Override
@@ -503,6 +523,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                 stackBuild.getTestSourceDirectory(),
                 stackBuild.getResources(),
                 stackBuild.getTestResources(),
+                stackBuild.getPluginManagement(),
                 stackBuild.getPlugins());
 
         final BuildSetter buildSetter = get();

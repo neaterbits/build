@@ -3,6 +3,8 @@ package com.neaterbits.build.buildsystem.maven.elements;
 import java.util.Collections;
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
+
 public abstract class MavenBaseBuild {
 
     private final String directory;
@@ -11,6 +13,7 @@ public abstract class MavenBaseBuild {
     private final List<MavenResource> resources;
     private final List<MavenResource> testResources;
     
+    private final MavenPluginManagement pluginManagement;
     private final List<MavenPlugin> plugins;
 
     public MavenBaseBuild(
@@ -18,6 +21,7 @@ public abstract class MavenBaseBuild {
             String finalName,
             List<MavenResource> resources,
             List<MavenResource> testResources,
+            MavenPluginManagement pluginManagement,
             List<MavenPlugin> plugins) {
 
         this.directory = directory;
@@ -30,6 +34,8 @@ public abstract class MavenBaseBuild {
         this.testResources = testResources != null
                 ? Collections.unmodifiableList(testResources)
                 : null;
+
+        this.pluginManagement = pluginManagement;
 
         this.plugins = plugins != null
                 ? Collections.unmodifiableList(plugins)
@@ -50,6 +56,10 @@ public abstract class MavenBaseBuild {
 
     public final List<MavenResource> getTestResources() {
         return testResources;
+    }
+
+    public final MavenPluginManagement getPluginManagement() {
+        return pluginManagement;
     }
 
     public final List<MavenPlugin> getPlugins() {

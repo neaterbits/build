@@ -96,6 +96,10 @@ public interface PomEventListener
 
     void onTestResourcesEnd(Context context);
 
+    void onPluginManagementStart(Context context);
+    
+    void onPluginManagementEnd(Context context);
+
     void onPluginsStart(Context context);
 
 	void onPluginStart(Context context);

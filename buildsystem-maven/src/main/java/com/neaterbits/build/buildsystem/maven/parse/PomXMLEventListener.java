@@ -164,6 +164,10 @@ public final class PomXMLEventListener
             delegate.onTestResourceStart(context);
             break;
             
+        case "pluginManagement":
+            delegate.onPluginManagementStart(context);
+            break;
+
         case "plugins":
 			delegate.onPluginsStart(context);
 			break;
@@ -430,6 +434,10 @@ public final class PomXMLEventListener
             
         case "testResource":
             delegate.onTestResourceEnd(context);
+            break;
+
+        case "pluginManagement":
+            delegate.onPluginManagementEnd(context);
             break;
 
         case "plugins":

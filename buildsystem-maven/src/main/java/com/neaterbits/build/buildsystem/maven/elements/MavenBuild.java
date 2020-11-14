@@ -2,6 +2,8 @@ package com.neaterbits.build.buildsystem.maven.elements;
 
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
+
 public final class MavenBuild extends MavenBaseBuild {
 
     private final String outputDirectory;
@@ -18,9 +20,10 @@ public final class MavenBuild extends MavenBaseBuild {
             String testSourceDirectory,
             List<MavenResource> resources,
             List<MavenResource> testResources,
+            MavenPluginManagement pluginManagement,
             List<MavenPlugin> plugins) {
 
-	    super(directory, finalName, resources, testResources, plugins);
+	    super(directory, finalName, resources, testResources, pluginManagement, plugins);
 
         this.outputDirectory = outputDirectory;
         this.sourceDirectory = sourceDirectory;

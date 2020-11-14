@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
 import com.neaterbits.util.parse.context.Context;
 
-abstract class StackBaseBuild extends StackBase implements DirectorySetter {
+abstract class StackBaseBuild extends StackBase implements DirectorySetter, PluginsSetter {
 
     private String directory;
     private String finalName;
@@ -14,6 +15,7 @@ abstract class StackBaseBuild extends StackBase implements DirectorySetter {
     private List<MavenResource> resources;
     private List<MavenResource> testResources;
 
+    private MavenPluginManagement pluginManagement;
     private List<MavenPlugin> plugins;
 
     StackBaseBuild(Context context) {
@@ -53,11 +55,20 @@ abstract class StackBaseBuild extends StackBase implements DirectorySetter {
         this.testResources = testResources;
     }
 
+    final MavenPluginManagement getPluginManagement() {
+        return pluginManagement;
+    }
+
+    final void setPluginManagement(MavenPluginManagement pluginManagement) {
+        this.pluginManagement = pluginManagement;
+    }
+
     final List<MavenPlugin> getPlugins() {
         return plugins;
     }
 
-    final void setPlugins(List<MavenPlugin> plugins) {
+    @Override
+    public final void setPlugins(List<MavenPlugin> plugins) {
         this.plugins = plugins;
     }
 }
