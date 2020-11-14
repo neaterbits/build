@@ -134,6 +134,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                                             stackReporting.getDefaultGoal(),
                                             stackReporting.getDirectory(),
                                             stackReporting.getFinalName(),
+                                            stackReporting.getFilters(),
                                             stackReporting.getResources(),
                                             stackReporting.getTestResources(),
                                             stackReporting.getPluginManagement(),
@@ -248,6 +249,36 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackBaseBuild stackBaseBuild = get();
         
         stackBaseBuild.setFinalName(stackFinalName.getText());
+    }
+
+    @Override
+    public void onFiltersStart(Context context) {
+        push(new StackFilters(context));
+    }
+
+    @Override
+    public void onFilterStart(Context context) {
+        push(new StackFilter(context));
+    }
+
+    @Override
+    public void onFilterEnd(Context context) {
+
+        final StackFilter stackFilter = pop();
+        
+        final StackFilters stackFilters = get();
+        
+        stackFilters.add(stackFilter.getText());
+    }
+
+    @Override
+    public void onFiltersEnd(Context context) {
+
+        final StackFilters stackFilters = pop();
+
+        final StackBaseBuild stackBaseBuild = get();
+        
+        stackBaseBuild.setFilters(stackFilters.getFilters());
     }
 
     @Override
@@ -554,6 +585,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                 stackBuild.getDefaultGoal(),
                 stackBuild.getDirectory(),
                 stackBuild.getFinalName(),
+                stackBuild.getFilters(),
                 stackBuild.getOutputDirectory(),
                 stackBuild.getSourceDirectory(),
                 stackBuild.getScriptSourceDirectory(),

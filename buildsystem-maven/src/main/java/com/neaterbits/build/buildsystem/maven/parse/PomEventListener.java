@@ -47,6 +47,14 @@ public interface PomEventListener
     void onFinalNameStart(Context context);
     
     void onFinalNameEnd(Context context);
+    
+    void onFiltersStart(Context context);
+    
+    void onFilterStart(Context context);
+    
+    void onFilterEnd(Context context);
+
+    void onFiltersEnd(Context context);
 
     void onSourceDirectoryStart(Context context);
     

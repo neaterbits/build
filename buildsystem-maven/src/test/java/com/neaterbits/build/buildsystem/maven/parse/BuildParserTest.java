@@ -31,6 +31,12 @@ public class BuildParserTest extends BasePomParserTest {
               + "    <directory>theDirectory</directory>"
               + "    <finalName>theFinalName</finalName>"
               
+              + "    <filters>"
+              + "      <filter>filter1</filter>"
+              + "      <filter>filter2</filter>"
+              + "      <filter>filter3</filter>"
+              + "    </filters>"
+              
               + "    <outputDirectory>theOutputDirectory</outputDirectory>"
               + "    <sourceDirectory>theSourceDirectory</sourceDirectory>"
               + "    <scriptSourceDirectory>theScriptSourceDirectory</scriptSourceDirectory>"
@@ -52,6 +58,13 @@ public class BuildParserTest extends BasePomParserTest {
         assertThat(build.getDefaultGoal()).isEqualTo("install");
         assertThat(build.getDirectory()).isEqualTo("theDirectory");
         assertThat(build.getFinalName()).isEqualTo("theFinalName");
+
+        assertThat(build.getFilters()).isNotNull();
+        assertThat(build.getFilters().size()).isEqualTo(3);
+        assertThat(build.getFilters().get(0)).isEqualTo("filter1");
+        assertThat(build.getFilters().get(1)).isEqualTo("filter2");
+        assertThat(build.getFilters().get(2)).isEqualTo("filter3");
+
         assertThat(build.getOutputDirectory()).isEqualTo("theOutputDirectory");
         assertThat(build.getSourceDirectory()).isEqualTo("theSourceDirectory");
         assertThat(build.getScriptSourceDirectory()).isEqualTo("theScriptSourceDirectory");

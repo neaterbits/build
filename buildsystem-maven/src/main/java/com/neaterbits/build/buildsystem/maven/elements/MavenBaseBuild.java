@@ -10,6 +10,8 @@ public abstract class MavenBaseBuild {
     private final String defaultGoal;
     private final String directory;
     private final String finalName;
+    
+    private final List<String> filters;
 
     private final List<MavenResource> resources;
     private final List<MavenResource> testResources;
@@ -21,6 +23,7 @@ public abstract class MavenBaseBuild {
             String defaultGoal,
             String directory,
             String finalName,
+            List<String> filters,
             List<MavenResource> resources,
             List<MavenResource> testResources,
             MavenPluginManagement pluginManagement,
@@ -30,6 +33,10 @@ public abstract class MavenBaseBuild {
         
         this.directory = directory;
         this.finalName = finalName;
+        
+        this.filters = filters != null
+                ? Collections.unmodifiableList(filters)
+                : null;
 
         this.resources = resources != null
                 ? Collections.unmodifiableList(resources)
@@ -56,6 +63,10 @@ public abstract class MavenBaseBuild {
 
     public final String getFinalName() {
         return finalName;
+    }
+
+    public final List<String> getFilters() {
+        return filters;
     }
 
     public final List<MavenResource> getResources() {

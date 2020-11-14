@@ -10,11 +10,12 @@ public final class MavenReporting extends MavenBaseBuild {
             String defaultGoal,
 	        String directory,
 	        String finalName,
+	        List<String> filters,
 	        List<MavenResource> resources,
 	        List<MavenResource> testResources,
             MavenPluginManagement pluginManagement,
 	        List<MavenPlugin> plugins) {
 
-	    super(defaultGoal, directory, finalName, resources, testResources, pluginManagement, plugins);
+	    super(defaultGoal, directory, finalName, filters, resources, testResources, pluginManagement, plugins);
     }
 }

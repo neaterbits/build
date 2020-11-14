@@ -13,10 +13,11 @@ public final class MavenBuild extends MavenBaseBuild {
 
 	public MavenBuild(
             String defaultGoal,
-	        String directory,
+            String directory,
             String finalName,
-	        String outputDirectory,
-	        String sourceDirectory,
+            List<String> filters,
+            String outputDirectory,
+            String sourceDirectory,
             String scriptSourceDirectory,
             String testSourceDirectory,
             List<MavenResource> resources,
@@ -24,7 +25,7 @@ public final class MavenBuild extends MavenBaseBuild {
             MavenPluginManagement pluginManagement,
             List<MavenPlugin> plugins) {
 
-	    super(defaultGoal, directory, finalName, resources, testResources, pluginManagement, plugins);
+	    super(defaultGoal, directory, finalName, filters, resources, testResources, pluginManagement, plugins);
 
         this.outputDirectory = outputDirectory;
         this.sourceDirectory = sourceDirectory;

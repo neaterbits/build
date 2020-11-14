@@ -119,6 +119,14 @@ public final class PomXMLEventListener
         case "finalName":
             delegate.onFinalNameStart(context);
             break;
+            
+        case "filters":
+            delegate.onFiltersStart(context);
+            break;
+            
+        case "filter":
+            delegate.onFilterStart(context);
+            break;
 
         case "sourceDirectory":
             delegate.onSourceDirectoryStart(context);
@@ -406,6 +414,14 @@ public final class PomXMLEventListener
 
         case "finalName":
             delegate.onFinalNameEnd(context);
+            break;
+
+        case "filters":
+            delegate.onFiltersEnd(context);
+            break;
+            
+        case "filter":
+            delegate.onFilterEnd(context);
             break;
 
         case "sourceDirectory":

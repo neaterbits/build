@@ -14,6 +14,8 @@ abstract class StackBaseBuild extends StackBase implements DirectorySetter, Plug
     private String directory;
     private String finalName;
 
+    private List<String> filters;
+    
     private List<MavenResource> resources;
     private List<MavenResource> testResources;
 
@@ -42,6 +44,14 @@ abstract class StackBaseBuild extends StackBase implements DirectorySetter, Plug
 
     final void setFinalName(String finalName) {
         this.finalName = finalName;
+    }
+
+    final List<String> getFilters() {
+        return filters;
+    }
+
+    final void setFilters(List<String> filters) {
+        this.filters = filters;
     }
 
     @Override
