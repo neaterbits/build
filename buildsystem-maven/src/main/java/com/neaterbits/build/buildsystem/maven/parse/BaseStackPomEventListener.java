@@ -9,6 +9,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenActivationProperty;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
+import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
@@ -595,6 +596,24 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         buildSetter.setBuild(build);
     }
     
+    @Override
+    public void onOrganizationStart(Context context) {
+        push(new StackOrganization(context));
+    }
+
+    @Override
+    public void onOrganizationEnd(Context context) {
+
+        final StackOrganization stackOrganization = pop();
+        
+        final StackProject stackProject = get();
+        
+        final MavenOrganization organization
+            = new MavenOrganization(stackOrganization.getName(), stackOrganization.getUrl());
+        
+        stackProject.setOrganization(organization);
+    }
+
     @Override
     public void onIssueManagementStart(Context context) {
         push(new StackIssueManagement(context));

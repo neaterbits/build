@@ -208,6 +208,10 @@ public final class PomXMLEventListener
 			delegate.onExtensionStart(context);
 			break;
 
+        case "organization":
+            delegate.onOrganizationStart(context);
+            break;
+            
 		case "issueManagement":
 		    delegate.onIssueManagementStart(context);
 		    break;
@@ -504,6 +508,10 @@ public final class PomXMLEventListener
 			delegate.onExtensionEnd(context);
 			break;
 			
+        case "organization":
+            delegate.onOrganizationEnd(context);
+            break;
+            
         case "issueManagement":
             delegate.onIssueManagementEnd(context);
             break;

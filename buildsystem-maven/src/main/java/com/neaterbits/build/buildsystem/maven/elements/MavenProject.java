@@ -9,6 +9,8 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 
 public class MavenProject extends MavenModule {
 
+    private final MavenOrganization organization;
+    
 	public MavenProject(
 			File rootDirectory,
 			MavenModuleId moduleId,
@@ -16,6 +18,7 @@ public class MavenProject extends MavenModule {
 			String packaging,
 			Map<String, String> properties,
 			MavenCommon common,
+			MavenOrganization organization,
 			MavenIssueManagement issueManagement,
 			List<MavenProfile> profiles) {
 		
@@ -30,5 +33,11 @@ public class MavenProject extends MavenModule {
 		        profiles);
 		
 		Objects.requireNonNull(moduleId);
+		
+		this.organization = organization;
 	}
+
+    public MavenOrganization getOrganization() {
+        return organization;
+    }
 }

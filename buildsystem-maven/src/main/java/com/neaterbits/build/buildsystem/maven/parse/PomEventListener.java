@@ -142,6 +142,10 @@ public interface PomEventListener
 
 	void onBuildEnd(Context context);
 	
+    void onOrganizationStart(Context context);
+    
+    void onOrganizationEnd(Context context);
+    
 	void onIssueManagementStart(Context context);
 	
 	void onSystemStart(Context context);

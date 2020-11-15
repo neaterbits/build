@@ -10,7 +10,7 @@ public final class MavenReporting {
     private final String outputDirectory;
     
     private final List<MavenReportPlugin> plugins;
-    
+
 	public MavenReporting(
             String excludeDefaults,
             String outputDirectory,

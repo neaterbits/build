@@ -7,6 +7,7 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
+import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
@@ -27,6 +28,8 @@ final class StackProject
 	
 	private final StackCommon common;
 	
+    private MavenOrganization organization;
+    
 	private MavenIssueManagement issueManagement;
 	
 	private List<MavenProfile> profiles;
@@ -114,6 +117,14 @@ final class StackProject
     public void setDependencies(List<MavenDependency> dependencies) {
 
         common.setDependencies(dependencies);
+    }
+
+    MavenOrganization getOrganization() {
+        return organization;
+    }
+
+    void setOrganization(MavenOrganization organization) {
+        this.organization = organization;
     }
 
     MavenIssueManagement getIssueManagement() {
