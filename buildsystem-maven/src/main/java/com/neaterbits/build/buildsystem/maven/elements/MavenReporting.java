@@ -1,21 +1,39 @@
 package com.neaterbits.build.buildsystem.maven.elements;
 
+import java.util.Collections;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
+public final class MavenReporting {
 
-public final class MavenReporting extends MavenBaseBuild {
-
+    private final String excludeDefaults;
+    
+    private final String outputDirectory;
+    
+    private final List<MavenReportPlugin> plugins;
+    
 	public MavenReporting(
-            String defaultGoal,
-	        String directory,
-	        String finalName,
-	        List<String> filters,
-	        List<MavenResource> resources,
-	        List<MavenResource> testResources,
-            MavenPluginManagement pluginManagement,
-	        List<MavenPlugin> plugins) {
+            String excludeDefaults,
+            String outputDirectory,
+	        List<MavenReportPlugin> plugins) {
 
-	    super(defaultGoal, directory, finalName, filters, resources, testResources, pluginManagement, plugins);
+	    this.excludeDefaults = excludeDefaults;
+
+	    this.outputDirectory = outputDirectory;
+	    
+	    this.plugins = plugins != null
+	                ? Collections.unmodifiableList(plugins)
+                    : null;
+    }
+
+    public String getExcludeDefaults() {
+        return excludeDefaults;
+    }
+
+    public String getOutputDirectory() {
+        return outputDirectory;
+    }
+
+    public List<MavenReportPlugin> getPlugins() {
+        return plugins;
     }
 }

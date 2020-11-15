@@ -131,13 +131,8 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackReporting stackReporting = pop();
 
         final MavenReporting reporting = new MavenReporting(
-                                            stackReporting.getDefaultGoal(),
-                                            stackReporting.getDirectory(),
-                                            stackReporting.getFinalName(),
-                                            stackReporting.getFilters(),
-                                            stackReporting.getResources(),
-                                            stackReporting.getTestResources(),
-                                            stackReporting.getPluginManagement(),
+                                            stackReporting.getExcludeDefaults(),
+                                            stackReporting.getOutputDirectory(),
                                             stackReporting.getPlugins());
 
         final StackProject stackProject = get();

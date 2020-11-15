@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
-import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
 public class PluginManagementParserTest extends BasePomParserTest {
@@ -33,13 +32,6 @@ public class PluginManagementParserTest extends BasePomParserTest {
               + "      </plugins>"
               + "    </pluginManagement>"
               + "  </build>"
-    
-              + "  <reporting>"
-              + "    <pluginManagement>"
-              + "      <plugins>"
-              + "      </plugins>"
-              + "    </pluginManagement>"
-              + "  </reporting>"
 
               + "</project>";
     
@@ -49,10 +41,5 @@ public class PluginManagementParserTest extends BasePomParserTest {
         
         assertThat(build.getPluginManagement()).isNotNull();
         assertThat(build.getPluginManagement().getPlugins()).isEmpty();
-        
-        final MavenReporting reporting = project.getCommon().getReporting();
-
-        assertThat(reporting.getPluginManagement()).isNotNull();
-        assertThat(reporting.getPluginManagement().getPlugins()).isEmpty();
     }
 }
