@@ -12,6 +12,7 @@ public final class PomXMLEventListener
 	private final PomEventListener delegate;
 	
 	private boolean inProperties;
+	private boolean inPluginConfiguration;
 
 	public PomXMLEventListener(PomEventListener delegate) {
 	    super(delegate);
@@ -27,7 +28,7 @@ public final class PomXMLEventListener
 	    // Within <properties>, call onText() for unknown tags
 	    // since property tag names may be user defined and do not follow any schema
 	    
-        return inProperties;
+        return inProperties || inPluginConfiguration;
     }
 
     @Override
@@ -191,6 +192,27 @@ public final class PomXMLEventListener
 		case "plugin":
 			delegate.onPluginStart(context);
 			break;
+			
+		case "inherited":
+		    delegate.onInheritedStart(context);
+		    break;
+		    
+		case "configuration":
+		    delegate.onConfigurationStart(context);
+		    this.inPluginConfiguration = true;
+		    break;
+
+        case "phase":
+            delegate.onPhaseStart(context);
+            break;
+            
+        case "goals":
+            delegate.onGoalsStart(context);
+            break;
+            
+        case "goal":
+            delegate.onGoalStart(context);
+            break;
 
         case "executions":
             delegate.onExecutionsStart(context);
@@ -199,7 +221,7 @@ public final class PomXMLEventListener
         case "execution":
             delegate.onExecutionStart(context);
             break;
-
+            
         case "extensions":
 			delegate.onExtensionsStart(context);
 			break;
@@ -333,7 +355,7 @@ public final class PomXMLEventListener
 	@Override
 	public void onEndElement(Context context, String localPart, Void param) {
 
-		switch (localPart) {
+        switch (localPart) {
 
 		case "project":
 			delegate.onProjectEnd(context);
@@ -491,6 +513,27 @@ public final class PomXMLEventListener
 		case "plugin":
 			delegate.onPluginEnd(context);
 			break;
+
+        case "inherited":
+            delegate.onInheritedEnd(context);
+            break;
+
+        case "configuration":
+            delegate.onConfigurationEnd(context);
+            this.inPluginConfiguration = false;
+            break;
+
+        case "phase":
+            delegate.onPhaseEnd(context);
+            break;
+            
+        case "goals":
+            delegate.onGoalsEnd(context);
+            break;
+            
+        case "goal":
+            delegate.onGoalEnd(context);
+            break;
 
         case "executions":
             delegate.onExecutionsEnd(context);

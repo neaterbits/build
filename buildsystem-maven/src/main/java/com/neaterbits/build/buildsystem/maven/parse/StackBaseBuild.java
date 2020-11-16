@@ -2,7 +2,7 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguredPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
 import com.neaterbits.util.parse.context.Context;
@@ -20,7 +20,7 @@ abstract class StackBaseBuild extends StackBase implements DirectorySetter, Plug
     private List<MavenResource> testResources;
 
     private MavenPluginManagement pluginManagement;
-    private List<MavenPlugin> plugins;
+    private List<MavenConfiguredPlugin> plugins;
 
     StackBaseBuild(Context context) {
         super(context);
@@ -83,12 +83,12 @@ abstract class StackBaseBuild extends StackBase implements DirectorySetter, Plug
         this.pluginManagement = pluginManagement;
     }
 
-    final List<MavenPlugin> getPlugins() {
+    final List<MavenConfiguredPlugin> getPlugins() {
         return plugins;
     }
 
     @Override
-    public final void setPlugins(List<MavenPlugin> plugins) {
+    public final void setPlugins(List<MavenConfiguredPlugin> plugins) {
         this.plugins = plugins;
     }
 }

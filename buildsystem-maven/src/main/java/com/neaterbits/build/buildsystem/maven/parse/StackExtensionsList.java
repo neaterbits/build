@@ -7,11 +7,11 @@ import java.util.Objects;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackExtensions extends StackBase {
+final class StackExtensionsList extends StackBase {
 
 	private final List<MavenExtension> extensions;
 
-	StackExtensions(Context context) {
+	StackExtensionsList(Context context) {
 		super(context);
 
 		this.extensions = new ArrayList<>();

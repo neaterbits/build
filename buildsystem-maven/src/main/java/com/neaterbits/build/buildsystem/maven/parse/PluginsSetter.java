@@ -2,9 +2,9 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguredPlugin;
 
 interface PluginsSetter {
 
-    void setPlugins(List<MavenPlugin> plugins);
+    void setPlugins(List<MavenConfiguredPlugin> plugins);
 }

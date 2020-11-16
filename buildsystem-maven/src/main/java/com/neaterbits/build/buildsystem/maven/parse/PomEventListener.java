@@ -120,9 +120,29 @@ public interface PomEventListener
 
 	void onPluginStart(Context context);
 	
+	void onInheritedStart(Context context);
+	
+	void onInheritedEnd(Context context);
+	
+	void onConfigurationStart(Context context);
+
+	void onConfigurationEnd(Context context);
+
 	void onExecutionsStart(Context context);
 	
 	void onExecutionStart(Context context);
+	
+	void onPhaseStart(Context context);
+	
+	void onPhaseEnd(Context context);
+	
+	void onGoalsStart(Context context);
+	
+	void onGoalStart(Context context);
+	
+	void onGoalEnd(Context context);
+	
+	void onGoalsEnd(Context context);
 
 	void onExecutionEnd(Context context);
 

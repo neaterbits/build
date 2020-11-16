@@ -7,10 +7,11 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenActivationFile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationOS;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationProperty;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguredPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenExecution;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
@@ -60,6 +61,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         if (cur instanceof StackProperties) {
             push(new StackProperty(context, name));
         }
+        else if (cur instanceof StackPluginConfiguration || cur instanceof StackConfigurationLevel) {
+            push(new StackConfigurationLevel(context, name));
+        }
     }
 
     @Override
@@ -73,6 +77,27 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
             final StackProperties stackProperties = get();
             
             stackProperties.add(stackProperty.getName(), stackProperty.getText());
+        }
+        else if (cur instanceof StackConfigurationLevel) {
+         
+            final StackConfigurationLevel stackConfigurationLevel = pop();
+            
+            final StackBase last = get();
+            
+            if (last instanceof StackConfigurationLevel) {
+                
+                final StackConfigurationLevel lastConfigurationLevel = (StackConfigurationLevel)last;
+                
+                if (stackConfigurationLevel.getText() != null) {
+                    lastConfigurationLevel.add(stackConfigurationLevel.getTagName(), stackConfigurationLevel.getText());
+                }
+                else {
+                    lastConfigurationLevel.add(stackConfigurationLevel.getTagName(), stackConfigurationLevel.getObject());
+                }
+            }
+            else {
+                throw new IllegalStateException();
+            }
         }
     }
 
@@ -486,6 +511,36 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     }
 
     @Override
+    public void onInheritedStart(Context context) {
+        push(new StackInherited(context));
+    }
+
+    @Override
+    public void onInheritedEnd(Context context) {
+
+        final StackInherited stackInherited = pop();
+        
+        final InheritedSetter inheritedSetter = get();
+        
+        inheritedSetter.setInherited(stackInherited.getValue());
+    }
+
+    @Override
+    public void onConfigurationStart(Context context) {
+        push(new StackPluginConfiguration(context));
+    }
+
+    @Override
+    public void onConfigurationEnd(Context context) {
+
+        final StackPluginConfiguration stackPluginConfiguration = pop();
+        
+        final ConfigurationSetter configurationSetter = get();
+        
+        configurationSetter.setConfiguration(stackPluginConfiguration.getConfiguration());
+    }
+
+    @Override
     public void onExecutionsStart(Context context) {
 
         push(new StackExecutions(context));
@@ -494,23 +549,79 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
     @Override
     public void onExecutionStart(Context context) {
-
         push(new StackExecution(context));
+    }
+
+    @Override
+    public void onPhaseStart(Context context) {
+        push(new StackPhase(context));
+    }
+
+    @Override
+    public void onPhaseEnd(Context context) {
+
+        final StackPhase stackPhase = pop();
         
+        final StackExecution stackExecution = get();
+        
+        stackExecution.setPhase(stackPhase.getText());
+    }
+
+    @Override
+    public void onGoalsStart(Context context) {
+        push(new StackGoals(context));
+    }
+
+    @Override
+    public void onGoalStart(Context context) {
+        push(new StackGoal(context));
+    }
+
+    @Override
+    public void onGoalEnd(Context context) {
+
+        final StackGoal stackGoal = pop();
+        
+        final StackGoals stackGoals = get();
+        
+        stackGoals.add(stackGoal.getText());
+    }
+
+    @Override
+    public void onGoalsEnd(Context context) {
+
+        final StackGoals stackGoals = pop();
+        
+        final StackExecution stackExecution = get();
+        
+        stackExecution.setGoals(stackGoals.getGoals());
     }
 
     @Override
     public void onExecutionEnd(Context context) {
 
-        pop();
+        final StackExecution stackExecution = pop();
         
+        final StackExecutions stackExecutions = get();
+        
+        final MavenExecution execution = new MavenExecution(
+                                                stackExecution.getId(),
+                                                stackExecution.getPhase(),
+                                                stackExecution.getGoals(),
+                                                stackExecution.getInherited(),
+                                                stackExecution.getConfiguration());
+        
+        stackExecutions.add(execution);
     }
 
     @Override
     public void onExecutionsEnd(Context context) {
 
-        pop();
+        final StackExecutions stackExecutions = pop();
         
+        final StackPlugin stackPlugin = get();
+        
+        stackPlugin.setExecutions(stackExecutions.getExecutions());
     }
 
     @Override
@@ -518,7 +629,13 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackPlugin stackPlugin = pop();
 
-        final MavenPlugin mavenPlugin = new MavenPlugin(stackPlugin.makeModuleId());
+        final MavenConfiguredPlugin mavenPlugin = new MavenConfiguredPlugin(
+                                                        stackPlugin.makeModuleId(),
+                                                        stackPlugin.getExtensions(),
+                                                        stackPlugin.getInherited(),
+                                                        stackPlugin.getConfiguration(),
+                                                        stackPlugin.getDependencies(),
+                                                        stackPlugin.getExecutions());
 
         final StackPlugins stackPlugins = get();
 
@@ -538,8 +655,13 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public final void onExtensionsStart(Context context) {
 
-        if (get() instanceof StackBuild) {
-            push(new StackExtensions(context));
+        final StackBase cur = get();
+        
+        if (cur instanceof StackBuild) {
+            push(new StackExtensionsList(context));
+        }
+        else if (cur instanceof StackPlugin) {
+            push(new StackPluginExtensions(context));
         }
     }
 
@@ -554,7 +676,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackExtension stackExtension = pop();
 
-        final StackExtensions stackExtensions = get();
+        final StackExtensionsList stackExtensions = get();
 
         stackExtensions.addExtension(new MavenExtension(stackExtension.makeModuleId()));
     }
@@ -562,13 +684,23 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public final void onExtensionsEnd(Context context) {
 
-        if (get() instanceof StackExtensions) {
+        final StackBase cur = get();
+        
+        if (cur instanceof StackExtensionsList) {
 
-            final StackExtensions stackExtensions = pop();
+            final StackExtensionsList stackExtensions = pop();
 
             final StackBuild stackBuild = get();
 
             stackBuild.setExtensions(stackExtensions.getExtensions());
+        }
+        else if (cur instanceof StackPluginExtensions) {
+            
+            final StackPluginExtensions stackExtensions = pop();
+            
+            final StackPlugin stackPlugin = get();
+            
+            stackPlugin.setExtensions(stackExtensions.getValue());
         }
     }
 

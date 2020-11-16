@@ -7,7 +7,8 @@ import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
 import com.neaterbits.util.parse.context.Context;
 
-public abstract class BaseXMLEventListener<PARAM> implements XMLEventListener<PARAM> {
+public abstract class BaseXMLEventListener<PARAM>
+                            implements XMLEventListener<PARAM> {
 
     private final BaseEventListener delegate;
 
