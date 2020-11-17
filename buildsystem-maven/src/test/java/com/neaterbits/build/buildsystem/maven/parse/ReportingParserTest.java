@@ -34,7 +34,26 @@ public class ReportingParserTest extends BasePomParserTest {
               + "         <groupId>pluginGroupId</groupId>"
               + "         <artifactId>pluginArtifactId</artifactId>"
               + "         <version>pluginVersion</version>"
-              
+
+              + "         <inherited>false</inherited>"
+
+              + "         <configuration>"
+
+              + "           <confKey>value</confKey>"
+
+              + "           <listKey>"
+              + "              <item>item1</item>"
+              + "              <item>item2</item>"
+              + "              <item>item3</item>"
+              + "           </listKey>"
+
+              + "           <objectKey>"
+              + "              <field1>value1</field1>"
+              + "              <field2>value2</field2>"
+              + "              <field3>value3</field3>"
+              + "           </objectKey>"
+              + "         </configuration>"
+
               + "         <reportSets>"
               + "           <reportSet>"
               + "             <id>testReportSet</id>"
@@ -65,7 +84,17 @@ public class ReportingParserTest extends BasePomParserTest {
         assertThat(plugin.getModuleId().getGroupId()).isEqualTo("pluginGroupId");
         assertThat(plugin.getModuleId().getArtifactId()).isEqualTo("pluginArtifactId");
         assertThat(plugin.getModuleId().getVersion()).isEqualTo("pluginVersion");
-    
+
+        assertThat(plugin.getConfiguration().getInherited()).isFalse();
+
+        assertThat(plugin.getConfiguration().getMap().getKeys()).containsOnly("confKey", "listKey", "objectKey");
+
+        assertThat(plugin.getConfiguration().getMap().getString("confKey")).isEqualTo("value");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("listKey").getStringList("item")).containsExactly("item1", "item2", "item3");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("objectKey").getString("field1")).isEqualTo("value1");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("objectKey").getString("field2")).isEqualTo("value2");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("objectKey").getString("field3")).isEqualTo("value3");
+        
         assertThat(plugin.getReportSets().size()).isEqualTo(1);
 
         assertThat(plugin.getReportSets().get(0).getId()).isEqualTo("testReportSet");

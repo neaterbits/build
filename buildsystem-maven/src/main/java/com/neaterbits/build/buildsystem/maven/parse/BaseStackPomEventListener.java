@@ -637,11 +637,14 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         
         final StackBase cur = get();
         
-        if (cur instanceof StackPlugin || cur instanceof StackExecution) {
+        if (cur instanceof StackPlugin || cur instanceof StackReportingPlugin || cur instanceof StackExecution) {
             push(new StackPluginConfigurationMap(context));
         }
-        else {
+        else if (cur instanceof StackNotifier) {
             push(new StackCiConfiguration(context));
+        }
+        else {
+            throw new IllegalStateException("Unknown type " + cur.getClass());
         }
     }
 
@@ -658,12 +661,16 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
             
             configurationSetter.setConfiguration(stackPluginConfiguration.getConfiguration());
         }
-        else {
+        else if (cur instanceof StackCiConfiguration) {
+     
             final StackCiConfiguration stackCiConfiguration = (StackCiConfiguration)cur;
             
             final StackNotifier stackNotifier = get();
             
             stackNotifier.setConfiguration(stackCiConfiguration.getProperties());
+        }
+        else {
+            throw new IllegalStateException();
         }
     }
 
@@ -778,6 +785,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
             
             final MavenReportPlugin reportingPlugin = new MavenReportPlugin(
                                                             stackReportingPlugin.makeModuleId(),
+                                                            new MavenPluginConfiguration(
+                                                                    stackReportingPlugin.getInherited(),
+                                                                    stackReportingPlugin.getConfiguration()),
                                                             stackReportingPlugin.getReportSets());
             
             final StackReportingPlugins stackReportingPlugins = get();

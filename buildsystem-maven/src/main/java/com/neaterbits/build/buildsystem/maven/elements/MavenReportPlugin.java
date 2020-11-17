@@ -5,12 +5,16 @@ import java.util.List;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 
-public final class MavenReportPlugin extends MavenEntity {
+public final class MavenReportPlugin extends MavenConfiguredPlugin {
 
     private final List<MavenReportSet> reportSets;
     
-    public MavenReportPlugin(MavenModuleId moduleId, List<MavenReportSet> reportSets) {
-        super(moduleId, null);
+    public MavenReportPlugin(
+            MavenModuleId moduleId,
+            MavenPluginConfiguration configuration,
+            List<MavenReportSet> reportSets) {
+        
+        super(moduleId, configuration);
 
         this.reportSets = reportSets != null
                 ? Collections.unmodifiableList(reportSets)
