@@ -23,7 +23,7 @@ public final class MavenBuild extends MavenBaseBuild {
             List<MavenResource> resources,
             List<MavenResource> testResources,
             MavenPluginManagement pluginManagement,
-            List<MavenConfiguredPlugin> plugins) {
+            List<MavenBuildPlugin> plugins) {
 
 	    super(defaultGoal, directory, finalName, filters, resources, testResources, pluginManagement, plugins);
 

@@ -7,7 +7,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenActivationFile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationOS;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationProperty;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
-import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguredPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenBuildPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExecution;
 import com.neaterbits.build.buildsystem.maven.elements.MavenCiManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
@@ -759,12 +759,12 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
          
             final StackPlugin stackPlugin = (StackPlugin)cur;
     
-            final MavenConfiguredPlugin plugin = new MavenConfiguredPlugin(
+            final MavenBuildPlugin plugin = new MavenBuildPlugin(
                                                             stackPlugin.makeModuleId(),
-                                                            stackPlugin.getExtensions(),
                                                             new MavenPluginConfiguration(
                                                                     stackPlugin.getInherited(),
                                                                     stackPlugin.getConfiguration()),
+                                                            stackPlugin.getExtensions(),
                                                             stackPlugin.getDependencies(),
                                                             stackPlugin.getExecutions());
     

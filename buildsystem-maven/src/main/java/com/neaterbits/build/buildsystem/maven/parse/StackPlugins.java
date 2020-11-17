@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguredPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenBuildPlugin;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackPlugins extends StackBase {
 
-	private final List<MavenConfiguredPlugin> plugins;
+	private final List<MavenBuildPlugin> plugins;
 
 	StackPlugins(Context context) {
 		super(context);
@@ -17,11 +17,11 @@ final class StackPlugins extends StackBase {
 		this.plugins = new ArrayList<>();
 	}
 
-	List<MavenConfiguredPlugin> getPlugins() {
+	List<MavenBuildPlugin> getPlugins() {
 		return plugins;
 	}
 
-	void addPlugin(MavenConfiguredPlugin plugin) {
+	void addPlugin(MavenBuildPlugin plugin) {
 
 		Objects.requireNonNull(plugin);
 

@@ -17,7 +17,7 @@ public abstract class MavenBaseBuild {
     private final List<MavenResource> testResources;
     
     private final MavenPluginManagement pluginManagement;
-    private final List<MavenConfiguredPlugin> plugins;
+    private final List<MavenBuildPlugin> plugins;
 
     public MavenBaseBuild(
             String defaultGoal,
@@ -27,7 +27,7 @@ public abstract class MavenBaseBuild {
             List<MavenResource> resources,
             List<MavenResource> testResources,
             MavenPluginManagement pluginManagement,
-            List<MavenConfiguredPlugin> plugins) {
+            List<MavenBuildPlugin> plugins) {
 
         this.defaultGoal = defaultGoal;
         
@@ -81,7 +81,7 @@ public abstract class MavenBaseBuild {
         return pluginManagement;
     }
 
-    public final List<MavenConfiguredPlugin> getPlugins() {
+    public final List<MavenBuildPlugin> getPlugins() {
         return plugins;
     }
 }

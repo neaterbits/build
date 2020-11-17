@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
-import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguredPlugin;
+import com.neaterbits.build.buildsystem.maven.elements.MavenBuildPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 
@@ -110,7 +110,7 @@ public class PluginParserTest extends BasePomParserTest {
         
         assertThat(build.getPlugins().size()).isEqualTo(1);
         
-        final MavenConfiguredPlugin plugin = build.getPlugins().get(0);
+        final MavenBuildPlugin plugin = build.getPlugins().get(0);
 
         assertThat(plugin.getModuleId().getGroupId()).isEqualTo("pluginGroupId");
         assertThat(plugin.getModuleId().getArtifactId()).isEqualTo("pluginArtifactId");
