@@ -1,6 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfigurationMap;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfigurationMap;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackPluginConfigurationMap extends StackConfigurationLevel {
@@ -9,7 +9,7 @@ final class StackPluginConfigurationMap extends StackConfigurationLevel {
         super(context, "configuration");
     }
 
-    MavenPluginConfigurationMap getConfiguration() {
+    MavenConfigurationMap getConfiguration() {
         return getObject();
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.neaterbits.util.parse.context.Context;
 
-final class StackReportSet extends StackBase implements IdSetter {
+final class StackReportSet extends StackConfigurable implements IdSetter {
 
     private String id;
 

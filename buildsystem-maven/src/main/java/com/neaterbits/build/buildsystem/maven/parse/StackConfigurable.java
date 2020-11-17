@@ -1,7 +1,7 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfiguration;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfigurationMap;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguration;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfigurationMap;
 import com.neaterbits.util.parse.context.Context;
 
 abstract class StackConfigurable
@@ -10,7 +10,7 @@ abstract class StackConfigurable
 
     private Boolean inherited;
 
-    private MavenPluginConfigurationMap configurationMap;
+    private MavenConfigurationMap configurationMap;
 
     StackConfigurable(Context context) {
         super(context);
@@ -25,16 +25,16 @@ abstract class StackConfigurable
         this.inherited = inherited;
     }
 
-    final MavenPluginConfigurationMap getConfiguration() {
+    final MavenConfigurationMap getConfiguration() {
         return configurationMap;
     }
 
     @Override
-    public final void setConfiguration(MavenPluginConfigurationMap configuration) {
+    public final void setConfiguration(MavenConfigurationMap configuration) {
         this.configurationMap = configuration;
     }
 
-    final MavenPluginConfiguration makeConfiguration() {
-        return new MavenPluginConfiguration(inherited, configurationMap);
+    final MavenConfiguration makeConfiguration() {
+        return new MavenConfiguration(inherited, configurationMap);
     }
 }

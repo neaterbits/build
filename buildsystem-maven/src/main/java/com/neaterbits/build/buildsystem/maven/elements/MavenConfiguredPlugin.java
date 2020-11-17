@@ -4,15 +4,15 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 
 public class MavenConfiguredPlugin extends MavenPlugin {
 
-    private final MavenPluginConfiguration configuration;
+    private final MavenConfiguration configuration;
 
-    public MavenConfiguredPlugin(MavenModuleId moduleId, MavenPluginConfiguration configuration) {
+    public MavenConfiguredPlugin(MavenModuleId moduleId, MavenConfiguration configuration) {
         super(moduleId);
 
         this.configuration = configuration;
     }
 
-    public final MavenPluginConfiguration getConfiguration() {
+    public final MavenConfiguration getConfiguration() {
         return configuration;
     }
 }

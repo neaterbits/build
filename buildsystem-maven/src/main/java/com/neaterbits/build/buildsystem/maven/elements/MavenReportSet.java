@@ -9,13 +9,17 @@ public final class MavenReportSet {
     
     private final List<String> reports;
 
-    public MavenReportSet(String id, List<String> reports) {
+    private final MavenConfiguration configuration;
+    
+    public MavenReportSet(String id, List<String> reports, MavenConfiguration configuration) {
         
         this.id = id;
         
         this.reports = reports != null
                 ? Collections.unmodifiableList(reports)
                 : null;
+
+        this.configuration = configuration;
     }
 
     public String getId() {
@@ -24,5 +28,9 @@ public final class MavenReportSet {
 
     public List<String> getReports() {
         return reports;
+    }
+
+    public MavenConfiguration getConfiguration() {
+        return configuration;
     }
 }

@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public final class MavenPluginConfigurationMap {
+public final class MavenConfigurationMap {
 
     private final Map<String, Object> values;
 
-    public MavenPluginConfigurationMap(Map<String, Object> values) {
+    public MavenConfigurationMap(Map<String, Object> values) {
         
         Objects.requireNonNull(values);
         
@@ -33,13 +33,13 @@ public final class MavenPluginConfigurationMap {
         return (List<String>)getValue(key);
     }
     
-    public MavenPluginConfigurationMap getSubObject(String key) {
-        return (MavenPluginConfigurationMap)getValue(key);
+    public MavenConfigurationMap getSubObject(String key) {
+        return (MavenConfigurationMap)getValue(key);
     }
     
     @SuppressWarnings("unchecked")
-    public List<MavenPluginConfigurationMap> getSubObjectList(String key) {
-        return (List<MavenPluginConfigurationMap>)getValue(key);
+    public List<MavenConfigurationMap> getSubObjectList(String key) {
+        return (List<MavenConfigurationMap>)getValue(key);
     }
     
     public Set<String> getKeys() {

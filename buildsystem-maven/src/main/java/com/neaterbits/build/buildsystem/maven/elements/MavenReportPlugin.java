@@ -11,7 +11,7 @@ public final class MavenReportPlugin extends MavenConfiguredPlugin {
     
     public MavenReportPlugin(
             MavenModuleId moduleId,
-            MavenPluginConfiguration configuration,
+            MavenConfiguration configuration,
             List<MavenReportSet> reportSets) {
         
         super(moduleId, configuration);

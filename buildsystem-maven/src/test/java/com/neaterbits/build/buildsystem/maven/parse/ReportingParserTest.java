@@ -63,6 +63,10 @@ public class ReportingParserTest extends BasePomParserTest {
               + "               <report>testReport2</report>"
               + "               <report>testReport3</report>"
               + "             </reports>"
+              
+              + "             <configuration>"
+              + "                <reportConfKey>reportConfValue</reportConfKey>"
+              + "             </configuration>"
 
               + "           </reportSet>"
               + "         </reportSets>"
@@ -74,9 +78,9 @@ public class ReportingParserTest extends BasePomParserTest {
               + "</project>";
 
         final MavenProject project = parse(pomString);
-        
+
         final MavenReporting reporting = project.getCommon().getReporting();
-        
+
         assertThat(reporting.getPlugins().size()).isEqualTo(1);
         
         final MavenReportPlugin plugin = reporting.getPlugins().get(0);
@@ -104,5 +108,8 @@ public class ReportingParserTest extends BasePomParserTest {
         assertThat(plugin.getReportSets().get(0).getReports().get(0)).isEqualTo("testReport1");
         assertThat(plugin.getReportSets().get(0).getReports().get(1)).isEqualTo("testReport2");
         assertThat(plugin.getReportSets().get(0).getReports().get(2)).isEqualTo("testReport3");
+
+        assertThat(plugin.getReportSets().get(0).getConfiguration().getMap().getKeys()).containsOnly("reportConfKey");
+        assertThat(plugin.getReportSets().get(0).getConfiguration().getMap().getValue("reportConfKey")).isEqualTo("reportConfValue");
     }
 }

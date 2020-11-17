@@ -8,13 +8,13 @@ public final class MavenExecution {
     private final String id;
     private final String phase;
     private final List<String> goals;
-    private final MavenPluginConfiguration configuration;
+    private final MavenConfiguration configuration;
     
     public MavenExecution(
             String id,
             String phase,
             List<String> goals,
-            MavenPluginConfiguration configuration) {
+            MavenConfiguration configuration) {
 
         this.id = id;
         this.phase = phase;
@@ -38,7 +38,7 @@ public final class MavenExecution {
         return goals;
     }
 
-    public MavenPluginConfiguration getConfiguration() {
+    public MavenConfiguration getConfiguration() {
         return configuration;
     }
 }

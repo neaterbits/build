@@ -2,7 +2,7 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfigurationMap;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfigurationMap;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReportSet;
 import com.neaterbits.util.parse.context.Context;
 
@@ -12,7 +12,7 @@ final class StackReportingPlugin
 
     private Boolean inherited;
 
-    private MavenPluginConfigurationMap configuration;
+    private MavenConfigurationMap configuration;
 
     private List<MavenReportSet> reportSets;
     
@@ -29,12 +29,12 @@ final class StackReportingPlugin
         this.inherited = inherited;
     }
 
-    MavenPluginConfigurationMap getConfiguration() {
+    MavenConfigurationMap getConfiguration() {
         return configuration;
     }
 
     @Override
-    public void setConfiguration(MavenPluginConfigurationMap configuration) {
+    public void setConfiguration(MavenConfigurationMap configuration) {
         this.configuration = configuration;
     }
 

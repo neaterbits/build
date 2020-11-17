@@ -1,11 +1,11 @@
 package com.neaterbits.build.buildsystem.maven.elements;
 
-public final class MavenPluginConfiguration {
+public final class MavenConfiguration {
 
     private final Boolean inherited;
-    private final MavenPluginConfigurationMap configurationMap;
+    private final MavenConfigurationMap configurationMap;
     
-    public MavenPluginConfiguration(Boolean inherited, MavenPluginConfigurationMap configurationMap) {
+    public MavenConfiguration(Boolean inherited, MavenConfigurationMap configurationMap) {
         this.inherited = inherited;
         this.configurationMap = configurationMap;
     }
@@ -14,7 +14,7 @@ public final class MavenPluginConfiguration {
         return inherited;
     }
 
-    public MavenPluginConfigurationMap getMap() {
+    public MavenConfigurationMap getMap() {
         return configurationMap;
     }
 }

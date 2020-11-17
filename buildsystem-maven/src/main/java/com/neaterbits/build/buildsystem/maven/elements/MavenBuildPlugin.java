@@ -15,7 +15,7 @@ public final class MavenBuildPlugin extends MavenConfiguredPlugin {
 
     public MavenBuildPlugin(
             String groupId, String artifactId, String version,
-            MavenPluginConfiguration configuration,
+            MavenConfiguration configuration,
             Boolean extensions,
             List<MavenDependency> dependencies,
             List<MavenExecution> executions) {
@@ -25,7 +25,7 @@ public final class MavenBuildPlugin extends MavenConfiguredPlugin {
 
 	public MavenBuildPlugin(
 	        MavenModuleId moduleId,
-	        MavenPluginConfiguration configuration,
+	        MavenConfiguration configuration,
             Boolean extensions,
             List<MavenDependency> dependencies,
             List<MavenExecution> executions) {

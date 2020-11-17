@@ -15,7 +15,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenNotifier;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfiguration;
+import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguration;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
@@ -222,7 +222,8 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         
         final MavenReportSet reportSet = new MavenReportSet(
                                                 stackReportSet.getId(),
-                                                stackReportSet.getReports());
+                                                stackReportSet.getReports(),
+                                                stackReportSet.makeConfiguration());
         stackReportSets.add(reportSet);
     }
 
@@ -637,7 +638,11 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         
         final StackBase cur = get();
         
-        if (cur instanceof StackPlugin || cur instanceof StackReportingPlugin || cur instanceof StackExecution) {
+        if (   cur instanceof StackPlugin
+            || cur instanceof StackExecution
+            || cur instanceof StackReportingPlugin
+            || cur instanceof StackReportSet) {
+
             push(new StackPluginConfigurationMap(context));
         }
         else if (cur instanceof StackNotifier) {
@@ -768,7 +773,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     
             final MavenBuildPlugin plugin = new MavenBuildPlugin(
                                                             stackPlugin.makeModuleId(),
-                                                            new MavenPluginConfiguration(
+                                                            new MavenConfiguration(
                                                                     stackPlugin.getInherited(),
                                                                     stackPlugin.getConfiguration()),
                                                             stackPlugin.getExtensions(),
@@ -785,7 +790,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
             
             final MavenReportPlugin reportingPlugin = new MavenReportPlugin(
                                                             stackReportingPlugin.makeModuleId(),
-                                                            new MavenPluginConfiguration(
+                                                            new MavenConfiguration(
                                                                     stackReportingPlugin.getInherited(),
                                                                     stackReportingPlugin.getConfiguration()),
                                                             stackReportingPlugin.getReportSets());
