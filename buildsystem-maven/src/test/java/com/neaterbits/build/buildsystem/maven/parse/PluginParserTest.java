@@ -117,15 +117,16 @@ public class PluginParserTest extends BasePomParserTest {
         assertThat(plugin.getModuleId().getVersion()).isEqualTo("pluginVersion");
     
         assertThat(plugin.getExtensions()).isTrue();
-        assertThat(plugin.getInherited()).isFalse();
+        
+        assertThat(plugin.getConfiguration().getInherited()).isFalse();
 
-        assertThat(plugin.getConfiguration().getKeys()).containsOnly("confKey", "listKey", "objectKey");
+        assertThat(plugin.getConfiguration().getMap().getKeys()).containsOnly("confKey", "listKey", "objectKey");
 
-        assertThat(plugin.getConfiguration().getString("confKey")).isEqualTo("value");
-        assertThat(plugin.getConfiguration().getSubObject("listKey").getStringList("item")).containsExactly("item1", "item2", "item3");
-        assertThat(plugin.getConfiguration().getSubObject("objectKey").getString("field1")).isEqualTo("value1");
-        assertThat(plugin.getConfiguration().getSubObject("objectKey").getString("field2")).isEqualTo("value2");
-        assertThat(plugin.getConfiguration().getSubObject("objectKey").getString("field3")).isEqualTo("value3");
+        assertThat(plugin.getConfiguration().getMap().getString("confKey")).isEqualTo("value");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("listKey").getStringList("item")).containsExactly("item1", "item2", "item3");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("objectKey").getString("field1")).isEqualTo("value1");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("objectKey").getString("field2")).isEqualTo("value2");
+        assertThat(plugin.getConfiguration().getMap().getSubObject("objectKey").getString("field3")).isEqualTo("value3");
         
         assertThat(plugin.getDependencies().size()).isEqualTo(1);
         assertThat(plugin.getDependencies().get(0).getModuleId().getGroupId()).isEqualTo("pluginDependencyGroupId");
@@ -137,13 +138,13 @@ public class PluginParserTest extends BasePomParserTest {
         assertThat(plugin.getExecutions().get(0).getGoals().size()).isEqualTo(1);
         assertThat(plugin.getExecutions().get(0).getGoals().get(0)).isEqualTo("testGoal");
         assertThat(plugin.getExecutions().get(0).getPhase()).isEqualTo("testPhase");
-        assertThat(plugin.getExecutions().get(0).getInherited()).isFalse();
+        assertThat(plugin.getExecutions().get(0).getConfiguration().getInherited()).isFalse();
         
-        assertThat(plugin.getExecutions().get(0).getConfiguration().getKeys()).containsOnly("confKey", "listKey");
+        assertThat(plugin.getExecutions().get(0).getConfiguration().getMap().getKeys()).containsOnly("confKey", "listKey");
                 
-        assertThat(plugin.getExecutions().get(0).getConfiguration().getString("confKey")).isEqualTo("value");
-        assertThat(plugin.getExecutions().get(0).getConfiguration().getSubObject("listKey").getSubObjectList("objectKey").get(0).getString("field1")).isEqualTo("obj1value1");
-        assertThat(plugin.getExecutions().get(0).getConfiguration().getSubObject("listKey").getSubObjectList("objectKey").get(0).getString("field2")).isEqualTo("obj1value2");
-        assertThat(plugin.getExecutions().get(0).getConfiguration().getSubObject("listKey").getSubObjectList("objectKey").get(0).getString("field3")).isEqualTo("obj1value3");
+        assertThat(plugin.getExecutions().get(0).getConfiguration().getMap().getString("confKey")).isEqualTo("value");
+        assertThat(plugin.getExecutions().get(0).getConfiguration().getMap().getSubObject("listKey").getSubObjectList("objectKey").get(0).getString("field1")).isEqualTo("obj1value1");
+        assertThat(plugin.getExecutions().get(0).getConfiguration().getMap().getSubObject("listKey").getSubObjectList("objectKey").get(0).getString("field2")).isEqualTo("obj1value2");
+        assertThat(plugin.getExecutions().get(0).getConfiguration().getMap().getSubObject("listKey").getSubObjectList("objectKey").get(0).getString("field3")).isEqualTo("obj1value3");
     }
 }

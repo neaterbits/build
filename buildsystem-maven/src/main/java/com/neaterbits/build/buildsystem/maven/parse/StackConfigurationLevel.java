@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfiguration;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfigurationMap;
 import com.neaterbits.util.parse.context.Context;
 
 class StackConfigurationLevel extends StackText {
@@ -31,8 +31,8 @@ class StackConfigurationLevel extends StackText {
         return getText() != null || (subObjects != null && !subObjects.isEmpty());
     }
     
-    final MavenPluginConfiguration getObject() {
-        return new MavenPluginConfiguration(subObjects);
+    final MavenPluginConfigurationMap getObject() {
+        return new MavenPluginConfigurationMap(subObjects);
     }
     
     Object get(String key) {

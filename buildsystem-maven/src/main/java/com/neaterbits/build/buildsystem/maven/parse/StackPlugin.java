@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExecution;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfiguration;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfigurationMap;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackPlugin
@@ -15,7 +15,7 @@ final class StackPlugin
 
     private Boolean inherited;
 
-    private MavenPluginConfiguration configuration;
+    private MavenPluginConfigurationMap configuration;
 
     private List<MavenDependency> dependencies;
 
@@ -42,12 +42,12 @@ final class StackPlugin
         this.inherited = inherited;
     }
 
-    MavenPluginConfiguration getConfiguration() {
+    MavenPluginConfigurationMap getConfiguration() {
         return configuration;
     }
 
     @Override
-    public void setConfiguration(MavenPluginConfiguration configuration) {
+    public void setConfiguration(MavenPluginConfigurationMap configuration) {
         this.configuration = configuration;
     }
 

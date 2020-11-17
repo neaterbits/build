@@ -15,6 +15,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenNotifier;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
+import com.neaterbits.build.buildsystem.maven.elements.MavenPluginConfiguration;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
@@ -67,7 +68,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         if (cur instanceof StackProperties || cur instanceof StackCiConfiguration) {
             push(new StackProperty(context, name));
         }
-        else if (cur instanceof StackPluginConfiguration || cur instanceof StackConfigurationLevel) {
+        else if (cur instanceof StackPluginConfigurationMap || cur instanceof StackConfigurationLevel) {
             push(new StackConfigurationLevel(context, name));
         }
     }
@@ -637,7 +638,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackBase cur = get();
         
         if (cur instanceof StackPlugin || cur instanceof StackExecution) {
-            push(new StackPluginConfiguration(context));
+            push(new StackPluginConfigurationMap(context));
         }
         else {
             push(new StackCiConfiguration(context));
@@ -649,9 +650,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackBase cur = pop();
         
-        if (cur instanceof StackPluginConfiguration) {
+        if (cur instanceof StackPluginConfigurationMap) {
             
-            final StackPluginConfiguration stackPluginConfiguration = (StackPluginConfiguration)cur;
+            final StackPluginConfigurationMap stackPluginConfiguration = (StackPluginConfigurationMap)cur;
             
             final ConfigurationSetter configurationSetter = get();
             
@@ -734,8 +735,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                                                 stackExecution.getId(),
                                                 stackExecution.getPhase(),
                                                 stackExecution.getGoals(),
-                                                stackExecution.getInherited(),
-                                                stackExecution.getConfiguration());
+                                                stackExecution.makeConfiguration());
         
         stackExecutions.add(execution);
     }
@@ -762,8 +762,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
             final MavenConfiguredPlugin plugin = new MavenConfiguredPlugin(
                                                             stackPlugin.makeModuleId(),
                                                             stackPlugin.getExtensions(),
-                                                            stackPlugin.getInherited(),
-                                                            stackPlugin.getConfiguration(),
+                                                            new MavenPluginConfiguration(
+                                                                    stackPlugin.getInherited(),
+                                                                    stackPlugin.getConfiguration()),
                                                             stackPlugin.getDependencies(),
                                                             stackPlugin.getExecutions());
     

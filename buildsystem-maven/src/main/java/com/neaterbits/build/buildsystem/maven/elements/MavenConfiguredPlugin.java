@@ -8,8 +8,7 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 public final class MavenConfiguredPlugin extends MavenPlugin {
 
     private final Boolean extensions;
-    private final Boolean inherited;
-    
+
     private final MavenPluginConfiguration configuration;
     
     private final List<MavenDependency> dependencies;
@@ -19,7 +18,6 @@ public final class MavenConfiguredPlugin extends MavenPlugin {
     public MavenConfiguredPlugin(
             MavenModuleId moduleId,
             Boolean extensions,
-            Boolean inherited,
             MavenPluginConfiguration configuration,
             List<MavenDependency> dependencies,
             List<MavenExecution> executions) {
@@ -27,7 +25,6 @@ public final class MavenConfiguredPlugin extends MavenPlugin {
         super(moduleId);
         
         this.extensions = extensions;
-        this.inherited = inherited;
         this.configuration = configuration;
 
         this.dependencies = dependencies != null
@@ -41,10 +38,6 @@ public final class MavenConfiguredPlugin extends MavenPlugin {
 
     public Boolean getExtensions() {
         return extensions;
-    }
-
-    public Boolean getInherited() {
-        return inherited;
     }
 
     public MavenPluginConfiguration getConfiguration() {
