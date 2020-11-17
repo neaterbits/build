@@ -28,6 +28,22 @@ public interface PomEventListener
 
 	void onReportingStart(Context context);
 
+	void onReportSetsStart(Context context);
+	
+	void onReportSetStart(Context context);
+	
+    void onReportsStart(Context context);
+
+    void onReportStart(Context context);
+	
+	void onReportEnd(Context context);
+
+    void onReportsEnd(Context context);
+
+    void onReportSetEnd(Context context);
+
+    void onReportSetsEnd(Context context);
+	
 	void onReportingEnd(Context context);
 
 	void onBuildStart(Context context);

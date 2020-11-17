@@ -100,8 +100,24 @@ public final class PomXMLEventListener
 		case "reporting":
 			delegate.onReportingStart(context);
 			break;
+			
+		case "reportSets":
+		    delegate.onReportSetsStart(context);
+		    break;
 
-		case "build":
+        case "reportSet":
+            delegate.onReportSetStart(context);
+            break;
+
+        case "reports":
+            delegate.onReportsStart(context);
+            break;
+
+        case "report":
+            delegate.onReportStart(context);
+            break;
+            
+        case "build":
 			delegate.onBuildStart(context);
 			break;
 			
@@ -486,7 +502,23 @@ public final class PomXMLEventListener
 			delegate.onReportingEnd(context);
 			break;
 
-		case "build":
+        case "reportSets":
+            delegate.onReportSetsEnd(context);
+            break;
+
+        case "reportSet":
+            delegate.onReportSetEnd(context);
+            break;
+
+        case "reports":
+            delegate.onReportsEnd(context);
+            break;
+
+        case "report":
+            delegate.onReportEnd(context);
+            break;
+
+        case "build":
 			delegate.onBuildEnd(context);
 			break;
 

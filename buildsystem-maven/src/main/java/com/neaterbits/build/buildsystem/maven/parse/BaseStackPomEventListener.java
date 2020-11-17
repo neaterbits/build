@@ -18,7 +18,9 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
+import com.neaterbits.build.buildsystem.maven.elements.MavenReportSet;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
+import com.neaterbits.build.buildsystem.maven.elements.MavenReportPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
 import com.neaterbits.build.buildsystem.maven.elements.MavenSnapshots;
@@ -170,6 +172,69 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     }
 
     @Override
+    public final void onReportSetsStart(Context context) {
+        push(new StackReportSets(context));
+    }
+
+    @Override
+    public void onReportSetStart(Context context) {
+        push(new StackReportSet(context));
+    }
+
+    @Override
+    public void onReportsStart(Context context) {
+        push(new StackReports(context));
+    }
+
+    @Override
+    public void onReportStart(Context context) {
+        push(new StackReport(context));
+    }
+
+    @Override
+    public void onReportsEnd(Context context) {
+
+        final StackReports stackReports = pop();
+        
+        final StackReportSet stackReportSet = get();
+        
+        stackReportSet.setReports(stackReports.getReports());
+    }
+
+    @Override
+    public void onReportEnd(Context context) {
+
+        final StackReport stackReport = pop();
+        
+        final StackReports stackReports = get();
+        
+        stackReports.add(stackReport.getText());
+    }
+
+    @Override
+    public void onReportSetEnd(Context context) {
+
+        final StackReportSet stackReportSet = pop();
+        
+        final StackReportSets stackReportSets = get();
+        
+        final MavenReportSet reportSet = new MavenReportSet(
+                                                stackReportSet.getId(),
+                                                stackReportSet.getReports());
+        stackReportSets.add(reportSet);
+    }
+
+    @Override
+    public void onReportSetsEnd(Context context) {
+
+        final StackReportSets stackReportSets = pop();
+        
+        final StackReportingPlugin stackReportingPlugin = get();
+        
+        stackReportingPlugin.setReportSets(stackReportSets.getReportSets());
+    }
+
+    @Override
     public final void onReportingEnd(Context context) {
 
         final StackReporting stackReporting = pop();
@@ -227,7 +292,18 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
     @Override
     public final void onPluginsStart(Context context) {
-        push(new StackPlugins(context));
+        
+        final StackBase cur = get();
+        
+        if (cur instanceof StackBuild || cur instanceof StackPluginManagement) {
+            push(new StackPlugins(context));
+        }
+        else if (cur instanceof StackReporting) {
+            push(new StackReportingPlugins(context));
+        }
+        else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
@@ -525,7 +601,18 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
     @Override
     public final void onPluginStart(Context context) {
-        push(new StackPlugin(context));
+        
+        final StackBase cur = get();
+        
+        if (cur instanceof StackPlugins) {
+            push(new StackPlugin(context));
+        }
+        else if (cur instanceof StackReportingPlugins) {
+            push(new StackReportingPlugin(context));
+        }
+        else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
@@ -665,29 +752,64 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public final void onPluginEnd(Context context) {
 
-        final StackPlugin stackPlugin = pop();
-
-        final MavenConfiguredPlugin mavenPlugin = new MavenConfiguredPlugin(
-                                                        stackPlugin.makeModuleId(),
-                                                        stackPlugin.getExtensions(),
-                                                        stackPlugin.getInherited(),
-                                                        stackPlugin.getConfiguration(),
-                                                        stackPlugin.getDependencies(),
-                                                        stackPlugin.getExecutions());
-
-        final StackPlugins stackPlugins = get();
-
-        stackPlugins.addPlugin(mavenPlugin);
+        final StackBase cur = pop();
+        
+        if (cur instanceof StackPlugin) {
+         
+            final StackPlugin stackPlugin = (StackPlugin)cur;
+    
+            final MavenConfiguredPlugin plugin = new MavenConfiguredPlugin(
+                                                            stackPlugin.makeModuleId(),
+                                                            stackPlugin.getExtensions(),
+                                                            stackPlugin.getInherited(),
+                                                            stackPlugin.getConfiguration(),
+                                                            stackPlugin.getDependencies(),
+                                                            stackPlugin.getExecutions());
+    
+            final StackPlugins stackPlugins = get();
+    
+            stackPlugins.addPlugin(plugin);
+        }
+        else if (cur instanceof StackReportingPlugin) {
+            
+            final StackReportingPlugin stackReportingPlugin = (StackReportingPlugin)cur;
+            
+            final MavenReportPlugin reportingPlugin = new MavenReportPlugin(
+                                                            stackReportingPlugin.makeModuleId(),
+                                                            stackReportingPlugin.getReportSets());
+            
+            final StackReportingPlugins stackReportingPlugins = get();
+            
+            stackReportingPlugins.add(reportingPlugin);
+        }
+        else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
     public final void onPluginsEnd(Context context) {
 
-        final StackPlugins stackPlugins = pop();
-
-        final PluginsSetter pluginsSetter = get();
-
-        pluginsSetter.setPlugins(stackPlugins.getPlugins());
+        final StackBase cur = pop();
+        
+        if (cur instanceof StackPlugins) {
+            final StackPlugins stackPlugins = (StackPlugins)cur;
+    
+            final PluginsSetter pluginsSetter = get();
+    
+            pluginsSetter.setPlugins(stackPlugins.getPlugins());
+        }
+        else if (cur instanceof StackReportingPlugins) {
+            
+            final StackReportingPlugins stackReportingPlugins = (StackReportingPlugins)cur;
+            
+            final StackReporting stackReporting = get();
+            
+            stackReporting.setPlugins(stackReportingPlugins.getPlugins());
+        }
+        else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
