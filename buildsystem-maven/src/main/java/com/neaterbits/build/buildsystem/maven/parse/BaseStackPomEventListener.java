@@ -12,6 +12,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenExecution;
 import com.neaterbits.build.buildsystem.maven.elements.MavenCiManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
+import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenNotifier;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
@@ -946,6 +947,134 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                                                         stackCiManagement.getUrl(),
                                                         stackCiManagement.getNotifiers());
         stackProject.setCiManagement(ciManagement);
+    }
+
+    @Override
+    public final void onMailingListsStart(Context context) {
+        push(new StackMailingLists(context));
+    }
+
+    @Override
+    public final void onMailingListStart(Context context) {
+        push(new StackMailingList(context));
+    }
+
+    @Override
+    public final void onSubscribeStart(Context context) {
+        push(new StackSubscribe(context));
+    }
+
+    @Override
+    public final void onSubscribeEnd(Context context) {
+
+        final StackSubscribe stackSubscribe = pop();
+        
+        final StackMailingList stackMailingList = get();
+    
+        stackMailingList.setSubscribe(stackSubscribe.getText());
+    }
+
+    @Override
+    public final void onUnsubscribeStart(Context context) {
+        push(new StackUnsubscribe(context));
+    }
+
+    @Override
+    public final void onUnsubscribeEnd(Context context) {
+
+        final StackUnsubscribe stackUnsubscribe = pop();
+        
+        final StackMailingList stackMailingList = get();
+        
+        stackMailingList.setUnsubscribe(stackUnsubscribe.getText());
+    }
+
+    @Override
+    public final void onPostStart(Context context) {
+        push(new StackPost(context));
+    }
+
+    @Override
+    public final void onPostEnd(Context context) {
+
+        final StackPost stackPost = pop();
+        
+        final StackMailingList stackMailingList = get();
+        
+        stackMailingList.setPost(stackPost.getText());
+    }
+
+    @Override
+    public final void onArchiveStart(Context context) {
+        push(new StackArchive(context));
+    }
+
+    @Override
+    public final void onArchiveEnd(Context context) {
+
+        final StackArchive stackArchive = pop();
+        
+        final StackMailingList stackMailingList = get();
+        
+        stackMailingList.setArchive(stackArchive.getText());
+    }
+
+    @Override
+    public final void onOtherArchivesStart(Context context) {
+        push(new StackOtherArchives(context));
+    }
+
+    @Override
+    public final void onOtherArchiveStart(Context context) {
+        push(new StackOtherArchive(context));
+    }
+
+    @Override
+    public final void onOtherArchiveEnd(Context context) {
+
+        final StackOtherArchive stackOtherArchive = pop();
+        
+        final StackOtherArchives stackOtherArchives = get();
+        
+        stackOtherArchives.add(stackOtherArchive.getText());
+    }
+
+    @Override
+    public final void onOtherArchivesEnd(Context context) {
+
+        final StackOtherArchives stackOtherArchives = pop();
+        
+        final StackMailingList stackMailingList = get();
+    
+        stackMailingList.setOtherArchives(stackOtherArchives.getOtherArchives());
+    }
+
+    @Override
+    public final void onMailingListEnd(Context context) {
+
+        final StackMailingList stackMailingList = pop();
+        
+        final StackMailingLists stackMailingLists = get();
+        
+        final MavenMailingList mailingList = new MavenMailingList(
+                                                stackMailingList.getName(),
+                                                stackMailingList.getSubscribe(),
+                                                stackMailingList.getUnsubscribe(),
+                                                stackMailingList.getPost(),
+                                                stackMailingList.getArchive(),
+                                                stackMailingList.getOtherArchives());
+        
+        stackMailingLists.add(mailingList);
+    }
+
+    @Override
+    public final void onMailingListsEnd(Context context) {
+
+        final StackMailingLists stackMailingLists = pop();
+        
+        final StackProject stackProject = get();
+        
+        stackProject.setMailingLists(stackMailingLists.getMailingLists());
     }
 
     @Override

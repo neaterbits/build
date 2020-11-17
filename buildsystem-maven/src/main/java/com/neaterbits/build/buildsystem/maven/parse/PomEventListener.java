@@ -205,7 +205,39 @@ public interface PomEventListener
     void onNotifiersEnd(Context context);
 
     void onCiManagementEnd(Context context);
+    
+    void onMailingListsStart(Context context);
 
+    void onMailingListStart(Context context);
+
+    void onSubscribeStart(Context context);
+    
+    void onSubscribeEnd(Context context);
+
+    void onUnsubscribeStart(Context context);
+    
+    void onUnsubscribeEnd(Context context);
+
+    void onPostStart(Context context);
+    
+    void onPostEnd(Context context);
+    
+    void onArchiveStart(Context context);
+    
+    void onArchiveEnd(Context context);
+    
+    void onOtherArchivesStart(Context context);
+    
+    void onOtherArchiveStart(Context context);
+
+    void onOtherArchiveEnd(Context context);
+
+    void onOtherArchivesEnd(Context context);
+
+    void onMailingListEnd(Context context);
+    
+    void onMailingListsEnd(Context context);
+    
 	void onRepositoriesStart(Context context);
 
     void onRepositoryStart(Context context);

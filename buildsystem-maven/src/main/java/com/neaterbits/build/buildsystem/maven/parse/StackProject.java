@@ -8,6 +8,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenCiManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
+import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
@@ -34,6 +35,8 @@ final class StackProject
 	private MavenIssueManagement issueManagement;
 	
 	private MavenCiManagement ciManagement;
+	
+	private List<MavenMailingList> mailingLists;
 	
 	private List<MavenProfile> profiles;
 	
@@ -144,6 +147,14 @@ final class StackProject
 
     void setCiManagement(MavenCiManagement ciManagement) {
         this.ciManagement = ciManagement;
+    }
+
+    List<MavenMailingList> getMailingLists() {
+        return mailingLists;
+    }
+
+    void setMailingLists(List<MavenMailingList> mailingLists) {
+        this.mailingLists = mailingLists;
     }
 
     List<MavenProfile> getProfiles() {

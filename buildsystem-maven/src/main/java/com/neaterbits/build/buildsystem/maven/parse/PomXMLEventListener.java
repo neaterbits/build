@@ -274,6 +274,38 @@ public final class PomXMLEventListener
             delegate.onSendOnWarningStart(context);
             break;
 
+        case "mailingLists":
+            delegate.onMailingListsStart(context);
+            break;
+
+        case "mailingList":
+            delegate.onMailingListStart(context);
+            break;
+
+        case "subscribe":
+            delegate.onSubscribeStart(context);
+            break;
+
+        case "unsubscribe":
+            delegate.onUnsubscribeStart(context);
+            break;
+
+        case "post":
+            delegate.onPostStart(context);
+            break;
+            
+        case "archive":
+            delegate.onArchiveStart(context);
+            break;
+
+        case "otherArchives":
+            delegate.onOtherArchivesStart(context);
+            break;
+
+        case "otherArchive":
+            delegate.onOtherArchiveStart(context);
+            break;
+            
         case "repositories":
             delegate.onRepositoriesStart(context);
             break;
@@ -625,6 +657,38 @@ public final class PomXMLEventListener
             
         case "sendOnWarning":
             delegate.onSendOnWarningEnd(context);
+            break;
+
+        case "mailingLists":
+            delegate.onMailingListsEnd(context);
+            break;
+
+        case "mailingList":
+            delegate.onMailingListEnd(context);
+            break;
+
+        case "subscribe":
+            delegate.onSubscribeEnd(context);
+            break;
+
+        case "unsubscribe":
+            delegate.onUnsubscribeEnd(context);
+            break;
+
+        case "post":
+            delegate.onPostEnd(context);
+            break;
+            
+        case "archive":
+            delegate.onArchiveEnd(context);
+            break;
+
+        case "otherArchives":
+            delegate.onOtherArchivesEnd(context);
+            break;
+
+        case "otherArchive":
+            delegate.onOtherArchiveEnd(context);
             break;
 
         case "repositories":
