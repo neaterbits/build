@@ -13,7 +13,7 @@ import com.neaterbits.util.StringUtils;
 
 public interface MavenRepositoryAccess {
 
-    @FunctionalInterface
+    @FunctionalInterface    
     interface PathAdder<T> {
         
         T add(T path, String toAdd);

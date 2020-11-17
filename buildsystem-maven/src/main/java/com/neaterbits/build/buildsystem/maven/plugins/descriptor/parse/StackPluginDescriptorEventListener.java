@@ -527,9 +527,7 @@ final class StackPluginDescriptorEventListener
 
     @Override
     public void onTypeStart(Context context) {
-
         push(new StackType(context));
-        
     }
 
     @Override

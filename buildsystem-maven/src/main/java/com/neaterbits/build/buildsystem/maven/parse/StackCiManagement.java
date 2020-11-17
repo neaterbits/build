@@ -1,15 +1,21 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import java.util.List;
+
+import com.neaterbits.build.buildsystem.maven.elements.MavenNotifier;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackIssueManagement
+final class StackCiManagement
         extends StackBase
         implements SystemSetter, UrlSetter {
 
     private String system;
+
     private String url;
 
-    StackIssueManagement(Context context) {
+    private List<MavenNotifier> notifiers;
+
+    StackCiManagement(Context context) {
         super(context);
     }
 
@@ -29,5 +35,13 @@ final class StackIssueManagement
     @Override
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    List<MavenNotifier> getNotifiers() {
+        return notifiers;
+    }
+
+    void setNotifiers(List<MavenNotifier> notifiers) {
+        this.notifiers = notifiers;
     }
 }

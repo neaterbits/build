@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
+import com.neaterbits.build.buildsystem.maven.elements.MavenCiManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
@@ -31,6 +32,8 @@ final class StackProject
     private MavenOrganization organization;
     
 	private MavenIssueManagement issueManagement;
+	
+	private MavenCiManagement ciManagement;
 	
 	private List<MavenProfile> profiles;
 	
@@ -133,6 +136,14 @@ final class StackProject
 
     void setIssueManagement(MavenIssueManagement issueManagement) {
         this.issueManagement = issueManagement;
+    }
+
+    MavenCiManagement getCiManagement() {
+        return ciManagement;
+    }
+
+    void setCiManagement(MavenCiManagement ciManagement) {
+        this.ciManagement = ciManagement;
     }
 
     List<MavenProfile> getProfiles() {

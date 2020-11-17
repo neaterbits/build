@@ -7,9 +7,10 @@ import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 
-public class MavenProject extends MavenModule {
+public final class MavenProject extends MavenModule {
 
     private final MavenOrganization organization;
+    private final MavenCiManagement ciManagement;
     
 	public MavenProject(
 			File rootDirectory,
@@ -20,6 +21,7 @@ public class MavenProject extends MavenModule {
 			MavenCommon common,
 			MavenOrganization organization,
 			MavenIssueManagement issueManagement,
+			MavenCiManagement ciManagement,
 			List<MavenProfile> profiles) {
 		
 		super(
@@ -35,9 +37,14 @@ public class MavenProject extends MavenModule {
 		Objects.requireNonNull(moduleId);
 		
 		this.organization = organization;
+		this.ciManagement = ciManagement;
 	}
 
     public MavenOrganization getOrganization() {
         return organization;
+    }
+
+    public MavenCiManagement getCiManagement() {
+        return ciManagement;
     }
 }

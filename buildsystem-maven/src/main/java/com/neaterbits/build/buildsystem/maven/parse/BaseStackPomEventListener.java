@@ -9,8 +9,10 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenActivationProperty;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguredPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExecution;
+import com.neaterbits.build.buildsystem.maven.elements.MavenCiManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExtension;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
+import com.neaterbits.build.buildsystem.maven.elements.MavenNotifier;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
@@ -58,7 +60,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final Object cur = get();
         
-        if (cur instanceof StackProperties) {
+        if (cur instanceof StackProperties || cur instanceof StackCiConfiguration) {
             push(new StackProperty(context, name));
         }
         else if (cur instanceof StackPluginConfiguration || cur instanceof StackConfigurationLevel) {
@@ -73,10 +75,25 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         
         if (cur instanceof StackProperty) {
             final StackProperty stackProperty = pop();
+
+            final Object last = get();
             
-            final StackProperties stackProperties = get();
-            
-            stackProperties.add(stackProperty.getName(), stackProperty.getText());
+            if (last instanceof StackProperties) {
+
+                final StackProperties stackProperties = get();
+                
+                stackProperties.add(stackProperty.getName(), stackProperty.getText());
+                
+            }
+            else if (last instanceof StackCiConfiguration) {
+                
+                final StackCiConfiguration stackCiConfiguration = get();
+                
+                stackCiConfiguration.addKeyValue(stackProperty.getName(), stackProperty.getText());
+            }
+            else {
+                throw new IllegalStateException();
+            }
         }
         else if (cur instanceof StackConfigurationLevel) {
          
@@ -527,17 +544,37 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
     @Override
     public void onConfigurationStart(Context context) {
-        push(new StackPluginConfiguration(context));
+        
+        final StackBase cur = get();
+        
+        if (cur instanceof StackPlugin || cur instanceof StackExecution) {
+            push(new StackPluginConfiguration(context));
+        }
+        else {
+            push(new StackCiConfiguration(context));
+        }
     }
 
     @Override
     public void onConfigurationEnd(Context context) {
 
-        final StackPluginConfiguration stackPluginConfiguration = pop();
+        final StackBase cur = pop();
         
-        final ConfigurationSetter configurationSetter = get();
-        
-        configurationSetter.setConfiguration(stackPluginConfiguration.getConfiguration());
+        if (cur instanceof StackPluginConfiguration) {
+            
+            final StackPluginConfiguration stackPluginConfiguration = (StackPluginConfiguration)cur;
+            
+            final ConfigurationSetter configurationSetter = get();
+            
+            configurationSetter.setConfiguration(stackPluginConfiguration.getConfiguration());
+        }
+        else {
+            final StackCiConfiguration stackCiConfiguration = (StackCiConfiguration)cur;
+            
+            final StackNotifier stackNotifier = get();
+            
+            stackNotifier.setConfiguration(stackCiConfiguration.getProperties());
+        }
     }
 
     @Override
@@ -761,9 +798,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackSystem stackSystem = pop();
         
-        final StackIssueManagement stackIssueManagement = get();
+        final SystemSetter systemSetter = get();
         
-        stackIssueManagement.setSystem(stackSystem.getText());
+        systemSetter.setSystem(stackSystem.getText());
     }
 
     @Override
@@ -777,6 +814,138 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                 = new MavenIssueManagement(stackIssueManagement.getSystem(), stackIssueManagement.getUrl());
         
         stackProject.setIssueManagement(issueManagement);
+    }
+
+    @Override
+    public final void onCiManagementStart(Context context) {
+        push(new StackCiManagement(context));
+    }
+
+    @Override
+    public final void onNotifiersStart(Context context) {
+        push(new StackNotifiers(context));
+    }
+
+    @Override
+    public final void onNotifierStart(Context context) {
+        push(new StackNotifier(context));
+    }
+
+    @Override
+    public final void onTypeStart(Context context) {
+        push(new StackType(context));
+    }
+
+    @Override
+    public final void onTypeEnd(Context context) {
+
+        final StackType stackType = pop();
+        
+        final StackNotifier stackNotifier = get();
+        
+        stackNotifier.setType(stackType.getText());
+    }
+
+    @Override
+    public final void onSendOnErrorStart(Context context) {
+        push(new StackSendOnError(context));
+    }
+
+    @Override
+    public final void onSendOnErrorEnd(Context context) {
+
+        final StackSendOnError stackSendOnError = pop();
+        
+        final StackNotifier stackNotifier = get();
+        
+        stackNotifier.setSendOnError(stackSendOnError.getValue());
+    }
+
+    @Override
+    public final void onSendOnFailureStart(Context context) {
+        push(new StackSendOnFailure(context));
+    }
+
+    @Override
+    public final void onSendOnFailureEnd(Context context) {
+
+        final StackSendOnFailure stackSendOnFailure = pop();
+        
+        final StackNotifier stackNotifier = get();
+        
+        stackNotifier.setSendOnFailure(stackSendOnFailure.getValue());
+    }
+
+    @Override
+    public final void onSendOnSuccessStart(Context context) {
+        push(new StackSendOnSuccess(context));
+    }
+
+    @Override
+    public final void onSendOnSuccessEnd(Context context) {
+
+        final StackSendOnSuccess stackSendOnSuccess = pop();
+        
+        final StackNotifier stackNotifier = get();
+        
+        stackNotifier.setSendOnSuccess(stackSendOnSuccess.getValue());
+    }
+
+    @Override
+    public final void onSendOnWarningStart(Context context) {
+        push(new StackSendOnWarning(context));
+    }
+
+    @Override
+    public final void onSendOnWarningEnd(Context context) {
+
+        final StackSendOnWarning stackSendOnWarning = pop();
+        
+        final StackNotifier stackNotifier = get();
+    
+        stackNotifier.setSendOnWarning(stackSendOnWarning.getValue());
+    }
+
+    @Override
+    public final void onNotifierEnd(Context context) {
+
+        final StackNotifier stackNotifier = pop();
+        
+        final StackNotifiers stackNotifiers = get();
+        
+        final MavenNotifier notifier = new MavenNotifier(
+                                                stackNotifier.getType(),
+                                                stackNotifier.getSendOnError(),
+                                                stackNotifier.getSendOnFailure(),
+                                                stackNotifier.getSendOnSuccess(),
+                                                stackNotifier.getSendOnWarning(),
+                                                stackNotifier.getConfiguration());
+        
+        stackNotifiers.add(notifier);
+    }
+
+    @Override
+    public final void onNotifiersEnd(Context context) {
+
+        final StackNotifiers stackNotifiers = pop();
+        
+        final StackCiManagement stackCiManagement = get();
+        
+        stackCiManagement.setNotifiers(stackNotifiers.getNotifiers());
+    }
+
+    @Override
+    public final void onCiManagementEnd(Context context) {
+
+        final StackCiManagement stackCiManagement = pop();
+        
+        final StackProject stackProject = get();
+        
+        final MavenCiManagement ciManagement = new MavenCiManagement(
+                                                        stackCiManagement.getSystem(),
+                                                        stackCiManagement.getUrl(),
+                                                        stackCiManagement.getNotifiers());
+        stackProject.setCiManagement(ciManagement);
     }
 
     @Override

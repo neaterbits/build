@@ -173,6 +173,38 @@ public interface PomEventListener
 	void onSystemEnd(Context context);
 	
     void onIssueManagementEnd(Context context);
+    
+    void onCiManagementStart(Context context);
+
+    void onNotifiersStart(Context context);
+    
+    void onNotifierStart(Context context);
+    
+    void onTypeStart(Context context);
+    
+    void onTypeEnd(Context context);
+    
+    void onSendOnErrorStart(Context context);
+    
+    void onSendOnErrorEnd(Context context);
+    
+    void onSendOnFailureStart(Context context);
+    
+    void onSendOnFailureEnd(Context context);
+
+    void onSendOnSuccessStart(Context context);
+    
+    void onSendOnSuccessEnd(Context context);
+
+    void onSendOnWarningStart(Context context);
+    
+    void onSendOnWarningEnd(Context context);
+
+    void onNotifierEnd(Context context);
+    
+    void onNotifiersEnd(Context context);
+
+    void onCiManagementEnd(Context context);
 
 	void onRepositoriesStart(Context context);
 

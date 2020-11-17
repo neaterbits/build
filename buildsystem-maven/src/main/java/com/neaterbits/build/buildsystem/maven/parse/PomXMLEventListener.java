@@ -12,7 +12,7 @@ public final class PomXMLEventListener
 	private final PomEventListener delegate;
 	
 	private boolean inProperties;
-	private boolean inPluginConfiguration;
+	private boolean inConfiguration;
 
 	public PomXMLEventListener(PomEventListener delegate) {
 	    super(delegate);
@@ -28,7 +28,7 @@ public final class PomXMLEventListener
 	    // Within <properties>, call onText() for unknown tags
 	    // since property tag names may be user defined and do not follow any schema
 	    
-        return inProperties || inPluginConfiguration;
+        return inProperties || inConfiguration;
     }
 
     @Override
@@ -199,7 +199,7 @@ public final class PomXMLEventListener
 		    
 		case "configuration":
 		    delegate.onConfigurationStart(context);
-		    this.inPluginConfiguration = true;
+		    this.inConfiguration = true;
 		    break;
 
         case "phase":
@@ -242,6 +242,38 @@ public final class PomXMLEventListener
 		    delegate.onSystemStart(context);
 		    break;
 			
+        case "ciManagement":
+            delegate.onCiManagementStart(context);
+            break;
+            
+        case "notifiers":
+            delegate.onNotifiersStart(context);
+            break;
+            
+        case "notifier":
+            delegate.onNotifierStart(context);
+            break;
+            
+        case "type":
+            delegate.onTypeStart(context);
+            break;
+            
+        case "sendOnError":
+            delegate.onSendOnErrorStart(context);
+            break;
+
+        case "sendOnFailure":
+            delegate.onSendOnFailureStart(context);
+            break;
+            
+        case "sendOnSuccess":
+            delegate.onSendOnSuccessStart(context);
+            break;
+            
+        case "sendOnWarning":
+            delegate.onSendOnWarningStart(context);
+            break;
+
         case "repositories":
             delegate.onRepositoriesStart(context);
             break;
@@ -520,7 +552,7 @@ public final class PomXMLEventListener
 
         case "configuration":
             delegate.onConfigurationEnd(context);
-            this.inPluginConfiguration = false;
+            this.inConfiguration = false;
             break;
 
         case "phase":
@@ -561,6 +593,38 @@ public final class PomXMLEventListener
             
         case "system":
             delegate.onSystemEnd(context);
+            break;
+            
+        case "ciManagement":
+            delegate.onCiManagementEnd(context);
+            break;
+            
+        case "notifiers":
+            delegate.onNotifiersEnd(context);
+            break;
+            
+        case "notifier":
+            delegate.onNotifierEnd(context);
+            break;
+            
+        case "type":
+            delegate.onTypeEnd(context);
+            break;
+
+        case "sendOnError":
+            delegate.onSendOnErrorEnd(context);
+            break;
+
+        case "sendOnFailure":
+            delegate.onSendOnFailureEnd(context);
+            break;
+            
+        case "sendOnSuccess":
+            delegate.onSendOnSuccessEnd(context);
+            break;
+            
+        case "sendOnWarning":
+            delegate.onSendOnWarningEnd(context);
             break;
 
         case "repositories":
