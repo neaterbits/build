@@ -14,6 +14,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
+import com.neaterbits.build.buildsystem.maven.elements.MavenScm;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenDependencyManagement;
 import com.neaterbits.util.parse.context.Context;
 
@@ -37,6 +38,8 @@ final class StackProject
 	private MavenCiManagement ciManagement;
 	
 	private List<MavenMailingList> mailingLists;
+	
+	private MavenScm scm;
 	
 	private List<MavenProfile> profiles;
 	
@@ -155,6 +158,14 @@ final class StackProject
 
     void setMailingLists(List<MavenMailingList> mailingLists) {
         this.mailingLists = mailingLists;
+    }
+
+    MavenScm getScm() {
+        return scm;
+    }
+
+    void setScm(MavenScm scm) {
+        this.scm = scm;
     }
 
     List<MavenProfile> getProfiles() {

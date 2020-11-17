@@ -13,6 +13,7 @@ public final class MavenProject extends MavenModule {
     private final MavenOrganization organization;
     private final MavenCiManagement ciManagement;
     private final List<MavenMailingList> mailingLists;
+    private final MavenScm scm;
     
 	public MavenProject(
 			File rootDirectory,
@@ -25,6 +26,7 @@ public final class MavenProject extends MavenModule {
 			MavenIssueManagement issueManagement,
 			MavenCiManagement ciManagement,
 			List<MavenMailingList> mailingLists,
+			MavenScm scm,
 			List<MavenProfile> profiles) {
 		
 		super(
@@ -41,9 +43,12 @@ public final class MavenProject extends MavenModule {
 		
 		this.organization = organization;
 		this.ciManagement = ciManagement;
+
 		this.mailingLists = mailingLists != null
 		            ? Collections.unmodifiableList(mailingLists)
                     : null;
+
+        this.scm = scm;
 	}
 
     public MavenOrganization getOrganization() {
@@ -56,5 +61,9 @@ public final class MavenProject extends MavenModule {
 
     public List<MavenMailingList> getMailingLists() {
         return mailingLists;
+    }
+
+    public MavenScm getScm() {
+        return scm;
     }
 }

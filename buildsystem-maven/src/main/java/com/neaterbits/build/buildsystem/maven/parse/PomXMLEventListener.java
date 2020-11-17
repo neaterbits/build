@@ -322,6 +322,22 @@ public final class PomXMLEventListener
             delegate.onOtherArchiveStart(context);
             break;
             
+        case "scm":
+            delegate.onScmStart(context);
+            break;
+
+        case "connection":
+            delegate.onConnectionStart(context);
+            break;
+
+        case "developerConnection":
+            delegate.onDeveloperConnectionStart(context);
+            break;
+
+        case "tag":
+            delegate.onTagStart(context);
+            break;
+
         case "repositories":
             delegate.onRepositoriesStart(context);
             break;
@@ -721,6 +737,22 @@ public final class PomXMLEventListener
 
         case "otherArchive":
             delegate.onOtherArchiveEnd(context);
+            break;
+
+        case "scm":
+            delegate.onScmEnd(context);
+            break;
+
+        case "connection":
+            delegate.onConnectionEnd(context);
+            break;
+
+        case "developerConnection":
+            delegate.onDeveloperConnectionEnd(context);
+            break;
+
+        case "tag":
+            delegate.onTagEnd(context);
             break;
 
         case "repositories":

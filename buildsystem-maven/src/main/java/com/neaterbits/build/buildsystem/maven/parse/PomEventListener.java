@@ -254,6 +254,22 @@ public interface PomEventListener
     
     void onMailingListsEnd(Context context);
     
+    void onScmStart(Context context);
+    
+    void onConnectionStart(Context context);
+    
+    void onConnectionEnd(Context context);
+    
+    void onDeveloperConnectionStart(Context context);
+    
+    void onDeveloperConnectionEnd(Context context);
+    
+    void onTagStart(Context context);
+    
+    void onTagEnd(Context context);
+    
+    void onScmEnd(Context context);
+    
 	void onRepositoriesStart(Context context);
 
     void onRepositoryStart(Context context);

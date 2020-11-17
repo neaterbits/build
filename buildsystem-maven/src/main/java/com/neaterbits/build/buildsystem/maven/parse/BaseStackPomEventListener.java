@@ -23,6 +23,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReportPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
+import com.neaterbits.build.buildsystem.maven.elements.MavenScm;
 import com.neaterbits.build.buildsystem.maven.elements.MavenSnapshots;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenDependencyManagement;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;
@@ -1197,6 +1198,72 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackProject stackProject = get();
         
         stackProject.setMailingLists(stackMailingLists.getMailingLists());
+    }
+
+    @Override
+    public final void onScmStart(Context context) {
+        push(new StackScm(context));
+    }
+
+    @Override
+    public final void onConnectionStart(Context context) {
+        push(new StackConnection(context));
+    }
+
+    @Override
+    public final void onConnectionEnd(Context context) {
+
+        final StackConnection stackConnection = pop();
+        
+        final StackScm stackScm = get();
+        
+        stackScm.setConnection(stackConnection.getText());
+    }
+
+    @Override
+    public final void onDeveloperConnectionStart(Context context) {
+        push(new StackDeveloperConnection(context));
+    }
+
+    @Override
+    public final void onDeveloperConnectionEnd(Context context) {
+
+        final StackDeveloperConnection stackDeveloperConnection = pop();
+        
+        final StackScm stackScm = get();
+        
+        stackScm.setDeveloperConnection(stackDeveloperConnection.getText());
+    }
+
+    @Override
+    public final void onTagStart(Context context) {
+        push(new StackTag(context));
+    }
+
+    @Override
+    public final void onTagEnd(Context context) {
+
+        final StackTag stackTag = pop();
+        
+        final StackScm stackScm = get();
+        
+        stackScm.setTag(stackTag.getText());
+    }
+
+    @Override
+    public final void onScmEnd(Context context) {
+
+        final StackScm stackScm = pop();
+        
+        final StackProject stackProject = get();
+        
+        final MavenScm mavenScm = new MavenScm(
+                                    stackScm.getConnection(),
+                                    stackScm.getDeveloperConnection(),
+                                    stackScm.getTag(),
+                                    stackScm.getUrl());
+        
+        stackProject.setScm(mavenScm);
     }
 
     @Override
