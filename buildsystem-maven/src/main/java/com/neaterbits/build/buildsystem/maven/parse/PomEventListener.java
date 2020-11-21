@@ -322,6 +322,38 @@ public interface PomEventListener
 
     void onPluginRepositoriesEnd(Context context);
     
+    void onDistributionManagementStart(Context context);
+    
+    void onDownloadUrlStart(Context context);
+    
+    void onDownloadUrlEnd(Context context);
+
+    void onStatusStart(Context context);
+    
+    void onStatusEnd(Context context);
+
+    void onUniqueVersionStart(Context context);
+    
+    void onUniqueVersionEnd(Context context);
+    
+    void onSnapshotRepositoryStart(Context context);
+    
+    void onSnapshotRepositoryEnd(Context context);
+
+    void onSiteStart(Context context);
+
+    void onSiteEnd(Context context);
+
+    void onRelocationStart(Context context);
+    
+    void onMessageStart(Context context);
+    
+    void onMessageEnd(Context context);
+
+    void onRelocationEnd(Context context);
+
+    void onDistributionManagementEnd(Context context);
+
     void onProfilesStart(Context context);
     
     void onProfileStart(Context context);

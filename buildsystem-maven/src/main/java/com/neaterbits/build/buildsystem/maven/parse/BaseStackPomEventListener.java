@@ -16,6 +16,10 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenNotifier;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
 import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguration;
+import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagement;
+import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagementRelocation;
+import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagementRepository;
+import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagementSite;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
@@ -1291,7 +1295,17 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public void onRepositoryStart(Context context) {
         
-        push(new StackRepository(context));
+        final StackBase cur = get();
+        
+        if (cur instanceof StackRepositories<?>) {
+            push(new StackRepository(context));
+        }
+        else if (cur instanceof StackDistributionManagement) {
+            push(new StackDistributionManagementRepository(context));
+        }
+        else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
@@ -1445,27 +1459,52 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackLayout stackLayout = pop();
         
-        final StackRepository stackRepository = get();
+        final LayoutSetter layoutSetter = get();
         
-        stackRepository.setLayout(stackLayout.getText());
+        layoutSetter.setLayout(stackLayout.getText());
     }
 
     @Override
     public void onRepositoryEnd(Context context) {
 
-        final StackRepository stackRepository = pop();
+        final StackBase cur = pop();
         
-        final StackRepositories<MavenRepository> stackRepositories = get();
+        if (cur instanceof StackRepository) {
+            
+            final StackRepository stackRepository = (StackRepository)cur;
+            
+            final StackRepositories<MavenRepository> stackRepositories = get();
+            
+            final MavenRepository repository = new MavenRepository(
+                    stackRepository.getReleases(),
+                    stackRepository.getSnapshots(),
+                    stackRepository.getName(),
+                    stackRepository.getId(),
+                    stackRepository.getUrl(),
+                    stackRepository.getLayout());
+            
+            stackRepositories.add(repository);
+        }
+        else if (cur instanceof StackDistributionManagementRepository) {
+            
+            final StackDistributionManagementRepository stackDistributionManagementRepository
+                    = (StackDistributionManagementRepository)cur;
+            
+            final StackDistributionManagement stackDistributionManagement = get();
+            
+            final MavenDistributionManagementRepository repository = new MavenDistributionManagementRepository(
+                                                    stackDistributionManagementRepository.getUniqueVersion(),
+                                                    stackDistributionManagementRepository.getId(),
+                                                    stackDistributionManagementRepository.getName(),
+                                                    stackDistributionManagementRepository.getUrl(),
+                                                    stackDistributionManagementRepository.getLayout());
+            
         
-        final MavenRepository repository = new MavenRepository(
-                stackRepository.getReleases(),
-                stackRepository.getSnapshots(),
-                stackRepository.getName(),
-                stackRepository.getId(),
-                stackRepository.getUrl(),
-                stackRepository.getLayout());
-        
-        stackRepositories.add(repository);
+            stackDistributionManagement.setRepository(repository);
+        }
+        else {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
@@ -1516,6 +1555,150 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final PluginRepositoriesSetter pluginRepositoriesSetter = get();
         
         pluginRepositoriesSetter.setPluginRepositories(stackRepositories.getRepositories());
+    }
+
+    @Override
+    public void onDistributionManagementStart(Context context) {
+        push(new StackDistributionManagement(context));
+    }
+
+    @Override
+    public void onDownloadUrlStart(Context context) {
+        push(new StackDownloadUrl(context));
+    }
+
+    @Override
+    public void onDownloadUrlEnd(Context context) {
+
+        final StackDownloadUrl stackDownloadUrl = pop();
+        
+        final StackDistributionManagement stackDistributionManagement = get();
+        
+        stackDistributionManagement.setDownloadUrl(stackDownloadUrl.getText());
+    }
+
+    @Override
+    public void onStatusStart(Context context) {
+        push(new StackStatus(context));
+    }
+
+    @Override
+    public void onStatusEnd(Context context) {
+
+        final StackStatus stackStatus = pop();
+        
+        final StackDistributionManagement stackDistributionManagement = get();
+        
+        stackDistributionManagement.setStatus(stackStatus.getText());
+    }
+
+    @Override
+    public void onUniqueVersionStart(Context context) {
+        push(new StackUniqueVersion(context));
+    }
+
+    @Override
+    public void onUniqueVersionEnd(Context context) {
+
+        final StackUniqueVersion stackUniqueVersion = pop();
+        
+        final StackDistributionManagementRepository stackDistributionManagementRepository = get();
+        
+        stackDistributionManagementRepository.setUniqueVersion(stackUniqueVersion.getValue());
+    }
+
+    @Override
+    public void onSnapshotRepositoryStart(Context context) {
+        push(new StackDistributionManagementRepository(context));
+    }
+
+    @Override
+    public void onSnapshotRepositoryEnd(Context context) {
+
+        final StackDistributionManagementRepository stackDistributionManagementRepository = pop();
+        
+        final StackDistributionManagement stackDistributionManagement = get();
+        
+        final MavenDistributionManagementRepository repository = new MavenDistributionManagementRepository(
+                                                                        stackDistributionManagementRepository.getUniqueVersion(),
+                                                                        stackDistributionManagementRepository.getId(),
+                                                                        stackDistributionManagementRepository.getName(),
+                                                                        stackDistributionManagementRepository.getUrl(),
+                                                                        stackDistributionManagementRepository.getLayout());
+        
+        stackDistributionManagement.setSnapshotRepository(repository);
+    }
+
+    @Override
+    public void onSiteStart(Context context) {
+        push(new StackDistributionManagementSite(context));
+    }
+
+    @Override
+    public void onSiteEnd(Context context) {
+
+        final StackDistributionManagementSite stackDistributionManagementSite = pop();
+        
+        final StackDistributionManagement stackDistributionManagement = get();
+
+        final MavenDistributionManagementSite site = new MavenDistributionManagementSite(
+                                                            stackDistributionManagementSite.getId(),
+                                                            stackDistributionManagementSite.getName(),
+                                                            stackDistributionManagementSite.getUrl());
+    
+        stackDistributionManagement.setSite(site);
+    }
+
+    @Override
+    public void onRelocationStart(Context context) {
+        push(new StackDistributionManagementRelocation(context));
+    }
+
+    @Override
+    public void onMessageStart(Context context) {
+        push(new StackMessage(context));
+    }
+
+    @Override
+    public void onMessageEnd(Context context) {
+
+        final StackMessage stackMessage = pop();
+        
+        final StackDistributionManagementRelocation stackDistributionManagementRelocation = get();
+        
+        stackDistributionManagementRelocation.setMessage(stackMessage.getText());
+    }
+
+    @Override
+    public void onRelocationEnd(Context context) {
+
+        final StackDistributionManagementRelocation stackDistributionManagementRelocation = pop();
+    
+        final StackDistributionManagement stackDistributionManagement = get();
+    
+        final MavenDistributionManagementRelocation relocation = new MavenDistributionManagementRelocation(
+                                                                        stackDistributionManagementRelocation.makeModuleId(),
+                                                                        stackDistributionManagementRelocation.getMessage());
+    
+        stackDistributionManagement.setRelocation(relocation);
+    }
+
+    @Override
+    public void onDistributionManagementEnd(Context context) {
+
+        final StackDistributionManagement stackDistributionManagement = pop();
+        
+        final StackProject stackProject = get();
+        
+        final MavenDistributionManagement distributionManagement = new MavenDistributionManagement(
+                                                                            stackDistributionManagement.getDownloadUrl(),
+                                                                            stackDistributionManagement.getStatus(),
+                                                                            stackDistributionManagement.getRepository(),
+                                                                            stackDistributionManagement.getSnapshotRepository(),
+                                                                            stackDistributionManagement.getSite(),
+                                                                            stackDistributionManagement.getRelocation());
+        
+        stackProject.setDistributionManagement(distributionManagement);
     }
 
     @Override

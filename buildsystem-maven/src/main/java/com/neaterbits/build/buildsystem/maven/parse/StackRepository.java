@@ -6,7 +6,7 @@ import com.neaterbits.util.parse.context.Context;
 
 final class StackRepository
         extends StackBase
-        implements NameSetter, UrlSetter, IdSetter {
+        implements NameSetter, UrlSetter, IdSetter, LayoutSetter {
 
     private MavenReleases releases;
     
@@ -71,7 +71,8 @@ final class StackRepository
         return layout;
     }
 
-    void setLayout(String layout) {
+    @Override
+    public void setLayout(String layout) {
         this.layout = layout;
     }
 }

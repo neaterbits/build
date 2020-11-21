@@ -7,6 +7,7 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenCiManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
@@ -40,6 +41,8 @@ final class StackProject
 	private List<MavenMailingList> mailingLists;
 	
 	private MavenScm scm;
+	
+	private MavenDistributionManagement distributionManagement;
 	
 	private List<MavenProfile> profiles;
 	
@@ -166,6 +169,14 @@ final class StackProject
 
     void setScm(MavenScm scm) {
         this.scm = scm;
+    }
+
+    MavenDistributionManagement getDistributionManagement() {
+        return distributionManagement;
+    }
+
+    void setDistributionManagement(MavenDistributionManagement distributionManagement) {
+        this.distributionManagement = distributionManagement;
     }
 
     List<MavenProfile> getProfiles() {

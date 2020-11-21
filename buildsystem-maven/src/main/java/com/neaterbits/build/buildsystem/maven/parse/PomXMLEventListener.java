@@ -338,6 +338,38 @@ public final class PomXMLEventListener
             delegate.onTagStart(context);
             break;
 
+        case "distributionManagement":
+            delegate.onDistributionManagementStart(context);
+            break;
+
+        case "downloadUrl":
+            delegate.onDownloadUrlStart(context);
+            break;
+
+        case "status":
+            delegate.onStatusStart(context);
+            break;
+            
+        case "uniqueVersion":
+            delegate.onUniqueVersionStart(context);
+            break;
+            
+        case "snapshotRepository":
+            delegate.onSnapshotRepositoryStart(context);
+            break;
+            
+        case "site":
+            delegate.onSiteStart(context);
+            break;
+            
+        case "relocation":
+            delegate.onRelocationStart(context);
+            break;
+            
+        case "message":
+            delegate.onMessageStart(context);
+            break;
+            
         case "repositories":
             delegate.onRepositoriesStart(context);
             break;
@@ -807,6 +839,38 @@ public final class PomXMLEventListener
             delegate.onLayoutEnd(context);
             break;
             
+        case "distributionManagement":
+            delegate.onDistributionManagementEnd(context);
+            break;
+
+        case "downloadUrl":
+            delegate.onDownloadUrlEnd(context);
+            break;
+
+        case "status":
+            delegate.onStatusEnd(context);
+            break;
+            
+        case "uniqueVersion":
+            delegate.onUniqueVersionEnd(context);
+            break;
+            
+        case "snapshotRepository":
+            delegate.onSnapshotRepositoryEnd(context);
+            break;
+
+        case "site":
+            delegate.onSiteEnd(context);
+            break;
+            
+        case "relocation":
+            delegate.onRelocationEnd(context);
+            break;
+            
+        case "message":
+            delegate.onMessageEnd(context);
+            break;
+
         case "profiles":
             delegate.onProfilesEnd(context);
             break;
