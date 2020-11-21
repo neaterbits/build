@@ -7,31 +7,37 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 
 public final class MavenDependency extends MavenEntity {
 
-	private final String scope;
+    private final String classifier;
     private final String type;
+    private final String scope;
 	private final String optional;
 	
 	private final List<MavenExclusion> exclusions;
 	
-	public MavenDependency(MavenModuleId moduleId, String packaging, String scope, String type, String optional, List<MavenExclusion> exclusions) {
-		super(moduleId, packaging);
+	public MavenDependency(MavenModuleId moduleId, String type, String classifier, String scope, String optional, List<MavenExclusion> exclusions) {
+		super(moduleId, null);
 	
 		this.scope = scope;
 		this.type = type;
 		this.optional = optional;
+		this.classifier = classifier;
 		this.exclusions = exclusions != null
 		        ? Collections.unmodifiableList(exclusions)
                 : null;
 	}
 
-	public String getScope() {
-		return scope;
-	}
-	
-	public String getType() {
+    public String getType() {
         return type;
     }
 
+	public String getClassifier() {
+        return classifier;
+    }
+
+    public String getScope() {
+		return scope;
+	}
+	
     public String getOptional() {
 		return optional;
 	}

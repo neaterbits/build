@@ -2,9 +2,19 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import com.neaterbits.util.parse.context.Context;
 
-public class StackParent extends StackEntity {
+final class StackParent extends StackEntity {
 
-	public StackParent(Context context) {
+    private String relativePath;
+	
+    StackParent(Context context) {
 		super(context);
 	}
+
+    String getRelativePath() {
+        return relativePath;
+    }
+
+    void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
+    }
 }

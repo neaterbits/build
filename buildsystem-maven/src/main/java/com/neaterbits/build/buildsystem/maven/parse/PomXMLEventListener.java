@@ -44,7 +44,15 @@ public final class PomXMLEventListener
 			delegate.onParentStart(context);
 			break;
 
-		case "properties":
+        case "relativePath":
+            delegate.onRelativePathStart(context);
+            break;
+
+        case "description":
+            delegate.onDescriptionStart(context);
+            break;
+
+        case "properties":
 		    delegate.onPropertiesStart(context);
             this.inProperties = true;
 		    break;
@@ -493,7 +501,15 @@ public final class PomXMLEventListener
 			delegate.onParentEnd(context);
 			break;
 			
-		case "properties":
+		case "relativePath":
+		    delegate.onRelativePathEnd(context);
+		    break;
+			
+        case "description":
+            delegate.onDescriptionEnd(context);
+            break;
+
+        case "properties":
 		    delegate.onPropertiesEnd(context);
             this.inProperties = false;
 		    break;
@@ -826,7 +842,7 @@ public final class PomXMLEventListener
         case "name":
             delegate.onNameEnd(context);
             break;
-            
+
         case "id":
             delegate.onIdEnd(context);
             break;

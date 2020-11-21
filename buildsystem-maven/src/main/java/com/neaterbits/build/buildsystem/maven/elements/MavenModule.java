@@ -13,8 +13,11 @@ import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 public class MavenModule extends MavenEntity {
 
 	private final File rootDirectory;
-	private final MavenModuleId parentModuleId;
+	private final MavenParent parent;
 
+	private final String name;
+	private final String description;
+	
 	private final Map<String, String> properties;
 
 	private final MavenCommon common;
@@ -26,8 +29,10 @@ public class MavenModule extends MavenEntity {
 	public MavenModule(
 			File rootDirectory,
 			MavenModuleId moduleId,
-			MavenModuleId parentModuleId,
+			MavenParent parent,
 			String packaging,
+			String name,
+			String description,
 			Map<String, String> properties,
 			MavenCommon common,
 			MavenIssueManagement issueManagement,
@@ -38,7 +43,10 @@ public class MavenModule extends MavenEntity {
 		Objects.requireNonNull(rootDirectory);
 
 		this.rootDirectory = rootDirectory;
-		this.parentModuleId = parentModuleId;
+		this.parent = parent;
+
+		this.name = name;
+		this.description = description;
 
 		this.issueManagement = issueManagement;
 		
@@ -57,13 +65,13 @@ public class MavenModule extends MavenEntity {
 	    
 		return getModuleId().getGroupId() != null
 				? getModuleId().getGroupId()
-				: getParentModuleId().getGroupId();
+				: getParent() != null ? getParentModuleId().getGroupId() : null;
 	}
 
 	private String getVersion() {
 		return getModuleId().getVersion() != null
 				? getModuleId().getVersion()
-				: getParentModuleId().getVersion();
+				: getParent() != null ? getParentModuleId().getVersion() : null;
 	}
 
 	public final File getRootDirectory() {
@@ -71,10 +79,22 @@ public class MavenModule extends MavenEntity {
 	}
 
 	public final MavenModuleId getParentModuleId() {
-		return parentModuleId;
+		return parent != null? parent.getModuleId() : null;
 	}
 
-	public Map<String, String> getProperties() {
+	public final MavenParent getParent() {
+        return parent;
+    }
+
+    public final String getName() {
+        return name;
+    }
+
+    public final String getDescription() {
+        return description;
+    }
+
+    public Map<String, String> getProperties() {
         return properties;
     }
 

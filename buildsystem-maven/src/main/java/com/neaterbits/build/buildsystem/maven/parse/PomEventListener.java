@@ -12,7 +12,15 @@ public interface PomEventListener
 
 	void onParentStart(Context context);
 
+	void onRelativePathStart(Context context);
+
+	void onRelativePathEnd(Context context);
+	
 	void onParentEnd(Context context);
+
+	void onDescriptionStart(Context context);
+    
+    void onDescriptionEnd(Context context);
 
 	void onPropertiesStart(Context context);
 	

@@ -19,8 +19,10 @@ public final class MavenProject extends MavenModule {
 	public MavenProject(
 			File rootDirectory,
 			MavenModuleId moduleId,
-			MavenModuleId parentModuleId,
+			MavenParent parent,
 			String packaging,
+			String name,
+			String description,
 			Map<String, String> properties,
 			MavenCommon common,
 			MavenOrganization organization,
@@ -34,8 +36,10 @@ public final class MavenProject extends MavenModule {
 		super(
 		        rootDirectory,
 		        moduleId,
-		        parentModuleId,
+		        parent,
 		        packaging,
+		        name,
+		        description,
 		        properties,
 		        common,
 		        issueManagement,

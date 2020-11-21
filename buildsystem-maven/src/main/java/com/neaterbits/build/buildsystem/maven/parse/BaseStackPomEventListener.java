@@ -15,6 +15,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenNotifier;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
+import com.neaterbits.build.buildsystem.maven.elements.MavenParent;
 import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguration;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagementRelocation;
@@ -44,8 +45,22 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
     @Override
     public final void onParentStart(Context context) {
-
         push(new StackParent(context));
+    }
+
+    @Override
+    public final void onRelativePathStart(Context context) {
+        push(new StackRelativePath(context));
+    }
+
+    @Override
+    public final void onRelativePathEnd(Context context) {
+
+        final StackRelativePath stackRelativePath = pop();
+        
+        final StackParent stackParent = get();
+        
+        stackParent.setRelativePath(stackRelativePath.getText());
     }
 
     @Override
@@ -55,7 +70,26 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackProject stackProject = get();
 
-        stackProject.setParentModuleId(stackParent.makeModuleId());
+        final MavenParent parent = new MavenParent(
+                stackParent.makeModuleId(),
+                stackParent.getRelativePath());
+
+        stackProject.setParent(parent);
+    }
+
+    @Override
+    public final void onDescriptionStart(Context context) {
+        push(new StackDescription(context));
+    }
+
+    @Override
+    public final void onDescriptionEnd(Context context) {
+
+        final StackDescription stackDescription = pop();
+        
+        final StackProject stackProject = get();
+        
+        stackProject.setDescription(stackDescription.getText());
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.neaterbits.build.buildsystem.maven.parse;
 import java.util.List;
 import java.util.Map;
 
-import com.neaterbits.build.buildsystem.maven.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.elements.MavenCiManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
@@ -11,6 +10,7 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManageme
 import com.neaterbits.build.buildsystem.maven.elements.MavenIssueManagement;
 import com.neaterbits.build.buildsystem.maven.elements.MavenMailingList;
 import com.neaterbits.build.buildsystem.maven.elements.MavenOrganization;
+import com.neaterbits.build.buildsystem.maven.elements.MavenParent;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReporting;
@@ -25,9 +25,12 @@ final class StackProject
 
 	private String name;
 
+	private String description;
+	
 	private String url;
 	
-	private MavenModuleId parentModuleId;
+	private MavenParent parent;
+	
 	private Map<String, String> properties;
 	
 	private final StackCommon common;
@@ -61,7 +64,15 @@ final class StackProject
 		this.name = name;
 	}
 
-	String getUrl() {
+	String getDescription() {
+        return description;
+    }
+
+    void setDescription(String description) {
+        this.description = description;
+    }
+
+    String getUrl() {
         return url;
     }
 
@@ -70,12 +81,12 @@ final class StackProject
         this.url = url;
     }
 
-    public MavenModuleId getParentModuleId() {
-		return parentModuleId;
+    public MavenParent getParent() {
+		return parent;
 	}
 
-	public void setParentModuleId(MavenModuleId parentModuleId) {
-		this.parentModuleId = parentModuleId;
+	public void setParent(MavenParent parent) {
+		this.parent = parent;
 	}
 
 	Map<String, String> getProperties() {
