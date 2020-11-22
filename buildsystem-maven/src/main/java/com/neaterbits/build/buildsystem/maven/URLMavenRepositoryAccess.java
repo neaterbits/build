@@ -11,11 +11,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.common.http.HTTPDownloader;
+import com.neaterbits.build.buildsystem.maven.elements.BaseMavenRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
-import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
-import com.neaterbits.build.buildsystem.maven.plugins.MojoFinder;
 import com.neaterbits.util.IOUtils;
 
 final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
@@ -30,22 +27,6 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         
         this.repository = repository.toPath();
         this.downloader = downloader;
-    }
-
-    @Override
-    public MavenPluginInfo getPluginInfo(MavenPlugin mavenPlugin) throws IOException {
-        
-        // Load plugin
-        final File pluginJarFile = getPluginJarFile(mavenPlugin);
-        
-        final MavenPluginInfo pluginInfo = MojoFinder.findMojos(pluginJarFile);
-
-        return pluginInfo;
-    }
-
-    private File getPluginJarFile(MavenPlugin mavenPlugin) {
-        
-        return repositoryJarFile(mavenPlugin.getModuleId());
     }
 
     private Path repositoryDirectory(MavenDependency mavenDependency) {
@@ -138,7 +119,8 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         return file.exists();
     }
     
-    private boolean isModulePresent(MavenModuleId moduleId) {
+    @Override
+    public boolean isModulePresent(MavenModuleId moduleId) {
 
         // Must verify that all jar and sha1 files are present
 
@@ -177,7 +159,7 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         return ok;
     }
 
-    private void downloadModuleIfNotPresent(MavenModuleId moduleId, List<URL> repositories) throws IOException {
+    private void downloadModuleFromURLsIfNotPresent(MavenModuleId moduleId, List<URL> repositories) throws IOException {
 
         boolean downloadedOk = false;
         
@@ -198,22 +180,16 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
             throw new IOException("Failed to download module " + moduleId);
         }
     }
-    
-    @Override
-    public boolean isPluginPresent(MavenPlugin mavenPlugin) {
-
-        return isModulePresent(mavenPlugin.getModuleId());
-    }
 
     @Override
-    public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin, List<MavenPluginRepository> repositories) throws IOException {
+    public void downloadModuleIfNotPresent(MavenModuleId mavenModule, List<? extends BaseMavenRepository> repositories) throws IOException {
 
         final List<URL> urls = new ArrayList<>(repositories.size());
         
-        for (MavenPluginRepository repository : repositories) {
+        for (BaseMavenRepository repository : repositories) {
             urls.add(new URL(repository.getUrl()));
         }
         
-        downloadModuleIfNotPresent(mavenPlugin.getModuleId(), urls);
+        downloadModuleFromURLsIfNotPresent(mavenModule, urls);
     }
 }

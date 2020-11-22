@@ -16,6 +16,8 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 import com.neaterbits.build.types.language.Language;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
@@ -26,6 +28,8 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 
 	private final List<MavenProject> projects;
 	private final XMLReaderFactory<?> xmlReaderFactory;
+	private final MavenPluginsAccess pluginsAccess;
+	private final MavenPluginInstantiator pluginInstantiator;
 	private final MavenRepositoryAccess repositoryAccess;
 
 	private final List<BuildSystemRootListener> listeners;
@@ -33,21 +37,31 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	MavenBuildRoot(
 	        List<MavenProject> projects,
 	        XMLReaderFactory<?> xmlReaderFactory,
+	        MavenPluginsAccess pluginsAccess,
+	        MavenPluginInstantiator pluginInstantiator,
 	        MavenRepositoryAccess repositoryAccess) {
 
 		Objects.requireNonNull(projects);
 		Objects.requireNonNull(xmlReaderFactory);
+		Objects.requireNonNull(pluginsAccess);
+		Objects.requireNonNull(pluginInstantiator);
 		Objects.requireNonNull(repositoryAccess);
 		
 		this.projects = projects;
 		this.xmlReaderFactory = xmlReaderFactory;
+		this.pluginsAccess = pluginsAccess;
+		this.pluginInstantiator = pluginInstantiator;
 		this.repositoryAccess = repositoryAccess;
 
 		this.listeners = new ArrayList<>();
 	}
 
-	public MavenRepositoryAccess getRepositoryAccess() {
-        return repositoryAccess;
+	public MavenPluginsAccess getPluginsAccess() {
+        return pluginsAccess;
+    }
+
+    public MavenPluginInstantiator getPluginInstantiator() {
+        return pluginInstantiator;
     }
 
     @Override
@@ -247,7 +261,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 
     public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin, List<MavenPluginRepository> pluginRepositories) throws IOException {
         
-        repositoryAccess.downloadPluginIfNotPresent(mavenPlugin, pluginRepositories);
+        pluginsAccess.downloadPluginIfNotPresent(mavenPlugin, pluginRepositories);
     }
 
     @Override

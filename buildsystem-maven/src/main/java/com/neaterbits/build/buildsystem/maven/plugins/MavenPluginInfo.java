@@ -1,8 +1,16 @@
 package com.neaterbits.build.buildsystem.maven.plugins;
 
-import org.apache.maven.plugin.Mojo;
+import java.io.File;
+import java.util.List;
+
+import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 
 public interface MavenPluginInfo {
 
-    Mojo instantiate(String plugin, String goal);
+    MavenPluginDescriptor getPluginDescriptor();
+
+    File getPluginJarFile();
+
+    List<MavenFileDependency> getAllDependencies();
 }

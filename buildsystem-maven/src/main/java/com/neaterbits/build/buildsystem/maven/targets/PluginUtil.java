@@ -8,11 +8,12 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
-import com.neaterbits.build.buildsystem.maven.MavenRepositoryAccess;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
@@ -25,7 +26,8 @@ class PluginUtil {
             String goal,
             MavenProject module) throws IOException, MojoExecutionException, MojoFailureException {
         
-        final MavenRepositoryAccess repositoryAccess = mavenBuildRoot.getRepositoryAccess();
+        final MavenPluginInstantiator pluginInstantiator = mavenBuildRoot.getPluginInstantiator();
+        final MavenPluginsAccess pluginsAccess = mavenBuildRoot.getPluginsAccess();
 
         final MavenPlugin mavenPlugin = PluginFinder.getPlugin(module, plugin);
         
@@ -33,13 +35,13 @@ class PluginUtil {
             throw new IllegalStateException("No plugin '" + plugin + "'");
         }
         
-        final MavenPluginInfo pluginInfo = repositoryAccess.getPluginInfo(mavenPlugin);
+        final MavenPluginInfo pluginInfo = pluginsAccess.getPluginInfo(mavenPlugin);
         
         if (pluginInfo == null) {
             throw new IllegalStateException("No plugin info for " + mavenPlugin);
         }
 
-        final Mojo mojo = pluginInfo.instantiate(plugin, goal);
+        final Mojo mojo = pluginInstantiator.instantiate(pluginInfo, plugin, goal);
         
         if (mojo == null) {
             throw new IllegalStateException("No mojo for plugin '" + plugin + "', goal '" + goal + "'");

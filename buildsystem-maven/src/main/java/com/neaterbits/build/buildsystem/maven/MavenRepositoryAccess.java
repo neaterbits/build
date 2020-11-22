@@ -5,10 +5,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.maven.elements.BaseMavenRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
-import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.util.StringUtils;
 
 public interface MavenRepositoryAccess {
@@ -73,13 +71,11 @@ public interface MavenRepositoryAccess {
         return path;
     }
 
-    MavenPluginInfo getPluginInfo(MavenPlugin mavenPlugin) throws IOException;
+    void downloadModuleIfNotPresent(
+            MavenModuleId mavenModule,
+            List<? extends BaseMavenRepository> repositories) throws IOException;
 
-    boolean isPluginPresent(MavenPlugin mavenPlugin);
-
-    void downloadPluginIfNotPresent(
-            MavenPlugin mavenPlugin,
-            List<MavenPluginRepository> repositories) throws IOException;
+    boolean isModulePresent(MavenModuleId moduleId);
     
     File repositoryJarFile(MavenDependency mavenDependency);
     

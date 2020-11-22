@@ -8,6 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
+
 public class MojoFinderTest {
 
     @Test
@@ -36,10 +38,9 @@ public class MojoFinderTest {
         final File jarDir = new File(compilerPluginDir, newest);
         final File jarFile = new File(jarDir, "maven-compiler-plugin-" + newest + ".jar");
         
-        final MavenDescriptorPluginInfo pluginInfo = MojoFinder.findMojos(jarFile);
+        final MavenPluginDescriptor pluginDescriptor = MojoFinder.getPluginDescriptor(jarFile);
 
-        assertThat(pluginInfo).isNotNull();
-        assertThat(pluginInfo.getPluginDescriptor()).isNotNull();
-        assertThat(pluginInfo.getPluginDescriptor().getMojos().isEmpty()).isFalse();
+        assertThat(pluginDescriptor).isNotNull();
+        assertThat(pluginDescriptor.getMojos().isEmpty()).isFalse();
     }
 }

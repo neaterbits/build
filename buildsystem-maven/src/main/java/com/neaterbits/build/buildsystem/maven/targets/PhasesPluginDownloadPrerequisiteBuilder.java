@@ -44,7 +44,7 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
             .buildBy(pt -> pt
                     .addFilesSubTarget(
                             PluginDownload.class,
-                            (c, t, p) -> c.getBuildSystemRoot().getRepositoryAccess().isPluginPresent(t.getPlugin()),
+                            (c, t, p) -> c.getBuildSystemRoot().getPluginsAccess().isPluginPresent(t.getPlugin()),
                             t -> t.getPlugin().getModuleId().getId(),
                             t -> "Download plugin " + t.getPlugin().getModuleId().getId())
 

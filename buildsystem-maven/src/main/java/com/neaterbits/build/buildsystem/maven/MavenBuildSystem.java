@@ -16,6 +16,10 @@ import com.neaterbits.build.buildsystem.common.http.HTTPDownloader;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMsHelper;
 import com.neaterbits.build.buildsystem.maven.effective.MavenResolveContext;
 import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiatorImpl;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
+import com.neaterbits.build.buildsystem.maven.plugins.RepositoryMavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.targets.MavenBuildSpecifier;
 import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
@@ -27,7 +31,9 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public final class MavenBuildSystem implements BuildSystem {
 
-    private final MavenRepositoryAccess repositoryAccess; 
+    private final MavenPluginsAccess pluginsAccess;
+    private final MavenPluginInstantiator pluginInstantiator;
+    private final MavenRepositoryAccess repositoryAccess;
     
     public MavenBuildSystem() {
         this(
@@ -40,12 +46,27 @@ public final class MavenBuildSystem implements BuildSystem {
     }
     
 	MavenBuildSystem(MavenRepositoryAccess repositoryAccess) {
-    
-	    Objects.requireNonNull(repositoryAccess);
-	    
-	    this.repositoryAccess = repositoryAccess;
+	    this(
+	            new RepositoryMavenPluginsAccess(repositoryAccess),
+	            new MavenPluginInstantiatorImpl(),
+	            repositoryAccess);
     }
 
+	MavenBuildSystem(
+	        MavenPluginsAccess pluginsAccess,
+	        MavenPluginInstantiator pluginInstantiator,
+	        MavenRepositoryAccess repositoryAccess) {
+
+	    Objects.requireNonNull(pluginsAccess);
+	    Objects.requireNonNull(pluginInstantiator);
+        Objects.requireNonNull(repositoryAccess);
+        
+        this.pluginsAccess = pluginsAccess;
+        this.pluginInstantiator = pluginInstantiator;
+        this.repositoryAccess = repositoryAccess;
+    }
+
+	
     @Override
 	public boolean isBuildSystemFor(File rootDirectory) {
 
@@ -79,7 +100,12 @@ public final class MavenBuildSystem implements BuildSystem {
 					null,
 					resolveContext);
 
-		return (BuildSystemRoot)new MavenBuildRoot(mavenProjects, xmlReaderFactory, repositoryAccess);
+		return (BuildSystemRoot)new MavenBuildRoot(
+		        mavenProjects,
+		        xmlReaderFactory,
+		        pluginsAccess,
+		        pluginInstantiator,
+		        repositoryAccess);
 	}
 
     @SuppressWarnings("unchecked")

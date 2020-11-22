@@ -7,14 +7,16 @@ import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.apache.maven.plugin.Mojo;
 
+import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.parse.MavenPluginDescriptorParser;
@@ -24,83 +26,24 @@ import com.neaterbits.build.buildsystem.maven.xml.stream.JavaxXMLStreamReaderFac
 
 public class MojoFinder {
 
-    public static MavenDescriptorPluginInfo findMojos(File jarFile) throws IOException {
+    public static MavenPluginDescriptor getPluginDescriptor(File jarFile) throws IOException {
+        
+        final MavenPluginDescriptor pluginDescriptor;
         
         final JarFile jar = new JarFile(jarFile);
 
-        final Map<String, Class<? extends Mojo>> mojos = new HashMap<>();
-        
-        final MavenDescriptorPluginInfo pluginInfo;
-        
         try {
-            
             final JarEntry pluginXMLEntry = jar.getJarEntry("META-INF/maven/plugin.xml");
             
             if (pluginXMLEntry == null) {
                 throw new IllegalArgumentException("No plugin.xml");
             }
             
-            final MavenPluginDescriptor pluginDescriptor = parsePluginDescriptor(jar, pluginXMLEntry, new JavaxXMLStreamReaderFactory());
+            pluginDescriptor = parsePluginDescriptor(jar, pluginXMLEntry, new JavaxXMLStreamReaderFactory());
             
             if (pluginDescriptor == null) {
                 throw new IllegalStateException();
             }
-            
-            final Enumeration<JarEntry> entries = jar.entries();
-            
-            final URL url;
-    
-            try {
-                url = new URL("jar:file:" + jarFile.getAbsolutePath() + "!/");
-            } catch (MalformedURLException ex) {
-                throw new IllegalStateException(ex);
-            }
-            
-            final URLClassLoader classLoader = URLClassLoader.newInstance(new URL [] { url });
-            
-            while (entries.hasMoreElements()) {
-                
-                final JarEntry jarEntry = entries.nextElement();
-                
-                final String classSuffix = ".class";
-                
-                if (jarEntry.isDirectory()) {
-                    continue;
-                }
-                
-                final String fileName = jarEntry.getName();
-                
-                if (fileName.endsWith(classSuffix)) {
-                    
-                    final String classPath = fileName.substring(0, fileName.length() - classSuffix.length());
-                    
-                    final String className = classPath.replace('/', '.');
-                    
-                    try {
-                        final Class<?> cl = classLoader.loadClass(className);
-    
-                        final MojoDescriptor mojoDescriptor = pluginDescriptor.getMojos().stream()
-                                .filter(mojo -> className.equals(mojo.getImplementation()))
-                                .findFirst()
-                                .orElse(null);
-                        
-                        if (    Mojo.class.isAssignableFrom(cl)
-                             && !cl.isInterface()
-                             && (cl.getModifiers() & Modifier.ABSTRACT) ==  0
-                             && mojoDescriptor != null) {
-    
-                            @SuppressWarnings("unchecked")
-                            final Class<? extends Mojo> mojoCl = (Class<? extends Mojo>) cl;
-                            
-                            mojos.put(className, mojoCl);
-                            
-                        }
-                    } catch (ClassNotFoundException ex) {
-                    }
-                }
-            }
-
-            pluginInfo = new MavenDescriptorPluginInfo(pluginDescriptor, mojos);
         } catch (XMLReaderException ex) {
             throw new IllegalArgumentException("Failed to parse plugin.xml", ex);
         }
@@ -108,7 +51,60 @@ public class MojoFinder {
             jar.close();
         }
 
-        return pluginInfo;
+        return pluginDescriptor;
+    }
+    
+    static Map<String, Class<? extends Mojo>> loadClasses(MavenPluginInfo pluginInfo) {
+
+        final Map<String, Class<? extends Mojo>> mojos = new HashMap<>();
+
+        final List<URL> urls = new ArrayList<>(pluginInfo.getAllDependencies().size() + 1);
+        
+        urls.add(makeJarUrl(pluginInfo.getPluginJarFile()));
+        
+        for (MavenFileDependency fileDependency : pluginInfo.getAllDependencies()) {
+            urls.add(makeJarUrl(fileDependency.getJarFile()));
+        }
+        
+        final URLClassLoader classLoader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]));
+
+        for (MojoDescriptor mojoDescriptor : pluginInfo.getPluginDescriptor().getMojos()) {
+
+            final String className = mojoDescriptor.getImplementation();
+            
+            try {
+                final Class<?> cl = classLoader.loadClass(className);
+
+                if (    Mojo.class.isAssignableFrom(cl)
+                        && !cl.isInterface()
+                        && (cl.getModifiers() & Modifier.ABSTRACT) ==  0
+                        && mojoDescriptor != null) {
+
+                   @SuppressWarnings("unchecked")
+                   final Class<? extends Mojo> mojoCl = (Class<? extends Mojo>) cl;
+                   
+                   mojos.put(className, mojoCl);
+                }
+                
+            } catch (ClassNotFoundException ex) {
+                
+            }
+        }
+
+        return mojos;
+    }
+    
+    private static URL makeJarUrl(File jarFile) {
+
+        final URL url;
+
+        try {
+            url = new URL("jar:file:" + jarFile.getAbsolutePath() + "!/");
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException(ex);
+        }
+
+        return url;
     }
 
     private static <DOCUMENT> MavenPluginDescriptor parsePluginDescriptor(
