@@ -11,12 +11,18 @@ import org.apache.maven.execution.DefaultMavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginParameterExpressionEvaluator;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.eclipse.aether.RepositorySystemSession;
 
+import com.neaterbits.build.buildsystem.maven.container.PlexusContainerImpl;
 import com.neaterbits.build.buildsystem.maven.plugins.convertmodel.ConvertModel;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoConfiguration;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
@@ -46,7 +52,7 @@ public class MojoInitializer {
             Mojo mojo,
             MojoDescriptor mojoDescriptor,
             Collection<com.neaterbits.build.buildsystem.maven.elements.MavenProject> allModules,
-            com.neaterbits.build.buildsystem.maven.elements.MavenProject module) throws ExpressionEvaluationException {
+            com.neaterbits.build.buildsystem.maven.elements.MavenProject module) throws ExpressionEvaluationException, MojoExecutionException {
         
         final PlexusContainer container = createProxy(PlexusContainer.class);
         
@@ -66,6 +72,21 @@ public class MojoInitializer {
         final MojoExecution mojoExecution = new MojoExecution(null);
 
         initParameters(mojo, mojoDescriptor, mavenSession, mojoExecution);
+        
+        if (mojo instanceof Contextualizable) {
+            
+            final PlexusContainer plexusContainer = new PlexusContainerImpl();
+            
+            final Context context = plexusContainer.getContext();
+            
+            context.put(PlexusConstants.PLEXUS_KEY, plexusContainer);
+            
+            try {
+                ((Contextualizable)mojo).contextualize(context);
+            } catch (ContextException ex) {
+                throw new MojoExecutionException("Failed to contextualize mojo " + mojo.getClass(), ex);
+            }
+        }
     }
 
     private void initParameters(
