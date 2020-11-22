@@ -11,15 +11,20 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
 import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
 
 import com.neaterbits.build.buildsystem.common.ArgumentException;
 import com.neaterbits.build.buildsystem.common.BuildSystemMain;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
+import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.util.Files;
 import com.neaterbits.util.IOUtils;
@@ -202,25 +207,25 @@ public class MavenBuildTest {
             .thenReturn(plugins.installPluginInfo);
         
         // Expectations to instantiate Mojos
-        Mockito.when(pluginInstantiator.instantiate(plugins.compilePluginInfo, "compiler", "compile"))
+        Mockito.when(pluginInstantiator.instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("compile")))
             .thenReturn(plugins.compileMojo);
         
-        Mockito.when(pluginInstantiator.instantiate(plugins.compilePluginInfo, "compiler", "testCompile"))
+        Mockito.when(pluginInstantiator.instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("testCompile")))
             .thenReturn(plugins.compileTestMojo);
 
-        Mockito.when(pluginInstantiator.instantiate(plugins.resourcesPluginInfo, "resources", "resources"))
+        Mockito.when(pluginInstantiator.instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("resources")))
             .thenReturn(plugins.resourcesMojo);
 
-        Mockito.when(pluginInstantiator.instantiate(plugins.resourcesPluginInfo, "resources", "testResources"))
+        Mockito.when(pluginInstantiator.instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("testResources")))
             .thenReturn(plugins.resourcesTestMojo);
 
-        Mockito.when(pluginInstantiator.instantiate(plugins.testPluginInfo, "surefire", "test"))
+        Mockito.when(pluginInstantiator.instantiate(same(plugins.testPluginInfo), any(), eq("surefire"), eq("test")))
             .thenReturn(plugins.testMojo);
 
-        Mockito.when(pluginInstantiator.instantiate(plugins.packageJarPluginInfo, "jar", "jar"))
+        Mockito.when(pluginInstantiator.instantiate(same(plugins.packageJarPluginInfo), any(), eq("jar"), eq("jar")))
             .thenReturn(plugins.packageJarMojo);
 
-        Mockito.when(pluginInstantiator.instantiate(plugins.installPluginInfo, "install", "install"))
+        Mockito.when(pluginInstantiator.instantiate(same(plugins.installPluginInfo), any(), eq("install"), eq("install")))
             .thenReturn(plugins.installMojo);
         
         return plugins;
@@ -250,13 +255,13 @@ public class MavenBuildTest {
         Mockito.verify(pluginsAccess, Mockito.atLeastOnce()).getPluginInfo(plugins.mavenPackageJarPlugin);
         Mockito.verify(pluginsAccess, Mockito.atLeastOnce()).getPluginInfo(plugins.mavenInstallPlugin);
 
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(plugins.compilePluginInfo, "compiler", "compile");
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(plugins.compilePluginInfo, "compiler", "testCompile");
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(plugins.resourcesPluginInfo, "resources", "resources");
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(plugins.resourcesPluginInfo, "resources", "testResources");
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(plugins.testPluginInfo, "surefire", "test");
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(plugins.packageJarPluginInfo, "jar", "jar");
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(plugins.installPluginInfo, "install", "install");
+        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("compile"));
+        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("testCompile"));
+        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("resources"));
+        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("testResources"));
+        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.testPluginInfo), any(), eq("surefire"), eq("test"));
+        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.packageJarPluginInfo), any(), eq("jar"), eq("jar"));
+        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.installPluginInfo), any(), eq("install"), eq("install"));
         
         Mockito.verify(plugins.compileMojo, Mockito.times(1)).execute();
         Mockito.verify(plugins.compileTestMojo, Mockito.times(1)).execute();
@@ -269,11 +274,6 @@ public class MavenBuildTest {
         Mockito.verifyNoMoreInteractions(
                 pluginsAccess,
                 repositoryAccess,
-                
-                plugins.compilePluginInfo,
-                plugins.testPluginInfo,
-                plugins.resourcesPluginInfo,
-                plugins.installPluginInfo,
                 
                 plugins.compileMojo,
                 plugins.compileTestMojo,
@@ -327,11 +327,11 @@ public class MavenBuildTest {
         
         PluginMocks(File tempDirectory) {
 
-            this.compilePluginInfo = Mockito.mock(MavenPluginInfo.class);
-            this.testPluginInfo = Mockito.mock(MavenPluginInfo.class);
-            this.resourcesPluginInfo = Mockito.mock(MavenPluginInfo.class);
-            this.packageJarPluginInfo = Mockito.mock(MavenPluginInfo.class);
-            this.installPluginInfo = Mockito.mock(MavenPluginInfo.class);
+            this.compilePluginInfo = makePluginInfo();
+            this.testPluginInfo = makePluginInfo();
+            this.resourcesPluginInfo = makePluginInfo();
+            this.packageJarPluginInfo = makePluginInfo();
+            this.installPluginInfo = makePluginInfo();
             
             this.compileMojo = Mockito.mock(Mojo.class);
             this.compileTestMojo = Mockito.mock(Mojo.class);
@@ -340,6 +340,28 @@ public class MavenBuildTest {
             this.resourcesTestMojo = Mockito.mock(Mojo.class);
             this.packageJarMojo = Mockito.mock(Mojo.class);
             this.installMojo = Mockito.mock(Mojo.class);
+        }
+    }
+    
+    private static MavenPluginInfo makePluginInfo() {
+        return new TestMavenPluginInfo();
+    }
+    
+    private static class TestMavenPluginInfo implements MavenPluginInfo {
+
+        @Override
+        public MavenPluginDescriptor getPluginDescriptor() {
+            return null;
+        }
+
+        @Override
+        public File getPluginJarFile() {
+            return null;
+        }
+
+        @Override
+        public List<MavenFileDependency> getAllDependencies() {
+            return Collections.emptyList();
         }
     }
 }

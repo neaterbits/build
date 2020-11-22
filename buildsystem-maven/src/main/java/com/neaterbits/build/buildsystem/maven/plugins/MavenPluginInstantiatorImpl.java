@@ -1,19 +1,19 @@
 package com.neaterbits.build.buildsystem.maven.plugins;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 
 import org.apache.maven.plugin.Mojo;
 
+import com.neaterbits.build.buildsystem.maven.plugins.MojoFinder.LoadedClasses;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 
 public class MavenPluginInstantiatorImpl implements MavenPluginInstantiator {
 
     @Override
-    public Mojo instantiate(MavenPluginInfo pluginInfo, String plugin, String goal) {
+    public Mojo instantiate(MavenPluginInfo pluginInfo, ClassLoader classLoader, String plugin, String goal) {
 
-        final Map<String, Class<? extends Mojo>> map = MojoFinder.loadClasses(pluginInfo); 
+        final LoadedClasses loadedClasses = MojoFinder.loadClasses(pluginInfo, classLoader); 
         
         final MavenPluginDescriptor pluginDescriptor = pluginInfo.getPluginDescriptor();
         
@@ -22,21 +22,24 @@ public class MavenPluginInstantiatorImpl implements MavenPluginInstantiator {
                 .findFirst()
                 .orElse(null);
 
-        return instantiate(mojoDescriptor, map);
+        return instantiate(mojoDescriptor, loadedClasses);
     }
 
-    private Mojo instantiate(MojoDescriptor mojoDescriptor, Map<String, Class<? extends Mojo>> mojoImplementations) {
+    private Mojo instantiate(MojoDescriptor mojoDescriptor, LoadedClasses mojoImplementations) {
 
         final Class<? extends Mojo> implementationClass
-            = mojoImplementations.get(mojoDescriptor.getImplementation());
+            = mojoImplementations.getMojoClasses().get(mojoDescriptor.getImplementation());
+        
+        final Mojo mojo;
         
         try {
-            return implementationClass.getConstructor().newInstance();
+            mojo = implementationClass.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException ex) {
 
             throw new IllegalStateException(ex);
         }
+
+        return mojo;
     }
-    
 }

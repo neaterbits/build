@@ -1,11 +1,13 @@
 package com.neaterbits.build.buildsystem.maven.targets;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
 import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
@@ -14,7 +16,9 @@ import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
+import com.neaterbits.build.buildsystem.maven.plugins.MojoFinder;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
+import com.neaterbits.build.buildsystem.maven.plugins.initialize.MojoInitializer;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
 
@@ -41,10 +45,31 @@ class PluginUtil {
             throw new IllegalStateException("No plugin info for " + mavenPlugin);
         }
 
-        final Mojo mojo = pluginInstantiator.instantiate(pluginInfo, plugin, goal);
+        final ClassLoader classLoader = MojoFinder.makeClassLoader(pluginInfo);
+        
+        final Mojo mojo = pluginInstantiator.instantiate(pluginInfo, classLoader, plugin, goal);
         
         if (mojo == null) {
             throw new IllegalStateException("No mojo for plugin '" + plugin + "', goal '" + goal + "'");
+        }
+
+        final Class<? extends MojoInitializer> initializerClass;
+        
+        try {
+            @SuppressWarnings("unchecked")
+            final Class<? extends MojoInitializer> cl
+                = (Class<? extends MojoInitializer>) classLoader.loadClass(MojoInitializer.class.getName());
+            
+            initializerClass = cl;
+        } catch (ClassNotFoundException ex) {
+            throw new IllegalStateException(ex);
+        }
+        
+        try {
+            initializerClass.getConstructor().newInstance().initializeMojo(mojo, mavenBuildRoot.getProjects(), module);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException | ExpressionEvaluationException ex) {
+            throw new IllegalStateException(ex);
         }
         
         mojo.execute();

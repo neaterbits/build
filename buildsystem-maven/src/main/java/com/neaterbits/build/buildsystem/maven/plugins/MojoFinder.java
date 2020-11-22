@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,19 +55,39 @@ public class MojoFinder {
         return pluginDescriptor;
     }
     
-    static Map<String, Class<? extends Mojo>> loadClasses(MavenPluginInfo pluginInfo) {
-
-        final Map<String, Class<? extends Mojo>> mojos = new HashMap<>();
-
+    public static ClassLoader makeClassLoader(MavenPluginInfo pluginInfo) {
+        
         final List<URL> urls = new ArrayList<>(pluginInfo.getAllDependencies().size() + 1);
         
-        urls.add(makeJarUrl(pluginInfo.getPluginJarFile()));
+        if (pluginInfo.getPluginJarFile() != null) {
+            urls.add(makeJarUrl(pluginInfo.getPluginJarFile()));
+        }
         
         for (MavenFileDependency fileDependency : pluginInfo.getAllDependencies()) {
             urls.add(makeJarUrl(fileDependency.getJarFile()));
         }
         
         final URLClassLoader classLoader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]));
+        
+        return classLoader;
+    }
+    
+    static class LoadedClasses {
+        
+        private final Map<String, Class<? extends Mojo>> mojoClasses;
+        
+        private LoadedClasses(Map<String, Class<? extends Mojo>> mojoClasses) {
+            this.mojoClasses = Collections.unmodifiableMap(mojoClasses);
+        }
+
+        Map<String, Class<? extends Mojo>> getMojoClasses() {
+            return mojoClasses;
+        }
+    }
+    
+    static LoadedClasses loadClasses(MavenPluginInfo pluginInfo, ClassLoader classLoader) {
+
+        final Map<String, Class<? extends Mojo>> mojos = new HashMap<>();
 
         for (MojoDescriptor mojoDescriptor : pluginInfo.getPluginDescriptor().getMojos()) {
 
@@ -91,7 +112,7 @@ public class MojoFinder {
             }
         }
 
-        return mojos;
+        return new LoadedClasses(mojos);
     }
     
     private static URL makeJarUrl(File jarFile) {
