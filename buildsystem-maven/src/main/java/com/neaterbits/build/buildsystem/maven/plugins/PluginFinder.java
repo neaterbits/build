@@ -37,6 +37,16 @@ public class PluginFinder {
         return prefix;
     }
     
+    public static MojoDescriptor findMojoDescriptor(MavenPluginDescriptor pluginDescriptor, String plugin, String goal) {
+        
+        final MojoDescriptor mojoDescriptor = pluginDescriptor.getMojos().stream()
+                .filter(mj -> PluginFinder.isMojoForGoal(pluginDescriptor, mj, plugin, goal))
+                .findFirst()
+                .orElse(null);
+
+        return mojoDescriptor;
+    }
+    
     public static List<MavenPlugin> getPluginsForModule(
             MavenProject mavenProject,
             Phases phases) {

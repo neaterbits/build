@@ -16,12 +16,9 @@ public class MavenPluginInstantiatorImpl implements MavenPluginInstantiator {
         final LoadedClasses loadedClasses = MojoFinder.loadClasses(pluginInfo, classLoader); 
         
         final MavenPluginDescriptor pluginDescriptor = pluginInfo.getPluginDescriptor();
-        
-        final MojoDescriptor mojoDescriptor = pluginDescriptor.getMojos().stream()
-                .filter(mj -> PluginFinder.isMojoForGoal(pluginDescriptor, mj, plugin, goal))
-                .findFirst()
-                .orElse(null);
 
+        final MojoDescriptor mojoDescriptor = PluginFinder.findMojoDescriptor(pluginDescriptor, plugin, goal);
+        
         return instantiate(mojoDescriptor, loadedClasses);
     }
 

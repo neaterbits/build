@@ -18,6 +18,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.plugins.MojoFinder;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.initialize.MojoInitializer;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
@@ -65,8 +66,10 @@ class PluginUtil {
             throw new IllegalStateException(ex);
         }
         
+        final MojoDescriptor mojoDescriptor = PluginFinder.findMojoDescriptor(pluginInfo.getPluginDescriptor(), plugin, goal);
+        
         try {
-            initializerClass.getConstructor().newInstance().initializeMojo(mojo, mavenBuildRoot.getProjects(), module);
+            initializerClass.getConstructor().newInstance().initializeMojo(mojo, mojoDescriptor, mavenBuildRoot.getProjects(), module);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException | ExpressionEvaluationException ex) {
             throw new IllegalStateException(ex);

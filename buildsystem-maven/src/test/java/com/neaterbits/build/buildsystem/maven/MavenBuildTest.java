@@ -327,11 +327,11 @@ public class MavenBuildTest {
         
         PluginMocks(File tempDirectory) {
 
-            this.compilePluginInfo = makePluginInfo();
-            this.testPluginInfo = makePluginInfo();
-            this.resourcesPluginInfo = makePluginInfo();
-            this.packageJarPluginInfo = makePluginInfo();
-            this.installPluginInfo = makePluginInfo();
+            this.compilePluginInfo = makePluginInfo(mavenCompilePlugin);
+            this.testPluginInfo = makePluginInfo(mavenTestPlugin);
+            this.resourcesPluginInfo = makePluginInfo(mavenResourcesPlugin);
+            this.packageJarPluginInfo = makePluginInfo(mavenPackageJarPlugin);
+            this.installPluginInfo = makePluginInfo(mavenInstallPlugin);
             
             this.compileMojo = Mockito.mock(Mojo.class);
             this.compileTestMojo = Mockito.mock(Mojo.class);
@@ -343,15 +343,30 @@ public class MavenBuildTest {
         }
     }
     
-    private static MavenPluginInfo makePluginInfo() {
-        return new TestMavenPluginInfo();
+    private static MavenPluginInfo makePluginInfo(MavenPlugin plugin) {
+        return new TestMavenPluginInfo(plugin);
     }
     
     private static class TestMavenPluginInfo implements MavenPluginInfo {
+        
+        private final MavenPlugin plugin;
+        
+        public TestMavenPluginInfo(MavenPlugin plugin) {
+            this.plugin = plugin;
+        }
 
         @Override
         public MavenPluginDescriptor getPluginDescriptor() {
-            return null;
+            
+            return new MavenPluginDescriptor(
+                    plugin.getModuleId(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    Collections.emptyList(),
+                    null);
         }
 
         @Override

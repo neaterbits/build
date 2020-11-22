@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.plugins.initialize;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -9,9 +10,17 @@ import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.DefaultMavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.PluginParameterExpressionEvaluator;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.eclipse.aether.RepositorySystemSession;
+
+import com.neaterbits.build.buildsystem.maven.plugins.convertmodel.ConvertModel;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoConfiguration;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoParameter;
 
 public class MojoInitializer {
 
@@ -35,6 +44,7 @@ public class MojoInitializer {
     
     public void initializeMojo(
             Mojo mojo,
+            MojoDescriptor mojoDescriptor,
             Collection<com.neaterbits.build.buildsystem.maven.elements.MavenProject> allModules,
             com.neaterbits.build.buildsystem.maven.elements.MavenProject module) throws ExpressionEvaluationException {
         
@@ -42,11 +52,77 @@ public class MojoInitializer {
         
         final RepositorySystemSession repositorySystemSession = createProxy(RepositorySystemSession.class);
         
-        @SuppressWarnings({ "deprecation", "unused" })
+        @SuppressWarnings({ "deprecation" })
         final MavenSession mavenSession = new MavenSession(
                 container,
                 repositorySystemSession,
                 new DefaultMavenExecutionRequest(),
                 new DefaultMavenExecutionResult());
+        
+        final MavenProject currentProject = ConvertModel.convertProject(module);
+        
+        mavenSession.setCurrentProject(currentProject);
+        
+        final MojoExecution mojoExecution = new MojoExecution(null);
+
+        initParameters(mojo, mojoDescriptor, mavenSession, mojoExecution);
+    }
+
+    private void initParameters(
+            Mojo mojo,
+            MojoDescriptor mojoDescriptor,
+            MavenSession mavenSession,
+            MojoExecution mojoExecution) throws ExpressionEvaluationException {
+
+        final PluginParameterExpressionEvaluator expressionEvaluator = new PluginParameterExpressionEvaluator(mavenSession, mojoExecution);
+
+        if (mojoDescriptor != null && mojoDescriptor.getParameters() != null) {
+         
+            for (MojoParameter mojoParameter : mojoDescriptor.getParameters()) {
+                
+                final MojoConfiguration configuration = mojoDescriptor.getConfigurations() == null
+                        ? null
+                        : mojoDescriptor.getConfigurations().stream()
+                            .filter(c -> c.getParamName().equals(mojoParameter.getName()))
+                            .findFirst()
+                            .orElse(null);
+                
+                if (configuration != null && configuration.getDefaultValue() != null) {
+                    
+                    final Field field;
+
+                    try {
+                        field = mojo.getClass().getDeclaredField(configuration.getParamName());
+                    } catch (NoSuchFieldException | SecurityException ex) {
+                        throw new IllegalStateException(ex);
+                    }
+                    
+                    if (field != null) {
+                        Object value = expressionEvaluator.evaluate(configuration.getDefaultValue(), field.getType());
+                        
+                        if (field.getType().equals(boolean.class) && value instanceof String) {
+                            value = Boolean.getBoolean((String)value);
+                        }
+
+                        final boolean fieldAccessible = field.canAccess(mojo);
+
+                        if (!fieldAccessible) {
+                            field.setAccessible(true);
+                        }
+
+                        try {
+                            field.set(mojo, value);
+                        } catch (IllegalArgumentException | IllegalAccessException ex) {
+                            throw new IllegalStateException(ex);
+                        }
+                        finally {
+                            if (!fieldAccessible) {
+                                field.setAccessible(false);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

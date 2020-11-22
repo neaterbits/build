@@ -74,7 +74,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPlug
 
 public class ConvertModel {
 
-    static MavenProject convertProject(com.neaterbits.build.buildsystem.maven.elements.MavenProject mavenProject) {
+    public static MavenProject convertProject(com.neaterbits.build.buildsystem.maven.elements.MavenProject mavenProject) {
 
         final MavenProject project = new MavenProject();
         
@@ -436,7 +436,7 @@ public class ConvertModel {
         
         final RepositoryPolicy policy = new RepositoryPolicy();
     
-        policy.setEnabled(mavenFiles.getEnabled());
+        policy.setEnabled(mavenFiles.getEnabled() != null ? mavenFiles.getEnabled() : false);
         policy.setUpdatePolicy(mavenFiles.getUpdatePolicy());
         policy.setChecksumPolicy(mavenFiles.getChecksumPolicy());
         
