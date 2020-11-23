@@ -9,12 +9,18 @@ import java.util.Set;
 public final class MavenConfigurationMap {
 
     private final Map<String, Object> values;
+    private final String implementation;
 
     public MavenConfigurationMap(Map<String, Object> values) {
+        this(values, null);
+    }
+    
+    public MavenConfigurationMap(Map<String, Object> values, String implementation) {
         
         Objects.requireNonNull(values);
         
         this.values = Collections.unmodifiableMap(values);
+        this.implementation = implementation;
     }
 
     public Object getValue(String key) {
@@ -44,6 +50,10 @@ public final class MavenConfigurationMap {
     
     public Set<String> getKeys() {
         return values.keySet();
+    }
+
+    public String getImplementation() {
+        return implementation;
     }
 
     @Override
