@@ -17,6 +17,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
@@ -27,6 +28,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.convertmodel.ConvertModel;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoConfiguration;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoParameter;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoRequirement;
 
 public class MojoInitializer {
 
@@ -71,11 +73,15 @@ public class MojoInitializer {
         
         final MojoExecution mojoExecution = new MojoExecution(null);
 
-        initParameters(mojo, mojoDescriptor, mavenSession, mojoExecution);
+        try {
+            initParameters(mojo, mojoDescriptor, mavenSession, mojoExecution);
+        } catch (GetValueException ex) {
+            throw new MojoExecutionException("Exception while initializing plugin value", ex);
+        }
         
+        final PlexusContainer plexusContainer = new PlexusContainerImpl();
+
         if (mojo instanceof Contextualizable) {
-            
-            final PlexusContainer plexusContainer = new PlexusContainerImpl();
             
             final Context context = plexusContainer.getContext();
             
@@ -87,13 +93,15 @@ public class MojoInitializer {
                 throw new MojoExecutionException("Failed to contextualize mojo " + mojo.getClass(), ex);
             }
         }
+        
+        initComponents(mojo, mojoDescriptor, plexusContainer);
     }
 
     private void initParameters(
             Mojo mojo,
             MojoDescriptor mojoDescriptor,
             MavenSession mavenSession,
-            MojoExecution mojoExecution) throws ExpressionEvaluationException {
+            MojoExecution mojoExecution) throws GetValueException {
 
         final PluginParameterExpressionEvaluator expressionEvaluator = new PluginParameterExpressionEvaluator(mavenSession, mojoExecution);
 
@@ -109,40 +117,99 @@ public class MojoInitializer {
                             .orElse(null);
                 
                 if (configuration != null && configuration.getDefaultValue() != null) {
-                    
-                    final Field field;
 
-                    try {
-                        field = mojo.getClass().getDeclaredField(configuration.getParamName());
-                    } catch (NoSuchFieldException | SecurityException ex) {
-                        throw new IllegalStateException(ex);
-                    }
+                    setFieldValue(mojo, configuration.getParamName(), field -> {
                     
-                    if (field != null) {
-                        Object value = expressionEvaluator.evaluate(configuration.getDefaultValue(), field.getType());
+                        Object value;
+                        
+                        try {
+                            value = expressionEvaluator.evaluate(configuration.getDefaultValue(), field.getType());
+                        } catch (ExpressionEvaluationException ex) {
+                            throw new GetValueException("Exception while evaluating value", ex);
+                        }
                         
                         if (field.getType().equals(boolean.class) && value instanceof String) {
                             value = Boolean.getBoolean((String)value);
                         }
-
-                        final boolean fieldAccessible = field.canAccess(mojo);
-
-                        if (!fieldAccessible) {
-                            field.setAccessible(true);
-                        }
-
-                        try {
-                            field.set(mojo, value);
-                        } catch (IllegalArgumentException | IllegalAccessException ex) {
-                            throw new IllegalStateException(ex);
-                        }
-                        finally {
-                            if (!fieldAccessible) {
-                                field.setAccessible(false);
-                            }
-                        }
-                    }
+                        
+                        return value;
+                    });
                 }
+            }
+        }
+    }
+    
+    private static class GetValueException extends Exception {
+
+        private static final long serialVersionUID = 1L;
+
+        GetValueException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+    
+    @FunctionalInterface
+    interface GetFieldValue {
+        
+        Object getFieldValue(Field field) throws GetValueException;
+    }
+
+    private void initComponents(
+            Mojo mojo,
+            MojoDescriptor mojoDescriptor,
+            PlexusContainer container) throws MojoExecutionException {
+
+        if (mojoDescriptor != null && mojoDescriptor.getRequirements() != null) {
+            
+            for (MojoRequirement requirement : mojoDescriptor.getRequirements()) {
+
+                try {
+                    final Object component = container.lookup(requirement.getRole(), requirement.getRoleHint());
+                    
+                    if (component != null) {
+                        setFieldValue(mojo, requirement.getFieldName(), field -> component);
+                    }
+                } catch (GetValueException | ComponentLookupException ex) {
+                    
+                    throw new MojoExecutionException(
+                            "Exception while initializing plugin component field '" 
+                                        + requirement.getFieldName() + "' of " + mojo.getClass().getName(), ex);
+                }
+            }
+        }
+    }
+
+    private static void setFieldValue(Mojo mojo, String fieldName, GetFieldValue getValue) throws GetValueException {
+        
+        final Field field;
+
+        try {
+            field = mojo.getClass().getDeclaredField(fieldName);
+        } catch (NoSuchFieldException | SecurityException ex) {
+            throw new IllegalStateException(ex);
+        }
+        
+        if (field != null) {
+            setFieldValue(mojo, field, getValue.getFieldValue(field));
+        }
+    }
+    
+    private static void setFieldValue(Mojo mojo, Field field, Object value) {
+        
+        final boolean fieldAccessible = field.canAccess(mojo);
+
+        if (!fieldAccessible) {
+            field.setAccessible(true);
+        }
+
+        try {
+            field.set(mojo, value);
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
+            throw new IllegalStateException(ex);
+        }
+        finally {
+            if (!fieldAccessible) {
+                field.setAccessible(false);
             }
         }
     }
