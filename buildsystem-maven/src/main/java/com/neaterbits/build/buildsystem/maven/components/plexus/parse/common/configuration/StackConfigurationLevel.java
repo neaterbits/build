@@ -1,4 +1,4 @@
-package com.neaterbits.build.buildsystem.maven.parse;
+package com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.configuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenConfigurationMap;
+import com.neaterbits.build.buildsystem.common.parse.StackText;
+import com.neaterbits.build.buildsystem.maven.components.plexus.elements.common.configuration.PlexusConfigurationMap;
 import com.neaterbits.util.parse.context.Context;
 
 class StackConfigurationLevel extends StackText {
@@ -31,8 +32,8 @@ class StackConfigurationLevel extends StackText {
         return getText() != null || (subObjects != null && !subObjects.isEmpty());
     }
     
-    final MavenConfigurationMap getObject() {
-        return new MavenConfigurationMap(subObjects);
+    final PlexusConfigurationMap getObject() {
+        return new PlexusConfigurationMap(subObjects);
     }
     
     Object get(String key) {

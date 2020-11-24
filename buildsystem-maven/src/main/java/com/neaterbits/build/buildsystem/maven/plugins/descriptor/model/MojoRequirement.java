@@ -1,28 +1,10 @@
 package com.neaterbits.build.buildsystem.maven.plugins.descriptor.model;
 
-public final class MojoRequirement {
+import com.neaterbits.build.buildsystem.maven.components.plexus.elements.PlexusRequirement;
 
-    private final String role;
-    
-    private final String roleHint;
-    
-    private final String fieldName;
+public final class MojoRequirement extends PlexusRequirement {
 
     public MojoRequirement(String role, String roleHint, String fieldName) {
-        this.role = role;
-        this.roleHint = roleHint;
-        this.fieldName = fieldName;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public String getRoleHint() {
-        return roleHint;
-    }
-
-    public String getFieldName() {
-        return fieldName;
+        super(role, roleHint, fieldName, null);
     }
 }

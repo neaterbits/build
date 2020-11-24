@@ -2,6 +2,7 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivation;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationFile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationOS;
@@ -106,8 +107,8 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         if (cur instanceof StackProperties || cur instanceof StackCiConfiguration) {
             push(new StackProperty(context, name));
         }
-        else if (cur instanceof StackPluginConfigurationMap || cur instanceof StackConfigurationLevel) {
-            push(new StackConfigurationLevel(context, name));
+        else {
+            super.onUnknownTagStart(context, name, attributes);
         }
     }
 
@@ -138,26 +139,8 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                 throw new IllegalStateException();
             }
         }
-        else if (cur instanceof StackConfigurationLevel) {
-         
-            final StackConfigurationLevel stackConfigurationLevel = pop();
-            
-            final StackBase last = get();
-            
-            if (last instanceof StackConfigurationLevel) {
-                
-                final StackConfigurationLevel lastConfigurationLevel = (StackConfigurationLevel)last;
-                
-                if (stackConfigurationLevel.getText() != null) {
-                    lastConfigurationLevel.add(stackConfigurationLevel.getTagName(), stackConfigurationLevel.getText());
-                }
-                else {
-                    lastConfigurationLevel.add(stackConfigurationLevel.getTagName(), stackConfigurationLevel.getObject());
-                }
-            }
-            else {
-                throw new IllegalStateException();
-            }
+        else {
+            super.onUnknownTagEnd(context, name);
         }
     }
 
@@ -261,7 +244,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final MavenReportSet reportSet = new MavenReportSet(
                                                 stackReportSet.getId(),
                                                 stackReportSet.getReports(),
-                                                stackReportSet.makeConfiguration());
+                                                stackReportSet.makeMavenConfiguration());
         stackReportSets.add(reportSet);
     }
 
@@ -681,7 +664,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
             || cur instanceof StackReportingPlugin
             || cur instanceof StackReportSet) {
 
-            push(new StackPluginConfigurationMap(context));
+            super.onConfigurationStart(context);
         }
         else if (cur instanceof StackNotifier) {
             push(new StackCiConfiguration(context));
@@ -694,17 +677,11 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
     @Override
     public void onConfigurationEnd(Context context) {
 
-        final StackBase cur = pop();
+        final StackBase cur = get();
         
-        if (cur instanceof StackPluginConfigurationMap) {
+        if (cur instanceof StackCiConfiguration) {
             
-            final StackPluginConfigurationMap stackPluginConfiguration = (StackPluginConfigurationMap)cur;
-            
-            final ConfigurationSetter configurationSetter = get();
-            
-            configurationSetter.setConfiguration(stackPluginConfiguration.getConfiguration());
-        }
-        else if (cur instanceof StackCiConfiguration) {
+            pop();
      
             final StackCiConfiguration stackCiConfiguration = (StackCiConfiguration)cur;
             
@@ -713,7 +690,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
             stackNotifier.setConfiguration(stackCiConfiguration.getProperties());
         }
         else {
-            throw new IllegalStateException();
+            super.onConfigurationEnd(context);
         }
     }
 
@@ -785,7 +762,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                                                 stackExecution.getId(),
                                                 stackExecution.getPhase(),
                                                 stackExecution.getGoals(),
-                                                stackExecution.makeConfiguration());
+                                                stackExecution.makeMavenConfiguration());
         
         stackExecutions.add(execution);
     }

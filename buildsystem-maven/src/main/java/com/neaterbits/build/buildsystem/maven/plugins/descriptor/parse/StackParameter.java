@@ -1,6 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.plugins.descriptor.parse;
 
-import com.neaterbits.build.buildsystem.maven.parse.StackBase;
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.parse.TypeSetter;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoParameter;
 import com.neaterbits.util.parse.context.Context;

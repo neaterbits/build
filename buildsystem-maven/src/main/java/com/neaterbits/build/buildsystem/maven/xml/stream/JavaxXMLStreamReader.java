@@ -63,7 +63,9 @@ final class JavaxXMLStreamReader implements XMLReader<Void> {
                 }
 
                 // Drain any remaining
-                processBuffered(buffered, eventListener, param);
+                if (!buffered.isEmpty()) {
+                    processBuffered(buffered, eventListener, param);
+                }
 
                 if (!buffered.isEmpty()) {
                     throw new IllegalStateException(bufferString(buffered));

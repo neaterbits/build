@@ -3,6 +3,7 @@ package com.neaterbits.build.buildsystem.maven.parse;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackResource extends StackBase implements DirectorySetter {

@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReleases;
 import com.neaterbits.build.buildsystem.maven.elements.MavenSnapshots;
 import com.neaterbits.util.parse.context.Context;

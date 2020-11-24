@@ -15,8 +15,8 @@ import java.util.Properties;
 
 import org.junit.Test;
 
+import com.neaterbits.build.buildsystem.maven.components.plexus.elements.common.configuration.PlexusConfigurationMap;
 import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguration;
-import com.neaterbits.build.buildsystem.maven.elements.MavenConfigurationMap;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoParameter;
 
 public class ConfigurerTest {
@@ -526,7 +526,7 @@ public class ConfigurerTest {
                     null,
                     null);
 
-        final boolean applied = apply(mojo, stringParam, new MavenConfigurationMap(values));
+        final boolean applied = apply(mojo, stringParam, new PlexusConfigurationMap(values));
         
         assertThat(applied).isTrue();
         
@@ -558,7 +558,7 @@ public class ConfigurerTest {
                     null,
                     null);
 
-        final boolean applied = apply(mojo, stringParam, new MavenConfigurationMap(values));
+        final boolean applied = apply(mojo, stringParam, new PlexusConfigurationMap(values));
         
         assertThat(applied).isTrue();
         
@@ -581,7 +581,7 @@ public class ConfigurerTest {
         
         values.put("stringField", "StringValue");
         
-        values.put("subTestObject", new MavenConfigurationMap(subValues));
+        values.put("subTestObject", new PlexusConfigurationMap(subValues));
         
         final MojoParameter stringParam
             = new MojoParameter(
@@ -595,7 +595,7 @@ public class ConfigurerTest {
                     null,
                     null);
 
-        final boolean applied = apply(mojo, stringParam, new MavenConfigurationMap(values));
+        final boolean applied = apply(mojo, stringParam, new PlexusConfigurationMap(values));
         
         assertThat(applied).isTrue();
         
@@ -632,7 +632,7 @@ public class ConfigurerTest {
 
         final TestMojo mojo = new TestMojo();
         
-        final boolean applied = apply(mojo, mapParam, new MavenConfigurationMap(values));
+        final boolean applied = apply(mojo, mapParam, new PlexusConfigurationMap(values));
         
         assertThat(applied).isTrue();
         
@@ -657,7 +657,7 @@ public class ConfigurerTest {
         
         values.put("field1", "Field1Value");
         values.put("field2", "true");
-        values.put("field3", new MavenConfigurationMap(subValues));
+        values.put("field3", new PlexusConfigurationMap(subValues));
         
         final MojoParameter mapParam
             = new MojoParameter(
@@ -673,7 +673,7 @@ public class ConfigurerTest {
 
         final TestMojo mojo = new TestMojo();
         
-        final boolean applied = apply(mojo, mapParam, new MavenConfigurationMap(values));
+        final boolean applied = apply(mojo, mapParam, new PlexusConfigurationMap(values));
         
         assertThat(applied).isTrue();
         
@@ -702,7 +702,7 @@ public class ConfigurerTest {
         subValues.put("field2", "true");
         subValues.put("field3", Arrays.asList("123", "234", "345"));
         
-        final MavenConfigurationMap subMap = new MavenConfigurationMap(
+        final PlexusConfigurationMap subMap = new PlexusConfigurationMap(
                                                         subValues,
                                                         ComplexTestObject.class.getName());
         
@@ -726,7 +726,7 @@ public class ConfigurerTest {
 
         final TestMojo mojo = new TestMojo();
         
-        final boolean applied = apply(mojo, mapParam, new MavenConfigurationMap(values));
+        final boolean applied = apply(mojo, mapParam, new PlexusConfigurationMap(values));
         
         assertThat(applied).isTrue();
         
@@ -762,10 +762,10 @@ public class ConfigurerTest {
         values3.put("name", "Name3");
         values3.put("value", "Value3");
         
-        final List<MavenConfigurationMap> list = Arrays.asList(
-                new MavenConfigurationMap(values1),
-                new MavenConfigurationMap(values2),
-                new MavenConfigurationMap(values3));
+        final List<PlexusConfigurationMap> list = Arrays.asList(
+                new PlexusConfigurationMap(values1),
+                new PlexusConfigurationMap(values2),
+                new PlexusConfigurationMap(values3));
         
         final Map<String, Object> map = new HashMap<>();
         
@@ -785,7 +785,7 @@ public class ConfigurerTest {
 
         final TestMojo mojo = new TestMojo();
         
-        final boolean applied = apply(mojo, mapParam, new MavenConfigurationMap(map));
+        final boolean applied = apply(mojo, mapParam, new PlexusConfigurationMap(map));
         
         assertThat(applied).isTrue();
         
@@ -805,7 +805,7 @@ public class ConfigurerTest {
         values.put("field2", "true");
         values.put("field3", Arrays.asList("123", "234", "345"));
         
-        final MavenConfigurationMap map = new MavenConfigurationMap(
+        final PlexusConfigurationMap map = new PlexusConfigurationMap(
                                                 values,
                                                 ComplexTestObject.class.getName());
         
@@ -871,7 +871,7 @@ public class ConfigurerTest {
         
         map.put(key, value);
         
-        final MavenConfigurationMap configurationMap = new MavenConfigurationMap(map);
+        final PlexusConfigurationMap configurationMap = new PlexusConfigurationMap(map);
         final MavenConfiguration configuration = new MavenConfiguration(false, configurationMap);
         
         return configuration;

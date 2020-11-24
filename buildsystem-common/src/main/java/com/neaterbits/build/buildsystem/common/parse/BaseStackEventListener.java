@@ -1,4 +1,4 @@
-package com.neaterbits.build.buildsystem.maven.parse;
+package com.neaterbits.build.buildsystem.common.parse;
 
 import java.util.Objects;
 
@@ -9,6 +9,11 @@ import com.neaterbits.util.parse.context.Context;
 public abstract class BaseStackEventListener implements TextEventListener {
 
     private final Stack<StackBase> stack;
+
+    protected BaseStackEventListener() {
+
+        this.stack = new ArrayStack<>();
+    }
 
     protected final boolean hasEntries() {
         return !stack.isEmpty();
@@ -34,11 +39,6 @@ public abstract class BaseStackEventListener implements TextEventListener {
     @SuppressWarnings("unchecked")
     protected final <T> T get() {
         return (T)stack.get();
-    }
-
-    BaseStackEventListener() {
-
-        this.stack = new ArrayStack<>();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.neaterbits.build.buildsystem.maven.parse;
+package com.neaterbits.build.buildsystem.common.parse;
 
 import com.neaterbits.util.parse.context.Context;
 

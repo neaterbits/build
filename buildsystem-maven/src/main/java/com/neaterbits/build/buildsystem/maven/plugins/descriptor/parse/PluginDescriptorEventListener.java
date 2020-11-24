@@ -1,12 +1,17 @@
 package com.neaterbits.build.buildsystem.maven.plugins.descriptor.parse;
 
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.PlexusConfigurationListener;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.PlexusRequirementsListener;
 import com.neaterbits.build.buildsystem.maven.parse.BaseEventListener;
 import com.neaterbits.build.buildsystem.maven.parse.EntityEventListener;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.util.parse.context.Context;
 
 interface PluginDescriptorEventListener
-    extends BaseEventListener, EntityEventListener {
+    extends BaseEventListener,
+            EntityEventListener,
+            PlexusRequirementsListener,
+            PlexusConfigurationListener {
 
     boolean inConfigurationElement(boolean startTag);
     
@@ -144,30 +149,6 @@ interface PluginDescriptorEventListener
 
     void onParametersEnd(Context context);
 
-    void onConfigurationStart(Context context);
-    
-    void onConfigurationEnd(Context context);
-
-    void onRequirementsStart(Context context);
-    
-    void onRequirementStart(Context context);
-
-    void onRoleStart(Context context);
-    
-    void onRoleEnd(Context context);
-    
-    void onRoleHintStart(Context context);
-    
-    void onRoleHintEnd(Context context);
-    
-    void onFieldNameStart(Context context);
-    
-    void onFieldNameEnd(Context context);
-    
-    void onRequirementEnd(Context context);
-    
-    void onRequirementsEnd(Context context);
-    
     void onMojoEnd(Context context);
 
     void onMojosEnd(Context context);

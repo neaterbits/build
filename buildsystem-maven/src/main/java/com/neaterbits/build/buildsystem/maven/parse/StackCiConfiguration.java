@@ -3,6 +3,7 @@ package com.neaterbits.build.buildsystem.maven.parse;
 import java.util.Objects;
 import java.util.Properties;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackCiConfiguration extends StackBase {

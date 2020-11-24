@@ -2,6 +2,7 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.elements.MavenBuildPlugin;
 import com.neaterbits.build.buildsystem.maven.elements.MavenResource;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginManagement;

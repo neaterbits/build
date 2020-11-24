@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagementRelocation;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagementRepository;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDistributionManagementSite;

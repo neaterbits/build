@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.util.parse.context.Context;
 
 final class StackProperties extends StackBase {

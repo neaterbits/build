@@ -2,7 +2,8 @@ package com.neaterbits.build.buildsystem.maven.parse;
 
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenConfigurationMap;
+import com.neaterbits.build.buildsystem.maven.components.plexus.elements.common.configuration.PlexusConfigurationMap;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.configuration.ConfigurationSetter;
 import com.neaterbits.build.buildsystem.maven.elements.MavenReportSet;
 import com.neaterbits.util.parse.context.Context;
 
@@ -12,7 +13,7 @@ final class StackReportingPlugin
 
     private Boolean inherited;
 
-    private MavenConfigurationMap configuration;
+    private PlexusConfigurationMap configuration;
 
     private List<MavenReportSet> reportSets;
     
@@ -29,12 +30,12 @@ final class StackReportingPlugin
         this.inherited = inherited;
     }
 
-    MavenConfigurationMap getConfiguration() {
+    PlexusConfigurationMap getConfiguration() {
         return configuration;
     }
 
     @Override
-    public void setConfiguration(MavenConfigurationMap configuration) {
+    public void setConfiguration(PlexusConfigurationMap configuration) {
         this.configuration = configuration;
     }
 

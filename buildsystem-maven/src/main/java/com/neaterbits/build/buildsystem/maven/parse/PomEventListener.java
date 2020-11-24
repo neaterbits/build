@@ -1,12 +1,14 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.PlexusConfigurationListener;
 import com.neaterbits.util.parse.context.Context;
 
 public interface PomEventListener
     extends
         BaseEventListener,
         EntityEventListener,
-        DependenciesListener {
+        DependenciesListener,
+        PlexusConfigurationListener {
 
 	void onProjectStart(Context context);
 
@@ -148,10 +150,6 @@ public interface PomEventListener
 	
 	void onInheritedEnd(Context context);
 	
-	void onConfigurationStart(Context context);
-
-	void onConfigurationEnd(Context context);
-
 	void onExecutionsStart(Context context);
 	
 	void onExecutionStart(Context context);

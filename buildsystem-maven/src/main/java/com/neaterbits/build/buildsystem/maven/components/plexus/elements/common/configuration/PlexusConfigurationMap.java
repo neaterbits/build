@@ -1,4 +1,4 @@
-package com.neaterbits.build.buildsystem.maven.elements;
+package com.neaterbits.build.buildsystem.maven.components.plexus.elements.common.configuration;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,16 +6,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public final class MavenConfigurationMap {
+public final class PlexusConfigurationMap {
 
     private final Map<String, Object> values;
     private final String implementation;
 
-    public MavenConfigurationMap(Map<String, Object> values) {
+    public PlexusConfigurationMap(Map<String, Object> values) {
         this(values, null);
     }
     
-    public MavenConfigurationMap(Map<String, Object> values, String implementation) {
+    public PlexusConfigurationMap(Map<String, Object> values, String implementation) {
         
         Objects.requireNonNull(values);
         
@@ -39,13 +39,13 @@ public final class MavenConfigurationMap {
         return (List<String>)getValue(key);
     }
     
-    public MavenConfigurationMap getSubObject(String key) {
-        return (MavenConfigurationMap)getValue(key);
+    public PlexusConfigurationMap getSubObject(String key) {
+        return (PlexusConfigurationMap)getValue(key);
     }
     
     @SuppressWarnings("unchecked")
-    public List<MavenConfigurationMap> getSubObjectList(String key) {
-        return (List<MavenConfigurationMap>)getValue(key);
+    public List<PlexusConfigurationMap> getSubObjectList(String key) {
+        return (List<PlexusConfigurationMap>)getValue(key);
     }
     
     public Set<String> getKeys() {

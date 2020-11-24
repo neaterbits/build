@@ -7,10 +7,18 @@
   </parent>
   <artifactId>buildsystem-common</artifactId>
   <dependencies>
+
   	<dependency>
   		<groupId>${project.groupId}</groupId>
   		<artifactId>build-types</artifactId>
   		<version>${project.version}</version>
   	</dependency>
+
+  	<dependency>
+  		<groupId>${utilGroupId}</groupId>
+  		<artifactId>util-parse</artifactId>
+  		<version>${utilParseVersion}</version>
+  	</dependency>
+  	
   </dependencies>
 </project>

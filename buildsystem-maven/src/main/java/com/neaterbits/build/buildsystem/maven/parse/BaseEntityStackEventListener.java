@@ -1,11 +1,12 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.configuration.BasePlexusConfigurationStackEventListener;
 import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.elements.MavenExclusion;
 import com.neaterbits.util.parse.context.Context;
 
 public abstract class BaseEntityStackEventListener
-    extends BaseStackEventListener
+    extends BasePlexusConfigurationStackEventListener
     implements EntityEventListener, DependenciesListener {
 
     @Override

@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
+import com.neaterbits.build.buildsystem.maven.components.plexus.elements.common.configuration.PlexusConfigurationMap;
 import com.neaterbits.build.buildsystem.maven.elements.MavenConfiguration;
-import com.neaterbits.build.buildsystem.maven.elements.MavenConfigurationMap;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoParameter;
 import com.neaterbits.util.StringUtils;
 
@@ -51,7 +51,7 @@ class Configurer {
     private static void apply(
             MojoExecutionContext context,
             Object toApplyTo,
-            MavenConfigurationMap map,
+            PlexusConfigurationMap map,
             String fieldName,
             String alias,
             String configuredFieldType,
@@ -74,9 +74,9 @@ class Configurer {
             
             object = null;
         }
-        else if (obj instanceof MavenConfigurationMap) {
+        else if (obj instanceof PlexusConfigurationMap) {
             
-            final MavenConfigurationMap subMap = (MavenConfigurationMap)obj;
+            final PlexusConfigurationMap subMap = (PlexusConfigurationMap)obj;
             
             if (configuredFieldType != null && configuredFieldType.equals("java.util.Map")) {
                 object = applyMap(context, subMap);
@@ -106,7 +106,7 @@ class Configurer {
                         : ConvertValueUtil.convertValue(context, configuredFieldType, field.getType(), object, fieldName));
     }
     
-    private static Map<String, Object> applyMap(MojoExecutionContext context, MavenConfigurationMap subMap) throws MojoInitializeException {
+    private static Map<String, Object> applyMap(MojoExecutionContext context, PlexusConfigurationMap subMap) throws MojoInitializeException {
         
         final Map<String, Object> hashMap = new HashMap<>();
         
@@ -116,9 +116,9 @@ class Configurer {
             
             final Object toAdd;
             
-            if (subValue instanceof MavenConfigurationMap) {
+            if (subValue instanceof PlexusConfigurationMap) {
                 
-                final MavenConfigurationMap map = (MavenConfigurationMap)subValue;
+                final PlexusConfigurationMap map = (PlexusConfigurationMap)subValue;
                 
                 if (map.getImplementation() != null && !map.getImplementation().isEmpty()) {
                     toAdd = makeComplexObject(context, map, null, map.getImplementation());
@@ -137,7 +137,7 @@ class Configurer {
         return hashMap;
     }
     
-    private static Properties applyProperties(MavenConfigurationMap subMap) {
+    private static Properties applyProperties(PlexusConfigurationMap subMap) {
         
         final Properties properties = new Properties();
         
@@ -147,9 +147,9 @@ class Configurer {
 
             for (Object o : list) {
             
-                if (o instanceof MavenConfigurationMap) {
+                if (o instanceof PlexusConfigurationMap) {
                     
-                    final MavenConfigurationMap propertyMap = (MavenConfigurationMap)o;
+                    final PlexusConfigurationMap propertyMap = (PlexusConfigurationMap)o;
                     
                     final String name = propertyMap.getString("name");
                     final String value = propertyMap.getString("value");
@@ -166,7 +166,7 @@ class Configurer {
     
     private static Object makeComplexObject(
             MojoExecutionContext context,
-            MavenConfigurationMap map,
+            PlexusConfigurationMap map,
             String fieldName,
             String parameterImplementationName) throws MojoInitializeException {
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.parse.StackBase;
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoConfiguration;
 import com.neaterbits.util.parse.context.Context;
 

@@ -3,10 +3,18 @@ package com.neaterbits.build.buildsystem.maven.plugins.descriptor.parse;
 import java.util.List;
 import java.util.Objects;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.StackField;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.StackFieldName;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.StackImplementation;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.StackIsolatedRealm;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.StackRequirement;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.StackRole;
+import com.neaterbits.build.buildsystem.maven.components.plexus.parse.common.StackRoleHint;
 import com.neaterbits.build.buildsystem.maven.parse.BaseEntityStackEventListener;
-import com.neaterbits.build.buildsystem.maven.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.parse.TypeSetter;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
+import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoRequirement;
 import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.util.parse.context.Context;
 
@@ -655,7 +663,6 @@ final class StackPluginDescriptorEventListener
     public void onFieldNameStart(Context context) {
 
         push(new StackFieldName(context));
-        
     }
 
     @Override
@@ -669,13 +676,33 @@ final class StackPluginDescriptorEventListener
     }
 
     @Override
+    public void onFieldStart(Context context) {
+        push(new StackField(context));
+    }
+
+    @Override
+    public void onFieldEnd(Context context) {
+
+        final StackField stackField = pop();
+        
+        final StackRequirement stackRequirement = get();
+        
+        stackRequirement.setField(stackField.getText());
+    }
+
+    @Override
     public void onRequirementEnd(Context context) {
 
         final StackRequirement stackRequirement = pop();
         
         final StackMojo stackMojo = get();
         
-        stackMojo.addRequirement(stackRequirement.build());
+        final MojoRequirement requirement = new MojoRequirement(
+                                                    stackRequirement.getRole(),
+                                                    stackRequirement.getRoleHint(),
+                                                    stackRequirement.getFieldName());
+
+        stackMojo.addRequirement(requirement);
     }
 
     @Override

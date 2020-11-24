@@ -2,7 +2,7 @@ package com.neaterbits.build.buildsystem.maven.plugins.descriptor.parse;
 
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.parse.StackBase;
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoConfiguration;
 import com.neaterbits.util.parse.context.Context;
 

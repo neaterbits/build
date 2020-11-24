@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.parse;
 
+import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationFile;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationOS;
 import com.neaterbits.build.buildsystem.maven.elements.MavenActivationProperty;
