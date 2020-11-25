@@ -3,7 +3,7 @@ package com.neaterbits.build.buildsystem.maven.model;
 import java.io.File;
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 
 public final class MavenFileDependency {
 

@@ -10,9 +10,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
@@ -20,6 +17,9 @@ import com.neaterbits.build.buildsystem.maven.plugins.MojoFinder;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.initialize.MojoInitializer;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
 

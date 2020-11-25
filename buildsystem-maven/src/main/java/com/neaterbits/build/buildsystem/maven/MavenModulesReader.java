@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
-import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 

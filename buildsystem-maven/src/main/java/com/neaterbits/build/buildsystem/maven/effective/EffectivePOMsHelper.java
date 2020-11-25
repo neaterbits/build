@@ -13,17 +13,18 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import com.neaterbits.build.buildsystem.maven.MavenConstants;
-import com.neaterbits.build.buildsystem.maven.MavenModuleId;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeFilter;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeMode;
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
-import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
+import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.variables.MavenBuiltinVariables;
 import com.neaterbits.build.buildsystem.maven.variables.VariableExpansion;
-import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReader;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
+import com.neaterbits.build.buildsystem.maven.xml.model.DocumentModel;
 import com.neaterbits.build.types.ModuleId;
 
 public class EffectivePOMsHelper {
@@ -85,7 +86,7 @@ public class EffectivePOMsHelper {
 	public static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 		List<MavenProject> computeEffectiveProjects(
 			List<MavenXMLProject<DOCUMENT>> projects,
-			POMModel<NODE, ELEMENT, DOCUMENT> model,
+			DocumentModel<NODE, ELEMENT, DOCUMENT> model,
 			XMLReaderFactory<DOCUMENT> xmlReaderFactory,
 			String superPomString,
 			MavenResolveContext resolveContext) {
@@ -375,7 +376,7 @@ public class EffectivePOMsHelper {
 	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 	    MavenXMLProject<DOCUMENT> parse(
 	            DOCUMENT document,
-	            POMModel<NODE, ELEMENT, DOCUMENT> model,
+	            DocumentModel<NODE, ELEMENT, DOCUMENT> model,
 	            File rootDirectory) {
 	    
         final MavenProject parsed = PomTreeParser.parseToProject(
@@ -391,7 +392,7 @@ public class EffectivePOMsHelper {
 	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 	    MavenXMLProject<DOCUMENT> replaceVariables(
 	            MavenXMLProject<DOCUMENT> mavenXMLProject,
-	            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+	            DocumentModel<NODE, ELEMENT, DOCUMENT> pomModel,
 	            MavenResolveContext resolveContext) {
 	    
         final Map<String, String> properties = mavenXMLProject.getProject().getProperties();

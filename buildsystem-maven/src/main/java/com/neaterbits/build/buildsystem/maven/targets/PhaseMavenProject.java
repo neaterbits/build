@@ -2,8 +2,8 @@ package com.neaterbits.build.buildsystem.maven.targets;
 
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.phases.Phase;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.build.types.ModuleId;
 
 final class PhaseMavenProject {

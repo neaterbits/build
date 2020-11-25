@@ -1,6 +1,7 @@
 package com.neaterbits.build.buildsystem.maven;
 
 import com.neaterbits.build.buildsystem.common.BuildSystem;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.test.BaseModuleBuilderTest;
 import com.neaterbits.build.types.ModuleId;
 

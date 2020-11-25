@@ -2,7 +2,7 @@ package com.neaterbits.build.buildsystem.maven.targets;
 
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.TargetBuilder;
 import com.neaterbits.util.concurrency.scheduling.Constraint;

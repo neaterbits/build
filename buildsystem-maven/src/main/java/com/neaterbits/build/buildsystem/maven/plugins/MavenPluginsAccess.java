@@ -3,8 +3,8 @@ package com.neaterbits.build.buildsystem.maven.plugins;
 import java.io.IOException;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 
 public interface MavenPluginsAccess {
 

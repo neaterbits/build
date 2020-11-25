@@ -53,6 +53,15 @@
 		<module>build-main</module>
 		<module>build-model</module>
 		<module>build-test</module>
+		<module>buildsystem-maven-plugins-model</module>
+		<module>buildsystem-maven-plugins-parse</module>
+		<module>buildsystem-maven-plexus-model</module>
+		<module>buildsystem-maven-project-model</module>
+		<module>buildsystem-maven-project-parse</module>
+		<module>buildsystem-maven-plexus-parse</module>
+		<module>buildsystem-maven-common-parse</module>
+		<module>buildsystem-maven-common-model</module>
+		<module>buildsystem-maven-plugins-execute</module>
 	</modules>
 
 	<build>

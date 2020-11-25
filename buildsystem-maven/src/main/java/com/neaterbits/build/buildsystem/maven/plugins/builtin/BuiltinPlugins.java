@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.phases.Phase;
 import com.neaterbits.build.buildsystem.maven.phases.Phases;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 
 public final class BuiltinPlugins {
 

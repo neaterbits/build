@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.neaterbits.build.buildsystem.maven.effective.POMModel;
+import com.neaterbits.build.buildsystem.maven.xml.model.DocumentModel;
 import com.neaterbits.util.ArrayUtils;
 import com.neaterbits.util.StringUtils;
 
@@ -73,7 +73,7 @@ public class VariableExpansion {
             String text,
             MavenBuiltinVariables builtinVariables,
             Map<String, String> properties,
-            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+            DocumentModel<NODE, ELEMENT, DOCUMENT> pomModel,
             DOCUMENT document) {
         
         String cur = text;
@@ -183,7 +183,7 @@ public class VariableExpansion {
     private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
     String replaceFromModel(
             String [] parts,
-            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+            DocumentModel<NODE, ELEMENT, DOCUMENT> pomModel,
             DOCUMENT document) {
 
         String replaced = null;
@@ -205,7 +205,7 @@ public class VariableExpansion {
     String findElementNode(
             String [] parts,
             int index,
-            POMModel<NODE, ELEMENT, DOCUMENT> pomModel,
+            DocumentModel<NODE, ELEMENT, DOCUMENT> pomModel,
             NODE node) {
         
         final ELEMENT element = pomModel.getElement(node, parts[index]);

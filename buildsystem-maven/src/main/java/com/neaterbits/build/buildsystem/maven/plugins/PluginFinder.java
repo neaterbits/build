@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenBuild;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.phases.Phases;
 import com.neaterbits.build.buildsystem.maven.plugins.builtin.BuiltinPlugins;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenBuild;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 
 public class PluginFinder {
 

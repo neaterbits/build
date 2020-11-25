@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.maven.MavenRepositoryAccess;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.elements.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 
 public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
 

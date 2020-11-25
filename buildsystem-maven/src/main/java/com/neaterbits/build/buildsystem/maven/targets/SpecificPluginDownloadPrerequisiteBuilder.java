@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFinder;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;

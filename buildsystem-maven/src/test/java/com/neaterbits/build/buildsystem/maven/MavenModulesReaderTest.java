@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.stream.JavaxXMLStreamReaderFactory;
 

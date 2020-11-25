@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.elements.BaseMavenRepository;
-import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
+import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
 import com.neaterbits.util.StringUtils;
 
 public interface MavenRepositoryAccess {

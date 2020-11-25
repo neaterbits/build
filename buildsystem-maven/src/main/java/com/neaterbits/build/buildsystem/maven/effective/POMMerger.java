@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.maven.xml.XMLAttribute;
 import com.neaterbits.build.buildsystem.maven.xml.XMLEventListener;
+import com.neaterbits.build.buildsystem.maven.xml.model.DocumentModel;
 import com.neaterbits.util.parse.context.Context;
 
 final class POMMerger<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
@@ -24,16 +25,16 @@ final class POMMerger<NODE, ELEMENT extends NODE, DOCUMENT extends NODE> {
 		MergeMode merge(List<String> path);
 	}
 	
-	private final POMModel<NODE, ELEMENT, DOCUMENT> model;
+	private final DocumentModel<NODE, ELEMENT, DOCUMENT> model;
 
-	POMMerger(POMModel<NODE, ELEMENT, DOCUMENT> model) {
+	POMMerger(DocumentModel<NODE, ELEMENT, DOCUMENT> model) {
 
 		Objects.requireNonNull(model);
 		
 		this.model = model;
 	}
 	
-	POMModel<NODE, ELEMENT, DOCUMENT> getModel() {
+	DocumentModel<NODE, ELEMENT, DOCUMENT> getModel() {
 		return model;
 	}
 	

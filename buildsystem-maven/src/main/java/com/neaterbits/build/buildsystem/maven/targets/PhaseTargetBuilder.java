@@ -10,9 +10,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
 import com.neaterbits.build.buildsystem.maven.phases.Phase;
 import com.neaterbits.build.buildsystem.maven.phases.Phases;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;

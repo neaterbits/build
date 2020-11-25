@@ -5,9 +5,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
-import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.phases.Phase;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.build.common.tasks.ModuleBuilderUtil;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;

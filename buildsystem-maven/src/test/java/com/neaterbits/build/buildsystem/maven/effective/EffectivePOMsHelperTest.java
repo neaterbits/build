@@ -10,10 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
-import com.neaterbits.build.buildsystem.maven.elements.MavenDependency;
-import com.neaterbits.build.buildsystem.maven.elements.MavenProject;
-import com.neaterbits.build.buildsystem.maven.parse.PomTreeParser;
-import com.neaterbits.build.buildsystem.maven.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
+import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.dom.DOMModel;
 import com.neaterbits.build.buildsystem.maven.xml.dom.DOMReaderFactory;
