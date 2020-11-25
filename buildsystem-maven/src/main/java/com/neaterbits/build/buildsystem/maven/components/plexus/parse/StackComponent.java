@@ -17,7 +17,9 @@ final class StackComponent
     private String roleHint;
     
     private String implementation;
-    
+
+    private String instantiationStrategy;
+
     private List<PlexusRequirement> requirements;
 
     StackComponent(Context context) {
@@ -48,6 +50,14 @@ final class StackComponent
 
     void setImplementation(String implementation) {
         this.implementation = implementation;
+    }
+
+    String getInstantiationStrategy() {
+        return instantiationStrategy;
+    }
+
+    void setInstantiationStrategy(String instantiationStrategy) {
+        this.instantiationStrategy = instantiationStrategy;
     }
 
     List<PlexusRequirement> getRequirements() {

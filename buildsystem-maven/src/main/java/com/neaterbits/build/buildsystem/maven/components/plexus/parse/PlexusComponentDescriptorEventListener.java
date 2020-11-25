@@ -20,6 +20,10 @@ interface PlexusComponentDescriptorEventListener
     
     void onImplementationEnd(Context context);
 
+    void onInstantiationStrategyStart(Context context);
+    
+    void onInstantiationStrategyEnd(Context context);
+
     void onComponentEnd(Context context);
 
     void onComponentsEnd(Context context);

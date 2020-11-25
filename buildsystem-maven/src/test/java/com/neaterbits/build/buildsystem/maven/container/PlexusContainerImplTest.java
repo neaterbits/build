@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.neaterbits.util.di.Components;
+
 public class PlexusContainerImplTest {
 
     private static interface TestRole {
@@ -24,7 +26,7 @@ public class PlexusContainerImplTest {
     @Test
     public void testContainer() throws ComponentLookupException {
         
-        final PlexusContainer container = new PlexusContainerImpl();
+        final PlexusContainer container = new PlexusContainerImpl(Components.makeInstance());
         
         final TestComponent comp1 = new TestComponent();
         final TestComponent comp2 = new TestComponent();

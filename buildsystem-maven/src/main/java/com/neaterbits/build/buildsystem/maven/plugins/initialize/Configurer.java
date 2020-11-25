@@ -68,7 +68,7 @@ class Configurer {
         
         if (obj == null) {
             
-            if (required || FieldUtil.isPrimitiveType(configuredFieldType)) {
+            if (required || MojoFieldUtil.isPrimitiveType(configuredFieldType)) {
                 throw new MissingRequiredValueException(context, fieldName);
             }
             
@@ -96,7 +96,7 @@ class Configurer {
             object = obj;
         }
         
-        FieldUtil.setFieldValue(
+        MojoFieldUtil.setFieldValue(
                 context,
                 toApplyTo,
                 fieldName,

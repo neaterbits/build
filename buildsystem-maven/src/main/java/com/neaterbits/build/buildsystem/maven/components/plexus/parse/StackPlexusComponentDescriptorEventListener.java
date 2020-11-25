@@ -51,6 +51,21 @@ final class StackPlexusComponentDescriptorEventListener
     }
 
     @Override
+    public void onInstantiationStrategyStart(Context context) {
+        push(new StackInstantiationStrategy(context));
+    }
+
+    @Override
+    public void onInstantiationStrategyEnd(Context context) {
+
+        final StackInstantiationStrategy stackInstantiationStrategy = pop();
+        
+        final StackComponent stackComponent = get();
+        
+        stackComponent.setInstantiationStrategy(stackInstantiationStrategy.getText());
+    }
+
+    @Override
     public void onRequirementsStart(Context context) {
         push(new StackRequirements(context));
     }
@@ -157,6 +172,7 @@ final class StackPlexusComponentDescriptorEventListener
                                                     stackComponent.getRole(),
                                                     stackComponent.getRoleHint(),
                                                     stackComponent.getImplementation(),
+                                                    stackComponent.getInstantiationStrategy(),
                                                     stackComponent.getRequirements());
         stackComponents.add(component);
     }

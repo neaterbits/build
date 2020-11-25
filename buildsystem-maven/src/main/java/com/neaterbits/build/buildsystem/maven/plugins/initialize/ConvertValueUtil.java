@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.plugins.initialize.FieldUtil.Converter;
+import com.neaterbits.build.buildsystem.maven.plugins.initialize.MojoFieldUtil.Converter;
 
 class ConvertValueUtil {
 
@@ -18,7 +18,7 @@ class ConvertValueUtil {
             String fieldName)
                         throws UnknownFieldTypeException, MissingRequiredValueException, ValueFormatException, TypeMismatchException {
         
-        if (FieldUtil.isPrimitiveType(fieldType) && value == null) {
+        if (MojoFieldUtil.isPrimitiveType(fieldType) && value == null) {
             throw new MissingRequiredValueException(context, fieldName);
         }
         

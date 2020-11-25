@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-class FieldUtil {
+import com.neaterbits.util.reflection.FieldUtil;
+
+class MojoFieldUtil {
 
     private static final Set<String> primitiveTypes;
     
@@ -43,15 +45,9 @@ class FieldUtil {
             String configuredFieldType,
             GetFieldValue getValue) throws MojoInitializeException {
         
-        final Field field;
-        
         final Class<?> cl = object.getClass();
 
-        try {
-            field = cl.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException | SecurityException ex) {
-            throw new IllegalStateException(ex);
-        }
+        final Field field = FieldUtil.getFieldInClassOrBaseClass(cl, fieldName);
         
         final String actualFieldType = field.getType().getName();
         
@@ -61,7 +57,7 @@ class FieldUtil {
         
         final Object fieldValue = getValue.getFieldValue(field);
         
-        setFieldValue(context, object, field, fieldValue);
+        FieldUtil.setFieldValue(object, field, fieldValue);
     }
     
     static boolean isPrimitiveType(String fieldType) {
@@ -79,25 +75,4 @@ class FieldUtil {
         
         Object convert(String string) throws ValueFormatException;
     }
-    
-    private static void setFieldValue(MojoExecutionContext context, Object object, Field field, Object value) {
-        
-        final boolean fieldAccessible = field.canAccess(object);
-
-        if (!fieldAccessible) {
-            field.setAccessible(true);
-        }
-
-        try {
-            field.set(object, value);
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-            throw new IllegalStateException(ex);
-        }
-        finally {
-            if (!fieldAccessible) {
-                field.setAccessible(false);
-            }
-        }
-    }
-
 }

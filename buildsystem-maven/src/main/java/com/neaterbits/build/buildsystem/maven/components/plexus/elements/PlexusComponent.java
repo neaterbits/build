@@ -9,6 +9,7 @@ public final class PlexusComponent {
     private final String role;
     private final String roleHint;
     private final String implementation;
+    private final String instantiationStrategy;
     
     private final List<PlexusRequirement> requirements;
     
@@ -16,6 +17,7 @@ public final class PlexusComponent {
             String role,
             String roleHint,
             String implementation,
+            String instantiationStrategy,
             List<PlexusRequirement> requirements) {
 
         Objects.requireNonNull(role);
@@ -24,6 +26,7 @@ public final class PlexusComponent {
         this.role = role;
         this.roleHint = roleHint;
         this.implementation = implementation;
+        this.instantiationStrategy = instantiationStrategy;
         
         this.requirements = requirements != null
                 ? Collections.unmodifiableList(requirements)
@@ -40,6 +43,10 @@ public final class PlexusComponent {
 
     public String getImplementation() {
         return implementation;
+    }
+
+    public String getInstantiationStrategy() {
+        return instantiationStrategy;
     }
 
     public List<PlexusRequirement> getRequirements() {

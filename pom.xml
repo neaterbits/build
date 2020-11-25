@@ -18,6 +18,7 @@
 	
 		<utilGroupId>com.neaterbits.util</utilGroupId>
 		<utilBaseVersion>0.0.1-SNAPSHOT</utilBaseVersion>
+		<utilDiVersion>0.0.1-SNAPSHOT</utilDiVersion>
 		<utilConcurrencyVersion>0.0.1-SNAPSHOT</utilConcurrencyVersion>
 		<utilParseVersion>0.0.1-SNAPSHOT</utilParseVersion>
 	</properties>

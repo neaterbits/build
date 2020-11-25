@@ -49,6 +49,10 @@ final class PlexusComponentDescriptorXMLEventListener extends BaseXMLEventListen
         case "implementation":
             delegate.onImplementationStart(context);
             break;
+        
+        case "instantiation-strategy":
+            delegate.onInstantiationStrategyStart(context);
+            break;
             
         case "requirements":
             delegate.onRequirementsStart(context);
@@ -101,6 +105,10 @@ final class PlexusComponentDescriptorXMLEventListener extends BaseXMLEventListen
             delegate.onImplementationEnd(context);
             break;
             
+        case "instantiation-strategy":
+            delegate.onInstantiationStrategyEnd(context);
+            break;
+
         case "requirements":
             delegate.onRequirementsEnd(context);
             break;

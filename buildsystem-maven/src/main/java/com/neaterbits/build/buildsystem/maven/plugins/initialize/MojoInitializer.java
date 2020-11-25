@@ -29,6 +29,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoConfi
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoParameter;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoRequirement;
+import com.neaterbits.util.di.Components;
 
 public class MojoInitializer {
 
@@ -83,7 +84,7 @@ public class MojoInitializer {
             throw new MojoExecutionException("Exception while initializing plugin value", ex);
         }
         
-        final PlexusContainer plexusContainer = new PlexusContainerImpl();
+        final PlexusContainer plexusContainer = new PlexusContainerImpl(Components.makeInstance());
 
         if (mojo instanceof Contextualizable) {
             
@@ -127,7 +128,7 @@ public class MojoInitializer {
                     
                     if (configuration != null && configuration.getDefaultValue() != null) {
     
-                        FieldUtil.setFieldValue(
+                        MojoFieldUtil.setFieldValue(
                                 context,
                                 context.getMojo(),
                                 configuration.getParamName(),
@@ -167,7 +168,7 @@ public class MojoInitializer {
                     final Object component = container.lookup(requirement.getRole(), requirement.getRoleHint());
                     
                     if (component != null) {
-                        FieldUtil.setFieldValue(
+                        MojoFieldUtil.setFieldValue(
                                 context,
                                 context.getMojo(),
                                 requirement.getFieldName(),

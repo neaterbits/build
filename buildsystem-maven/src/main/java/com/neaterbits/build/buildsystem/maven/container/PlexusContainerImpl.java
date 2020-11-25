@@ -1,6 +1,5 @@
 package com.neaterbits.build.buildsystem.maven.container;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,29 +17,17 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.eclipse.sisu.plexus.Hints;
 
+import com.neaterbits.util.di.Components;
+
 public final class PlexusContainerImpl extends BaseContainerImpl implements PlexusContainer {
-
-    private static class Component {
-        private final String hint;
-        private final Object component;
-        
-        Component(String hint, Object component) {
-
-            Objects.requireNonNull(hint);
-            Objects.requireNonNull(component);
-            
-            this.hint = hint;
-            this.component = component;
-        }
-    }
     
     private final Map<Object, Object> contextMap;
     
     private final Context context;
     
-    private final Map<String, List<Component>> components;
+    private final Components components;
     
-    public PlexusContainerImpl() {
+    public PlexusContainerImpl(Components components) {
 
         this.contextMap = new HashMap<>();
         
@@ -97,7 +84,7 @@ public final class PlexusContainerImpl extends BaseContainerImpl implements Plex
             }
         };
         
-        this.components = new HashMap<>();
+        this.components = components;
     }
     
     @Override
@@ -164,94 +151,25 @@ public final class PlexusContainerImpl extends BaseContainerImpl implements Plex
     public void dispose() {
         throw new UnsupportedOperationException();
     }
-
-    private List<Component> lookupComponents(String role) {
-        
-        Objects.requireNonNull(role);
-        
-        return components.get(role);
-    }
     
     @Override
     Object lookupObject(Class<?> type, String role, String hint) {
-        
-        final Object object;
-        
-        synchronized (this) {
-
-            final List<Component> list = lookupComponents(role);
-            
-            final String hintToFind = hintToFind(hint);
-            
-            object = list == null || list.isEmpty()
-                    ? null
-                    : list.stream()
-                        .filter(c -> c.hint.equals(hintToFind))
-                        .findFirst()
-                        .map(c -> c.component)
-                        .orElse(null);
-        }
-        
-        return object;
+        return components.lookupObject(role, hintToFind(hint));
     }
 
     @Override
     List<Object> lookupObjectList(String role) {
-
-        final List<Object> objectList;
-        
-        synchronized (this) {
-            final List<Component> list = lookupComponents(role);
-    
-            objectList = list == null || list.isEmpty()
-                    ? null
-                    : list.stream()
-                        .map(c -> c.component)
-                        .collect(Collectors.toUnmodifiableList());
-        }
-        
-        return objectList;
+        return components.lookupObjectList(role);
     }
 
     @Override
     Map<String, Object> lookupObjectMap(String role) {
-
-        final Map<String, Object> map;
-        
-        synchronized (this) {
-            final List<Component> list = lookupComponents(role);
-    
-            map = list == null || list.isEmpty()
-                    ? null
-                    : list.stream()
-                        .collect(Collectors.toUnmodifiableMap(c -> c.hint, c -> c.component));
-        }
-
-        return map;
+        return components.lookupObjectMap(role);
     }
 
     @Override
     void addComponentObject(Object component, String role, String hint) {
-
-        Objects.requireNonNull(component);
-        Objects.requireNonNull(role);
-        Objects.requireNonNull(hint);
-        
-        synchronized (this) {
-            if (hasComponent(role, hint)) {
-                throw new IllegalStateException();
-            }
-            
-            List<Component> list = components.get(role);
-            
-            if (list == null) {
-                list = new ArrayList<>();
-                
-                components.put(role, list);
-            }
-
-            list.add(new Component(hint, component));
-        }
+        components.addComponentObject(component, role, hintToFind(hint));
     }
 
     @Override
