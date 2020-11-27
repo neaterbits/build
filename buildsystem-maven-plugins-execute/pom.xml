@@ -13,6 +13,13 @@
 	<artifactId>buildsystem-maven-plugins-execute</artifactId>
 
 	<dependencies>
+
+	  	<dependency>
+	  		<groupId>${project.groupId}</groupId>
+	  		<artifactId>buildsystem-maven-core</artifactId>
+	  		<version>${project.version}</version>
+	  	</dependency>
+
 	  	<dependency>
 	  		<groupId>${project.groupId}</groupId>
 	  		<artifactId>buildsystem-maven-plugins-parse</artifactId>

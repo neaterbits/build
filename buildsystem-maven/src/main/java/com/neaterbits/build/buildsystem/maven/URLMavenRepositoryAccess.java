@@ -14,6 +14,7 @@ import com.neaterbits.build.buildsystem.common.http.HTTPDownloader;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
+import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
 import com.neaterbits.util.IOUtils;
 
 final class URLMavenRepositoryAccess implements MavenRepositoryAccess {

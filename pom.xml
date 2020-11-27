@@ -62,6 +62,7 @@
 		<module>buildsystem-maven-common-parse</module>
 		<module>buildsystem-maven-common-model</module>
 		<module>buildsystem-maven-plugins-execute</module>
+		<module>buildsystem-maven-core</module>
 	</modules>
 
 	<build>

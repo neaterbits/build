@@ -20,11 +20,14 @@ import com.neaterbits.build.buildsystem.common.BuildSystemMain;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
-import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInstantiator;
-import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsAccess;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
+import com.neaterbits.build.buildsystem.maven.plugins.access.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
+import com.neaterbits.build.buildsystem.maven.plugins.execute.MavenPluginsEnvironmentImpl;
+import com.neaterbits.build.buildsystem.maven.plugins.instantiate.MavenPluginInstantiator;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
+import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.util.Files;
 import com.neaterbits.util.IOUtils;
@@ -58,11 +61,13 @@ public class MavenBuildTest {
         final MavenPluginInstantiator pluginInstantiator = Mockito.mock(MavenPluginInstantiator.class);
 
         final PluginMocks plugins = preparePlugins(tempDirectory, pluginsAccess, pluginInstantiator);
+
+        final MavenPluginsEnvironment pluginsEnvironment = new MavenPluginsEnvironmentImpl(pluginInstantiator);
         
         try {
             writePoms(tempDirectory);
 
-            final MavenBuildSystem buildSystem = new MavenBuildSystem(pluginsAccess, pluginInstantiator, repositoryAccess);
+            final MavenBuildSystem buildSystem = new MavenBuildSystem(pluginsAccess, pluginsEnvironment, repositoryAccess);
             
             final TargetExecutorLogger targetExecutorLogger = new PrintlnTargetExecutorLogger() {
 
@@ -86,7 +91,6 @@ public class MavenBuildTest {
                     null);
 
             verifyPlugins(plugins, pluginsAccess, pluginInstantiator, repositoryAccess);
-            
         }
         finally {
             Files.deleteRecursively(tempDirectory);

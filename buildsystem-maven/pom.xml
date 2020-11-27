@@ -21,6 +21,12 @@
 
   	<dependency>
   		<groupId>${project.groupId}</groupId>
+  		<artifactId>buildsystem-maven-core</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+
+  	<dependency>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>buildsystem-maven-project-parse</artifactId>
   		<version>${project.version}</version>
   	</dependency>
