@@ -57,4 +57,9 @@ public abstract class BaseStackEventListener implements TextEventListener {
             stackTexts.addText(text);
         }
     }
+
+    @Override
+    public String toString() {
+        return stack.toString(entry -> entry.getClass().getSimpleName());
+    }
 }

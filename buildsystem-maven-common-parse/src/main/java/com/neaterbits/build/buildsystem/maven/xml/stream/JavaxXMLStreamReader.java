@@ -212,6 +212,17 @@ final class JavaxXMLStreamReader implements XMLReader<Void> {
                 buffered.clear();
                 buffered.add(remaining);
             }
+            else if (  buffered.get(0).getEventType() == XMLEvent.END_ELEMENT
+                    && buffered.get(1).getEventType() == XMLEvent.START_ELEMENT) {
+                
+                processXMLEvent(buffered.get(0), eventListener, param);
+                
+                // Skip characters without processing
+                final XMLEvent remaining = buffered.get(1);
+
+                buffered.clear();
+                buffered.add(remaining);
+            }
             else if (  buffered.get(0).getEventType() == XMLEvent.CHARACTERS
                     && buffered.get(1).getEventType() == XMLEvent.END_ELEMENT) {
                 
