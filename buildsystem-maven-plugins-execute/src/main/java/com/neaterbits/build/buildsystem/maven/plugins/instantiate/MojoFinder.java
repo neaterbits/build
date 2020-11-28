@@ -19,7 +19,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescr
 
 public class MojoFinder {
     
-    public static ClassLoader makeClassLoader(MavenPluginInfo pluginInfo) {
+    public static URLClassLoader makeClassLoader(MavenPluginInfo pluginInfo) {
         
         final List<URL> urls = new ArrayList<>(pluginInfo.getAllDependencies().size() + 1);
         

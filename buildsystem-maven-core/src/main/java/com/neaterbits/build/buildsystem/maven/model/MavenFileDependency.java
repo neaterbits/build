@@ -26,4 +26,16 @@ public final class MavenFileDependency {
     public File getJarFile() {
         return jarFile;
     }
+
+    @Override
+    public String toString() {
+
+        final String homeDir = System.getProperty("user.home");
+        
+        final String path = jarFile.getAbsolutePath();
+        
+        return path.startsWith(homeDir)
+                ? path.substring(homeDir.length())
+                : path;
+    }
 }

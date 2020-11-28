@@ -2,10 +2,11 @@ package com.neaterbits.build.buildsystem.maven.plugins.access;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfoImpl;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
@@ -37,10 +38,14 @@ public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
         
         final MavenPluginDescriptor pluginDescriptor = PluginDescriptorUtil.getPluginDescriptor(pluginJarFile);
         
+        final List<MavenFileDependency> mavenFileDependencies = pluginDescriptor.getDependencies().stream()
+                .map(dep -> new MavenFileDependency(dep, repositoryAccess.repositoryJarFile(dep)))
+                .collect(Collectors.toList());
+
         final MavenPluginInfo pluginInfo = new MavenPluginInfoImpl(
                 pluginDescriptor,
                 pluginJarFile,
-                Collections.emptyList());
+                mavenFileDependencies);
 
         return pluginInfo;
     }

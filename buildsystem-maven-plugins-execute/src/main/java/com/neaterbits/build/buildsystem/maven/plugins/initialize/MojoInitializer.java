@@ -16,7 +16,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
@@ -29,7 +28,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoConfi
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoParameter;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoRequirement;
-import com.neaterbits.util.di.Components;
+import com.neaterbits.util.di.Resolver;
 
 public class MojoInitializer {
 
@@ -55,7 +54,9 @@ public class MojoInitializer {
             Mojo mojo,
             MojoDescriptor mojoDescriptor,
             Collection<com.neaterbits.build.buildsystem.maven.project.model.MavenProject> allModules,
-            com.neaterbits.build.buildsystem.maven.project.model.MavenProject module) throws ExpressionEvaluationException, MojoExecutionException {
+            com.neaterbits.build.buildsystem.maven.project.model.MavenProject module,
+            ClassLoader classLoader,
+            Resolver resolver) throws ExpressionEvaluationException, MojoExecutionException {
         
         final PlexusContainer container = createProxy(PlexusContainer.class);
         
@@ -84,7 +85,13 @@ public class MojoInitializer {
             throw new MojoExecutionException("Exception while initializing plugin value", ex);
         }
         
-        final PlexusContainer plexusContainer = new PlexusContainerImpl(Components.makeInstance());
+        try {
+            initComponents(mojoExecutionContext, mojoDescriptor, classLoader, resolver);
+        } catch (ClassNotFoundException ex) {
+            throw new MojoExecutionException("Could not resolve", ex);
+        }
+
+        final PlexusContainer plexusContainer = new PlexusContainerImpl(resolver.getComponents());
 
         if (mojo instanceof Contextualizable) {
             
@@ -98,8 +105,6 @@ public class MojoInitializer {
                 throw new MojoExecutionException("Failed to contextualize mojo " + mojo.getClass(), ex);
             }
         }
-        
-        initComponents(mojoExecutionContext, mojoDescriptor, plexusContainer);
     }
 
     private void initParameters(
@@ -158,14 +163,17 @@ public class MojoInitializer {
     private void initComponents(
             MojoExecutionContext context,
             MojoDescriptor mojoDescriptor,
-            PlexusContainer container) throws MojoExecutionException {
+            ClassLoader classLoader,
+            Resolver resolver) throws MojoExecutionException, ClassNotFoundException {
 
         if (mojoDescriptor != null && mojoDescriptor.getRequirements() != null) {
             
             for (MojoRequirement requirement : mojoDescriptor.getRequirements()) {
 
+                final Class<?> roleClass = classLoader.loadClass(requirement.getRole());
+                
                 try {
-                    final Object component = container.lookup(requirement.getRole(), requirement.getRoleHint());
+                    final Object component = resolver.instantiate(roleClass, requirement.getRoleHint());
                     
                     if (component != null) {
                         MojoFieldUtil.setFieldValue(
@@ -175,7 +183,7 @@ public class MojoInitializer {
                                 null,
                                 field -> component);
                     }
-                } catch (MojoInitializeException | ComponentLookupException ex) {
+                } catch (MojoInitializeException ex) {
                     
                     throw new MojoExecutionException(
                             "Exception while initializing plugin component field '" 
