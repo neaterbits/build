@@ -13,7 +13,7 @@ public class AllBuildSystems implements BuildSystems {
 	AllBuildSystems() {
 		this.buildSystems = new BuildSystem [] {
 				
-				new MavenBuildSystem()
+				new MavenBuildSystem(".m2/repository")
 				
 		};
 	}

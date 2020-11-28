@@ -17,6 +17,6 @@ public class MavenModuleBuilderTest extends BaseModuleBuilderTest{
 
 	@Override
 	protected BuildSystem makeBuildSystem() {
-		return new MavenBuildSystem();
+		return new MavenBuildSystem(".build/maven");
 	}
 }
