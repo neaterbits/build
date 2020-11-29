@@ -17,10 +17,9 @@ import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMReader;
-import com.neaterbits.build.buildsystem.maven.plugins.MavenEnvironmentPluginExecutor;
-import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginExecutionException;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFailureException;
+import com.neaterbits.build.buildsystem.maven.plugins.PluginsEnvironmentProvider;
 import com.neaterbits.build.buildsystem.maven.plugins.access.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.plugins.access.PluginDescriptorUtil;
 import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
@@ -40,7 +39,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	private final XMLReaderFactory<Document> xmlReaderFactory;
 	private final MavenProjectsAccess projectsAccess;
 	private final MavenPluginsAccess pluginsAccess;
-	private final MavenPluginsEnvironment pluginsEnvironment;
+	private final PluginsEnvironmentProvider pluginsEnvironmentProvider;
 	private final MavenRepositoryAccess repositoryAccess;
 
 	private final List<BuildSystemRootListener> listeners;
@@ -55,7 +54,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	        PomProjectParser<Document> pomProjectParser,
 	        MavenProjectsAccess projectsAccess,
 	        MavenPluginsAccess pluginsAccess,
-	        MavenPluginsEnvironment pluginsEnvironment,
+            PluginsEnvironmentProvider pluginsEnvironmentProvider,
 	        MavenRepositoryAccess repositoryAccess,
 	        EffectivePOMReader effectivePomReader) {
 
@@ -63,7 +62,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		Objects.requireNonNull(xmlReaderFactory);
 		Objects.requireNonNull(projectsAccess);
 		Objects.requireNonNull(pluginsAccess);
-		Objects.requireNonNull(pluginsEnvironment);
+		Objects.requireNonNull(pluginsEnvironmentProvider);
 		Objects.requireNonNull(repositoryAccess);
 		Objects.requireNonNull(effectivePomReader);
 		
@@ -71,7 +70,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		this.xmlReaderFactory = xmlReaderFactory;
 		this.projectsAccess = projectsAccess;
 		this.pluginsAccess = pluginsAccess;
-		this.pluginsEnvironment = pluginsEnvironment;
+		this.pluginsEnvironmentProvider = pluginsEnvironmentProvider;
 		this.repositoryAccess = repositoryAccess;
 
 		this.listeners = new ArrayList<>();
@@ -109,15 +108,13 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
         PluginDescriptorUtil.executePluginGoal(
                 allProjects,
                 pluginsAccess,
-                pluginsEnvironment,
+                repositoryAccess,
+                pluginsEnvironmentProvider,
                 plugin,
                 goal,
                 module);
     }
 
-    public MavenEnvironmentPluginExecutor getPluginExecutor() {
-        return pluginsEnvironment;
-    }
 
     @Override
 	public Collection<MavenProject> getProjects() {

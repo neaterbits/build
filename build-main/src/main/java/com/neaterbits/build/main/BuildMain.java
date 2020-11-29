@@ -44,7 +44,7 @@ public class BuildMain {
 	                structuredLogger,
 	                binaryTargetExecutorLogger);
 
-	        return delegatingLogger;
+	        return delegatingLogger; // new PrintlnTargetExecutorLogger();
 	    };
 	    
 	    try {
@@ -87,7 +87,7 @@ public class BuildMain {
             TargetBuildResult result,
             StructuredTargetExecutorLogger structuredLogger,
             LogContext logContext) {
-        
+
         final Log log = structuredLogger.makeLog();
         
         final LogIO logIO = new LogIO();

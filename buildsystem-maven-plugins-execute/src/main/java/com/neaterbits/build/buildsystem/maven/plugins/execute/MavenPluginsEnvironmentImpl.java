@@ -21,7 +21,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.PluginFailureException;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.initialize.MojoInitializer;
 import com.neaterbits.build.buildsystem.maven.plugins.instantiate.MavenPluginInstantiator;
-import com.neaterbits.build.buildsystem.maven.plugins.instantiate.MojoFinder;
+import com.neaterbits.build.buildsystem.maven.plugins.instantiate.MavenPluginInstantiatorImpl;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.util.di.AmbiguousRequirementException;
 import com.neaterbits.util.di.ClassLoaderScanner;
@@ -37,8 +37,11 @@ public final class MavenPluginsEnvironmentImpl implements MavenPluginsEnvironmen
 
     private final MavenPluginInstantiator pluginInstantiator;
     
-    public MavenPluginsEnvironmentImpl(
-            MavenPluginInstantiator pluginInstantiator) {
+    public MavenPluginsEnvironmentImpl() {
+        this(new MavenPluginInstantiatorImpl());
+    }
+    
+    public MavenPluginsEnvironmentImpl(MavenPluginInstantiator pluginInstantiator) {
         
         Objects.requireNonNull(pluginInstantiator);
         
@@ -52,12 +55,13 @@ public final class MavenPluginsEnvironmentImpl implements MavenPluginsEnvironmen
                 Collection<MavenProject> allProjects,
                 String plugin,
                 String goal,
-                MavenProject module)
+                MavenProject module,
+                URLClassLoader classLoader)
             throws PluginExecutionException, PluginFailureException, IOException {
 
         try {
             
-            executePluginGoal(pluginInfo, mojoDescriptor, allProjects, pluginInstantiator, plugin, goal, module);
+            executePluginGoal(pluginInfo, mojoDescriptor, allProjects, pluginInstantiator, plugin, goal, module, classLoader);
             
         } catch (MojoExecutionException ex) {
             throw new PluginExecutionException("Exception while executing", ex);
@@ -73,10 +77,9 @@ public final class MavenPluginsEnvironmentImpl implements MavenPluginsEnvironmen
             MavenPluginInstantiator pluginInstantiator,
             String plugin,
             String goal,
-            MavenProject module) throws IOException, MojoExecutionException, MojoFailureException {
+            MavenProject module,
+            URLClassLoader classLoader) throws IOException, MojoExecutionException, MojoFailureException {
 
-        final URLClassLoader classLoader = MojoFinder.makeClassLoader(pluginInfo);
-        
         final List<ComponentsSourceLoader<?>> loaders = Arrays.asList(
                 new PlexusComponentsSourceLoader(),
                 new JSR330ClassComponentsSourceLoader());

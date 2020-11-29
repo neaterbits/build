@@ -111,7 +111,7 @@ public abstract class BaseEntityStackEventListener
         final StackScope stackScope = pop();
 
         final StackDependency stackDependency = get();
-
+        
         stackDependency.setScope(stackScope.getText());
     }
 

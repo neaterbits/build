@@ -1,20 +1,22 @@
 package com.neaterbits.build.buildsystem.maven.di.componentsource.mavenplugin;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoRequirement;
 import com.neaterbits.util.di.Instantiation;
-import com.neaterbits.util.di.componentsource.ComponentsSource;
+import com.neaterbits.util.di.componentsource.BaseComponentsSource;
 import com.neaterbits.util.di.componentsource.ComponentsSourceException;
 
-final class MavenPluginComponentsSource implements ComponentsSource<MojoDescriptor> {
+final class MavenPluginComponentsSource extends BaseComponentsSource<MojoDescriptor> {
 
     private final MavenPluginDescriptor pluginDescriptor;
     
-    MavenPluginComponentsSource(MavenPluginDescriptor pluginDescriptor) {
+    MavenPluginComponentsSource(MavenPluginDescriptor pluginDescriptor, URL source) {
+        super(source);
         
         Objects.requireNonNull(pluginDescriptor);
         

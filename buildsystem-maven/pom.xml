@@ -33,22 +33,91 @@
 
   	<dependency>
   		<groupId>${project.groupId}</groupId>
-  		<artifactId>buildsystem-maven-plugins-execute</artifactId>
-  		<version>${project.version}</version>
-  	</dependency>
-
-  	<dependency>
-  		<groupId>${project.groupId}</groupId>
   		<artifactId>buildsystem-maven-plexus-parse</artifactId>
   		<version>${project.version}</version>
   	</dependency>
 
 	<!-- test dependencies -->
+
+  	<dependency>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>buildsystem-maven-plugins-execute</artifactId>
+  		<version>${project.version}</version>
+  		<scope>test</scope>
+		<exclusions>
+			<exclusion>
+				<groupId>*</groupId>
+				<artifactId>*</artifactId>
+			</exclusion>
+		</exclusions>
+  	</dependency>
+
   	<dependency>
   		<groupId>${project.groupId}</groupId>
   		<artifactId>build-test</artifactId>
   		<version>${project.version}</version>
   		<scope>test</scope>
   	</dependency>
+  	
+	<dependency>
+		<groupId>org.apache.maven</groupId>
+		<artifactId>maven-plugin-api</artifactId>
+		<version>3.6.3</version>
+		<scope>test</scope>
+		<exclusions>
+			<exclusion>
+				<groupId>*</groupId>
+				<artifactId>*</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+
+  	<dependency>
+  		<groupId>com.neaterbits.util</groupId>
+  		<artifactId>util-di</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  		<scope>test</scope>
+  	</dependency>
+
+	<dependency>
+		<groupId>org.eclipse.sisu</groupId>
+		<artifactId>org.eclipse.sisu.plexus</artifactId>
+		<version>0.3.4</version>
+		<scope>test</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.maven.resolver</groupId>
+		<artifactId>maven-resolver-api</artifactId>
+		<version>1.4.1</version>
+		<scope>test</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.maven</groupId>
+		<artifactId>maven-settings</artifactId>
+		<version>3.6.3</version>
+		<scope>test</scope>
+	</dependency>
+  	
+	<dependency>
+		<groupId>org.apache.maven</groupId>
+		<artifactId>maven-model</artifactId>
+		<version>3.6.3</version>
+		<scope>test</scope>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.maven</groupId>
+		<artifactId>maven-core</artifactId>
+		<version>3.6.3</version>
+		<scope>test</scope>
+		<exclusions>
+			<exclusion>
+				<groupId>*</groupId>
+				<artifactId>*</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
   </dependencies>
 </project>

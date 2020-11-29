@@ -32,13 +32,12 @@ public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
     @Override
     public MavenPluginInfo getPluginInfo(MavenPlugin mavenPlugin) throws IOException {
      
-        // Load plugin
         final File pluginJarFile = getPluginJarFile(mavenPlugin);
         
         final MavenPluginDescriptor pluginDescriptor = PluginDescriptorUtil.getPluginDescriptor(pluginJarFile);
         
         final List<MavenFileDependency> mavenFileDependencies = pluginDescriptor.getDependencies().stream()
-                .map(dep -> new MavenFileDependency(dep, repositoryAccess.repositoryJarFile(dep.getModuleId(), dep.getClassifier())))
+                .map(repositoryAccess::fileDependency)
                 .collect(Collectors.toList());
 
         final MavenPluginInfo pluginInfo = new MavenPluginInfoImpl(

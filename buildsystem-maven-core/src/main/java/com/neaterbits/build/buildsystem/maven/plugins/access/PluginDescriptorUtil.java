@@ -8,15 +8,18 @@ import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import com.neaterbits.build.buildsystem.maven.plugins.MavenEnvironmentPluginExecutor;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
+import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginExecutionException;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFailureException;
+import com.neaterbits.build.buildsystem.maven.plugins.PluginsEnvironmentProvider;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MojoDescriptor;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.parse.MavenPluginDescriptorParser;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
+import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 import com.neaterbits.build.buildsystem.maven.xml.stream.JavaxXMLStreamReaderFactory;
@@ -71,7 +74,8 @@ public class PluginDescriptorUtil {
     public static void executePluginGoal(
             Collection<MavenProject> allProjects,
             MavenPluginsAccess pluginsAccess,
-            MavenEnvironmentPluginExecutor pluginExecutor,
+            MavenRepositoryAccess repositoryAccess,
+            PluginsEnvironmentProvider pluginsEnvironmentProvider,
             String plugin,
             String goal,
             MavenProject module) throws IOException, PluginExecutionException, PluginFailureException {
@@ -89,7 +93,27 @@ public class PluginDescriptorUtil {
         }
 
         final MojoDescriptor mojoDescriptor = PluginFinder.findMojoDescriptor(pluginInfo.getPluginDescriptor(), plugin, goal);
+        
+        final MavenDependency executeModule = new MavenDependency(
+                                                    "com.neaterbits.build",
+                                                    "buildsystem-maven-plugins-execute",
+                                                    "0.0.1-SNAPSHOT");
+        
+        final PluginsEnvironmentProvider.Result result = pluginsEnvironmentProvider.provide(
+                    pluginInfo,
+                    executeModule,
+                    repositoryAccess);
+        
 
-        pluginExecutor.executePluginGoal(pluginInfo, mojoDescriptor, allProjects, plugin, goal, module);
+        final MavenPluginsEnvironment pluginsEnvironment = result.getEnvironment();
+
+        pluginsEnvironment.executePluginGoal(
+                pluginInfo,
+                mojoDescriptor,
+                allProjects,
+                plugin,
+                goal,
+                module,
+                result.getClassLoader());
     }
 }

@@ -32,22 +32,53 @@
 	  		<version>${project.version}</version>
 	  	</dependency>
 
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>3.6.3</version>
+		</dependency>
+
 	  	<dependency>
-	  		<groupId>${utilGroupId}</groupId>
+	  		<groupId>com.neaterbits.util</groupId>
 	  		<artifactId>util-di</artifactId>
-	  		<version>${utilDiVersion}</version>
+	  		<version>0.0.1-SNAPSHOT</version>
+	  		<scope>provided</scope>
 	  	</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
 			<version>3.6.3</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-core</artifactId>
+			<artifactId>maven-artifact</artifactId>
 			<version>3.6.3</version>
+			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven.resolver</groupId>
+			<artifactId>maven-resolver-api</artifactId>
+			<version>1.4.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.sisu</groupId>
+			<artifactId>org.eclipse.sisu.plexus</artifactId>
+			<version>0.3.4</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.29</version>
+			<scope>provided</scope>
+		</dependency>
+		
 	</dependencies>
 </project>

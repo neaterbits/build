@@ -12,13 +12,17 @@ public final class MavenDependency extends MavenEntity {
 	
 	private final List<MavenExclusion> exclusions;
 	
+	public MavenDependency(String groupId, String artifactId, String version) {
+	    this(new MavenModuleId(groupId, artifactId, version), null, null, null, null, null);
+	}
+
 	public MavenDependency(MavenModuleId moduleId, String type, String classifier, String scope, String optional, List<MavenExclusion> exclusions) {
 		super(moduleId, null);
 	
+        this.type = type;
+        this.classifier = classifier;
 		this.scope = scope;
-		this.type = type;
 		this.optional = optional;
-		this.classifier = classifier;
 		this.exclusions = exclusions != null
 		        ? Collections.unmodifiableList(exclusions)
                 : null;

@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.di.componentsource.plexus;
 
+import java.net.URL;
 import java.util.Objects;
 
 import org.eclipse.sisu.plexus.Strategies;
@@ -8,13 +9,14 @@ import com.neaterbits.build.buildsystem.maven.plexus.components.model.PlexusComp
 import com.neaterbits.build.buildsystem.maven.plexus.components.model.PlexusComponentSet;
 import com.neaterbits.build.buildsystem.maven.plexus.components.model.PlexusRequirement;
 import com.neaterbits.util.di.Instantiation;
-import com.neaterbits.util.di.componentsource.ComponentsSource;
+import com.neaterbits.util.di.componentsource.BaseComponentsSource;
 
-final class PlexusDescriptorComponentsSource implements ComponentsSource<PlexusComponent> {
+final class PlexusDescriptorComponentsSource extends BaseComponentsSource<PlexusComponent> {
     
     private final PlexusComponentSet descriptor;
 
-    public PlexusDescriptorComponentsSource(PlexusComponentSet descriptor) {
+    public PlexusDescriptorComponentsSource(PlexusComponentSet descriptor, URL source) {
+        super(source);
 
         Objects.requireNonNull(descriptor);
         

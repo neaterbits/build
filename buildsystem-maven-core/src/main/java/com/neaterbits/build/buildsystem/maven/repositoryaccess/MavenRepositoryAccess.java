@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
+import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
 import com.neaterbits.util.StringUtils;
 
@@ -81,4 +83,11 @@ public interface MavenRepositoryAccess {
     File repositoryJarFile(MavenModuleId mavenModuleId, String classifier);
 
     File repositoryExternalPomFile(MavenModuleId moduleId);
+    
+    default MavenFileDependency fileDependency(MavenDependency mavenDependency) {
+        
+        return new MavenFileDependency(
+                mavenDependency,
+                repositoryJarFile(mavenDependency.getModuleId(), mavenDependency.getClassifier()));
+    }
 }
