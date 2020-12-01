@@ -4,13 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.neaterbits.build.buildsystem.maven.MavenConstants;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
@@ -98,16 +98,19 @@ public class EffectivePOMsHelper {
 		
 		final DOCUMENT superPom = makeSuperPOM(xmlReaderFactory, superPomString);
 		
-		final List<MavenProject> result = new ArrayList<>(projects.size());
-		
 		for (MavenXMLProject<DOCUMENT> project : projects) {
+		    
+		    // resolve() may compute recursively up hierarchy, so must verify not already added e.g. in case
+		    // a sub project is before the root project in the list
+		    if (!computed.containsKey(project.getProject().getModuleId())) {
 
-			final Effective<DOCUMENT> resolved = resolve(project, projects, computed, pomMerger, superPom, resolveContext);
-
-			result.add(resolved.effective.getProject());
+		        resolve(project, projects, computed, pomMerger, superPom, resolveContext);
+		    }
 		}
 		
-		return result;
+		return projects.stream()
+		        .map(p -> computed.get(p.getProject().getModuleId()).effective.getProject())
+		        .collect(Collectors.toUnmodifiableList());
 	}
 	
 	private static class MergePath {
