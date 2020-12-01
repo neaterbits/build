@@ -228,6 +228,10 @@ public class EffectivePOMsHelper {
 	private static final MergePath [] PATHS = new MergePath [] {
             
             new MergePath(MergeMode.MERGE, "project"),
+            
+            new MergePath(MergeMode.REPLACE, "project", "groupId"),
+            new MergePath(MergeMode.REPLACE, "project", "version"),
+            
             new MergePath(MergeMode.MERGE, "project", "dependencies"),
             new MergePath(MergeMode.ADD,   "project", "dependencies", "dependency"),
             new MergePath(MergeMode.ADD,   "project", "dependencies", "dependency", "groupId"),
