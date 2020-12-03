@@ -15,33 +15,20 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 
-import com.neaterbits.build.buildsystem.common.ArgumentException;
-import com.neaterbits.build.buildsystem.common.BuildSystemMain;
-import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
-import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
 import com.neaterbits.build.buildsystem.maven.plugins.access.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
-import com.neaterbits.build.buildsystem.maven.plugins.execute.MavenPluginsEnvironmentImpl;
 import com.neaterbits.build.buildsystem.maven.plugins.instantiate.MavenPluginInstantiator;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
-import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
-import com.neaterbits.util.Files;
-import com.neaterbits.util.IOUtils;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.PrintlnTargetExecutorLogger;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.TargetExecutorLogState;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.TargetExecutorLogger;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 
-public class MavenBuildTest {
+public class MavenBuildTest extends BaseMavenBuildTest {
 
     private static final List<MavenPluginRepository> PLUGIN_REPOSITORIES;
     
     static {
-        
         final List<MavenPluginRepository> list = new ArrayList<>();
         
         list.add(new MavenPluginRepository(null, null, null, null, MavenConstants.PLUGIN_REPOSITORY_URL, null));
@@ -50,136 +37,20 @@ public class MavenBuildTest {
     }
 
     @Test
-    public void testBuildSourceFiles() throws ScanException, ArgumentException, IOException, XMLReaderException, MojoExecutionException, MojoFailureException {
+    public void testBuildSourceFiles() throws IOException, MojoExecutionException, MojoFailureException {
         
-        final File tempDirectory = java.nio.file.Files.createTempDirectory("mavenbuildtest").toFile();
+        final BuildState buildState = prepareBuild();
 
-        final MavenRepositoryAccess repositoryAccess = Mockito.mock(MavenRepositoryAccess.class);
+        final PluginMocks plugins = preparePlugins(buildState.tempDirectory, buildState.pluginsAccess, buildState.pluginInstantiator);
 
-        final MavenPluginsAccess pluginsAccess = Mockito.mock(MavenPluginsAccess.class);
-        
-        final MavenPluginInstantiator pluginInstantiator = Mockito.mock(MavenPluginInstantiator.class);
-
-        final PluginMocks plugins = preparePlugins(tempDirectory, pluginsAccess, pluginInstantiator);
-
-        final MavenPluginsEnvironment pluginsEnvironment = new MavenPluginsEnvironmentImpl(pluginInstantiator);
-        
         try {
-            writePoms(tempDirectory);
+            build("install", buildState);
 
-            final MavenBuildSystem buildSystem = new MavenBuildSystem(pluginsAccess, pluginsEnvironment, repositoryAccess);
-            
-            final TargetExecutorLogger targetExecutorLogger = new PrintlnTargetExecutorLogger() {
-
-                @Override
-                public void onActionException(
-                        TargetDefinition<?> target,
-                        TargetExecutorLogState logState,
-                        Exception exception) {
-                    
-                    super.onActionException(target, logState, exception);
-                    
-                    throw new IllegalStateException("Exeception while processing target " + target, exception);
-                }
-            };
-
-            BuildSystemMain.build(
-                    buildSystem,
-                    tempDirectory,
-                    new String [] { "install" },
-                    logContext -> targetExecutorLogger,
-                    null);
-
-            verifyPlugins(plugins, pluginsAccess, pluginInstantiator, repositoryAccess);
+            verifyPlugins(plugins, buildState.pluginsAccess, buildState.pluginInstantiator, buildState.repositoryAccess);
         }
         finally {
-            Files.deleteRecursively(tempDirectory);
+            cleanup(buildState);
         }
-    }
-
-    private File [] writePoms(File directory) throws IOException, XMLReaderException {
-        
-        final String rootGroupId = "rootGroupId";
-        final String rootArtifactId = "rootArtifactId";
-        final String rootVersion = "rootVersion";
-
-        final String rootDepGroupId = "rootDepGroupId";
-        final String rootDepArtifactId = "rootDepArtifactId";
-        final String rootDepVersion = "rootDepVersion";
-        
-        final String rootPomString =
-                "<project>"
-
-              + "  <groupId>" + rootGroupId + "</groupId>"
-              + "  <artifactId>" + rootArtifactId + "</artifactId>"
-              + "  <version>" + rootVersion + "</version>"
-
-              + "  <properties>"
-              + "    <rootProperty>rootValue</rootProperty>"
-              + "    <overrideProperty>overridable</overrideProperty>"
-              + "  </properties>"
-              
-              + "  <dependencies>"
-              + "     <dependency>"
-              + "        <groupId>" + rootDepGroupId + "</groupId>"
-              + "        <artifactId>" + rootDepArtifactId + "</artifactId>"
-              + "        <version>" + rootDepVersion + "</version>"
-              + "     </dependency>"
-              + "  </dependencies>"
-      
-              + "</project>";
-
-        final String subGroupId = "subGroupId";
-        final String subArtifactId = "subArtifactId";
-        final String subVersion = "subVersion";
-
-        final String depGroupId = "depGroupId";
-        final String depArtifactId = "depArtifactId";
-        final String depVersion = "depVersion";
-
-        final String subPomString =
-                "<project>"
-
-                
-              + "  <parent>"
-              + "    <groupId>" + rootGroupId + "</groupId>"
-              + "    <artifactId>" + rootArtifactId + "</artifactId>"
-              + "    <version>" + rootVersion + "</version>"
-              + "  </parent>"
-
-              + "  <groupId>" + subGroupId + "</groupId>"
-              + "  <artifactId>" + subArtifactId + "</artifactId>"
-              + "  <version>" + subVersion + "</version>"
-
-              + "  <properties>"
-              + "    <subProperty>subValue</subProperty>"
-              + "    <overrideProperty>overridden</overrideProperty>"
-              + "  </properties>"
-              
-              + "  <dependencies>"
-              + "     <dependency>"
-              + "        <groupId>" + depGroupId + "</groupId>"
-              + "        <artifactId>" + depArtifactId + "</artifactId>"
-              + "        <version>" + depVersion + "</version>"
-              + "     </dependency>"
-              + "  </dependencies>"
-
-              + "</project>";
-
-        final File rootFile = new File(directory, "pom.xml");
-        
-        final File subDir = new File(directory, "subdir");
-        subDir.mkdir();
-        
-        final File subFile = new File(subDir, "pom.xml");
-
-        rootFile.deleteOnExit();
-        subFile.deleteOnExit();
-    
-        IOUtils.write(rootFile, rootPomString);
-        IOUtils.write(subFile, subPomString);
-        
-        return new File [] { rootFile, subFile };
     }
 
     private PluginMocks preparePlugins(File tempDirectory, MavenPluginsAccess pluginsAccess, MavenPluginInstantiator pluginInstantiator) throws IOException {
@@ -276,8 +147,6 @@ public class MavenBuildTest {
         Mockito.verify(plugins.installMojo, Mockito.times(1)).execute();
         
         Mockito.verifyNoMoreInteractions(
-                pluginsAccess,
-                repositoryAccess,
                 
                 plugins.compileMojo,
                 plugins.compileTestMojo,
