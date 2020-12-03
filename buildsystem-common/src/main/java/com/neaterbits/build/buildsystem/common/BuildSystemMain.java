@@ -45,7 +45,7 @@ public final class BuildSystemMain {
         return buildPerformed;
     }
 
-    public static <MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, CONTEXT extends TaskContext>
+    public static <MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPOSITORY, CONTEXT extends TaskContext>
     void build(
             BuildSystem buildSystem,
             File projectDir,
@@ -53,7 +53,7 @@ public final class BuildSystemMain {
             Function<LogContext, TargetExecutorLogger> targetExecutorLogger,
             OnBuildResult onBuildResult) throws ScanException, ArgumentException {
         
-        final BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> buildSystemRoot
+        final BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> buildSystemRoot
             = buildSystem.scan(projectDir);
         
         final BuildSpecifier<CONTEXT> buildSpecifier = buildSystem.getBuildSpecifier();

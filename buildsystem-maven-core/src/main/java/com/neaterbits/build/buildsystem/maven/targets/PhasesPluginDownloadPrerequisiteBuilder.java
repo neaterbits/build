@@ -35,8 +35,7 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
                         
                         final MavenProject project = target.getProject();
                         
-                        final List<MavenPlugin> plugins
-                                = PluginFinder.getPluginsForModule(project, phases);
+                        final List<MavenPlugin> plugins = PluginFinder.getPluginsForModule(project, phases);
                         
                         return plugins.stream()
                                 .map(plugin -> new PluginDownload(plugin, project.getCommon().getPluginRepositories()))

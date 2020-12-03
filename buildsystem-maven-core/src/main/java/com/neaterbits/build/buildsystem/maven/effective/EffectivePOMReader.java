@@ -43,11 +43,15 @@ public final class EffectivePOMReader {
         
         final List<MavenXMLProject<Document>> projects = new ArrayList<>();
         
-        for (MavenXMLProject<Document> toCompute = project;
-                toCompute != null;
-                toCompute = getProject.apply(toCompute.getProject().getParentModuleId())) {
+        for (MavenXMLProject<Document> toCompute = project; toCompute != null;) {
             
             projects.add(toCompute);
+            
+            final MavenModuleId parentModuleId = toCompute.getProject().getParentModuleId();
+            
+            toCompute = parentModuleId != null
+                            ? getProject.apply(parentModuleId)
+                            : null;
         }
         
         final List<MavenProject> computedProjects = computeEffectiveProjects(projects);

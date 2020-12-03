@@ -4,8 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import org.w3c.dom.Document;
 
 import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.BuildSystemRootListener;
@@ -13,41 +18,64 @@ import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
+import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMReader;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenEnvironmentPluginExecutor;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginExecutionException;
 import com.neaterbits.build.buildsystem.maven.plugins.PluginFailureException;
 import com.neaterbits.build.buildsystem.maven.plugins.access.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.plugins.access.PluginDescriptorUtil;
+import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
+import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.projects.MavenProjectsAccess;
 import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
+import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderFactory;
 import com.neaterbits.build.types.language.Language;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.SourceFolderResource;
 import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 
-public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, MavenProject, MavenDependency> {
+public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, MavenProject, MavenDependency, BaseMavenRepository> {
 
+    private static class ExternalProject {
+        
+        private final MavenXMLProject<Document> xmlProject;
+        private MavenProject effective;
+        
+        ExternalProject(MavenXMLProject<Document> xmlProject, MavenProject effective) {
+            
+            Objects.requireNonNull(xmlProject);
+
+            this.xmlProject = xmlProject;
+            this.effective = effective;
+        }
+    }
+    
 	private final List<MavenProject> projects;
-	private final XMLReaderFactory<?> xmlReaderFactory;
+	private final XMLReaderFactory<Document> xmlReaderFactory;
 	private final MavenProjectsAccess projectsAccess;
 	private final MavenPluginsAccess pluginsAccess;
 	private final MavenPluginsEnvironment pluginsEnvironment;
 	private final MavenRepositoryAccess repositoryAccess;
+	private final EffectivePOMReader effectivePomReader;
 
 	private final List<BuildSystemRootListener> listeners;
+	
+	private final Map<MavenModuleId, ExternalProject> externalDependencies;
 
 	MavenBuildRoot(
 	        List<MavenProject> projects,
-	        XMLReaderFactory<?> xmlReaderFactory,
+	        XMLReaderFactory<Document> xmlReaderFactory,
 	        MavenProjectsAccess projectsAccess,
 	        MavenPluginsAccess pluginsAccess,
 	        MavenPluginsEnvironment pluginsEnvironment,
-	        MavenRepositoryAccess repositoryAccess) {
+	        MavenRepositoryAccess repositoryAccess,
+	        EffectivePOMReader effectivePomReader) {
 
 		Objects.requireNonNull(projects);
 		Objects.requireNonNull(xmlReaderFactory);
@@ -55,6 +83,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		Objects.requireNonNull(pluginsAccess);
 		Objects.requireNonNull(pluginsEnvironment);
 		Objects.requireNonNull(repositoryAccess);
+		Objects.requireNonNull(effectivePomReader);
 		
 		this.projects = projects;
 		this.xmlReaderFactory = xmlReaderFactory;
@@ -62,8 +91,11 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		this.pluginsAccess = pluginsAccess;
 		this.pluginsEnvironment = pluginsEnvironment;
 		this.repositoryAccess = repositoryAccess;
+		this.effectivePomReader = effectivePomReader;
 
 		this.listeners = new ArrayList<>();
+		
+		this.externalDependencies = new HashMap<>();
 	}
 
 	public MavenProjectsAccess getProjectsAccess() {
@@ -169,7 +201,10 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 
 	@Override
 	public Collection<MavenDependency> getDependencies(MavenProject project) {
-		return project.getCommon().getDependencies();
+	    
+	    final Collection<MavenDependency> dependencies = project.getCommon().getDependencies();
+	    
+	    return dependencies != null ? dependencies : Collections.emptyList();
 	}
 
 	@Override
@@ -265,22 +300,115 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 
         return repositoryAccess.repositoryJarFile(moduleId);
     }
+    
+	@Override
+    public void downloadExternalDependencyIfNotPresentAndAddToModel(
+            List<BaseMavenRepository> referencedFromRepositories,
+            MavenDependency dependency) throws IOException, ScanException {
+	    
+	    Objects.requireNonNull(dependency);
+	    
+	    System.out.println("## download " + dependency.getModuleId());
+	    
+	    if (!externalDependencies.containsKey(dependency.getModuleId())) {
+	        
+	        if (!repositoryAccess.isModulePresent(dependency.getModuleId())) {
+	            
+	            System.out.println("## download if not present " + dependency.getModuleId() + " " + referencedFromRepositories);
+	            
+	            repositoryAccess.downloadModuleIfNotPresent(dependency.getModuleId(), referencedFromRepositories);
+	        }
+	        
+	        final MavenXMLProject<Document> xmlProject;
+	        
+            try {
+                xmlProject = PomTreeParser.readModule(
+                        repositoryAccess.repositoryExternalPomFile(dependency),
+                        xmlReaderFactory);
+            } catch (XMLReaderException ex) {
+                throw new ScanException("Could not parse project " + dependency.getModuleId().getId(), ex);
+            }
+            
+            externalDependencies.put(
+                    dependency.getModuleId(),
+                    new ExternalProject(xmlProject, null));
 
-    @Override
-	public void downloadExternalDependencyIfNotPresent(MavenDependency dependency) {
+            computeEffectiveWherePossible();
+	    }
+    }
+	
+	private void computeEffectiveWherePossible() {
+	    
+	    for (Map.Entry<MavenModuleId, ExternalProject> externalProjectEntry : externalDependencies.entrySet()) {
 
-		final File repositoryPomFile = repositoryAccess.repositoryExternalPomFile(dependency);
+	        final ExternalProject externalProject = externalProjectEntry.getValue();
+	        
+	        if (externalProject.effective == null && hasAllParentPoms(externalProject)) {
+	            
+	            final MavenProject effectiveProject = effectivePomReader.computeEffectiveProject(
+                        externalProject.xmlProject,
+                        moduleId -> {
+                            
+                            Objects.requireNonNull(moduleId);
+                            
+                            System.out.println("## compute effective for " + moduleId);
+                            
+                            final ExternalProject ext = externalDependencies.get(moduleId);
+                        
+                            if (ext == null) {
+                                throw new IllegalStateException("No external project for " + moduleId);
+                            }
+                            
+                            return ext.xmlProject;
+                        });
 
-		if (!repositoryPomFile.exists()) {
-			// Download from external repositories
-			throw new UnsupportedOperationException("No such repository file " + repositoryPomFile);
-		}
+	            externalProject.effective = effectiveProject;
+	        }
+	    }
+	}
+	
+	private boolean hasAllParentPoms(ExternalProject externalProject) {
+	    
+	    boolean hasAll = true;
+	    
+	    for (MavenModuleId parentModuleId = externalProject.xmlProject.getProject().getParentModuleId(); parentModuleId != null;) {
+
+	        final ExternalProject parentExternal = externalDependencies.get(parentModuleId);
+	        
+	        if (parentExternal == null) {
+	            hasAll = false;
+	            break;
+	        }
+	        else {
+	            parentModuleId = parentExternal.xmlProject.getProject().getParentModuleId();
+	        }
+	    }
+	    
+	    return hasAll;
 	}
 
-	@Override
-    public void downloadExternalDependencyIfNotPresent(MavenModuleId moduleId) {
+    @Override
+    public MavenProject getExternalProject(MavenModuleId moduleId) {
+        
+        Objects.requireNonNull(moduleId);
 
-	    throw new UnsupportedOperationException();
+        final ExternalProject externalProject = externalDependencies.get(moduleId);
+        
+        return externalProject != null
+                ? externalProject.xmlProject.getProject()
+                : null;
+    }
+
+    @Override
+    public MavenProject getEffectiveExternalProject(MavenModuleId moduleId) {
+
+        Objects.requireNonNull(moduleId);
+
+        final ExternalProject externalProject = externalDependencies.get(moduleId);
+        
+        return externalProject != null
+                ? externalProject.effective
+                : null;
     }
 
     public void downloadPluginIfNotPresent(MavenPlugin mavenPlugin, List<MavenPluginRepository> pluginRepositories) throws IOException {

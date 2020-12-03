@@ -15,6 +15,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.any;
 
+import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMsHelper;
 import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.access.MavenPluginsAccess;
@@ -31,7 +32,7 @@ public class MavenBuildTest extends BaseMavenBuildTest {
     static {
         final List<MavenPluginRepository> list = new ArrayList<>();
         
-        list.add(new MavenPluginRepository(null, null, null, null, MavenConstants.PLUGIN_REPOSITORY_URL, null));
+        list.add(EffectivePOMsHelper.CENTRAL_PLUGIN_REPOSITORY);
         
         PLUGIN_REPOSITORIES = Collections.unmodifiableList(list);
     }
@@ -58,7 +59,6 @@ public class MavenBuildTest extends BaseMavenBuildTest {
         final PluginMocks plugins = new PluginMocks(tempDirectory);
         
         // Expectations for getting plugin files
-
         Mockito.when(pluginsAccess.isPluginPresent(plugins.mavenCompilePlugin)).thenReturn(false);
         Mockito.when(pluginsAccess.isPluginPresent(plugins.mavenTestPlugin)).thenReturn(false);
         Mockito.when(pluginsAccess.isPluginPresent(plugins.mavenResourcesPlugin)).thenReturn(false);
@@ -130,21 +130,21 @@ public class MavenBuildTest extends BaseMavenBuildTest {
         Mockito.verify(pluginsAccess, Mockito.atLeastOnce()).getPluginInfo(plugins.mavenPackageJarPlugin);
         Mockito.verify(pluginsAccess, Mockito.atLeastOnce()).getPluginInfo(plugins.mavenInstallPlugin);
 
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("compile"));
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("testCompile"));
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("resources"));
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("testResources"));
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.testPluginInfo), any(), eq("surefire"), eq("test"));
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.packageJarPluginInfo), any(), eq("jar"), eq("jar"));
-        Mockito.verify(pluginInstantiator, Mockito.times(1)).instantiate(same(plugins.installPluginInfo), any(), eq("install"), eq("install"));
+        Mockito.verify(pluginInstantiator, Mockito.times(2)).instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("compile"));
+        Mockito.verify(pluginInstantiator, Mockito.times(2)).instantiate(same(plugins.compilePluginInfo), any(), eq("compiler"), eq("testCompile"));
+        Mockito.verify(pluginInstantiator, Mockito.times(2)).instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("resources"));
+        Mockito.verify(pluginInstantiator, Mockito.times(2)).instantiate(same(plugins.resourcesPluginInfo), any(), eq("resources"), eq("testResources"));
+        Mockito.verify(pluginInstantiator, Mockito.times(2)).instantiate(same(plugins.testPluginInfo), any(), eq("surefire"), eq("test"));
+        Mockito.verify(pluginInstantiator, Mockito.times(2)).instantiate(same(plugins.packageJarPluginInfo), any(), eq("jar"), eq("jar"));
+        Mockito.verify(pluginInstantiator, Mockito.times(2)).instantiate(same(plugins.installPluginInfo), any(), eq("install"), eq("install"));
         
-        Mockito.verify(plugins.compileMojo, Mockito.times(1)).execute();
-        Mockito.verify(plugins.compileTestMojo, Mockito.times(1)).execute();
-        Mockito.verify(plugins.resourcesMojo, Mockito.times(1)).execute();
-        Mockito.verify(plugins.resourcesTestMojo, Mockito.times(1)).execute();
-        Mockito.verify(plugins.testMojo, Mockito.times(1)).execute();
-        Mockito.verify(plugins.packageJarMojo, Mockito.times(1)).execute();
-        Mockito.verify(plugins.installMojo, Mockito.times(1)).execute();
+        Mockito.verify(plugins.compileMojo, Mockito.times(2)).execute();
+        Mockito.verify(plugins.compileTestMojo, Mockito.times(2)).execute();
+        Mockito.verify(plugins.resourcesMojo, Mockito.times(2)).execute();
+        Mockito.verify(plugins.resourcesTestMojo, Mockito.times(2)).execute();
+        Mockito.verify(plugins.testMojo, Mockito.times(2)).execute();
+        Mockito.verify(plugins.packageJarMojo, Mockito.times(2)).execute();
+        Mockito.verify(plugins.installMojo, Mockito.times(2)).execute();
         
         Mockito.verifyNoMoreInteractions(
                 

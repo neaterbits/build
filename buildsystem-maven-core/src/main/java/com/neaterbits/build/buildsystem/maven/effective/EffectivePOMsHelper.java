@@ -16,7 +16,11 @@ import com.neaterbits.build.buildsystem.maven.MavenConstants;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeFilter;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeMode;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenReleases;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenRepository;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenSnapshots;
 import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.variables.MavenBuiltinVariables;
@@ -45,22 +49,52 @@ public class EffectivePOMsHelper {
 			this.effective = effective;
 		}
 	}
+	
+	public static final MavenRepository CENTRAL_REPOSITORY
+	            = new MavenRepository(
+	                    new MavenReleases(null, "never", null),
+	                    new MavenSnapshots(false, null, null),
+	                    MavenConstants.CENTRAL_REPOSITORY_NAME,
+                        MavenConstants.CENTRAL_REPOSITORY_ID,
+                        MavenConstants.CENTRAL_REPOSITORY_URL,
+	                    "default");
+
+	public static final MavenPluginRepository CENTRAL_PLUGIN_REPOSITORY
+       = new MavenPluginRepository(CENTRAL_REPOSITORY);
 
 	private static final String SUPER_POM
 	  = "<project>"
+
+      + "  <repositories>"
+      + "    <repository>"
+      + "      <snapshots>"
+      + "        <enabled>"
+                 + CENTRAL_REPOSITORY.getSnapshots().getEnabled()
+                 + "</enabled>"
+      + "      </snapshots>"
+      + "      <name>" + CENTRAL_REPOSITORY.getName() + "</name>"
+      + "      <id>" + CENTRAL_REPOSITORY.getId() + "</id>"
+      + "      <url>" + CENTRAL_REPOSITORY.getUrl() + "</url>"
+      + "      <layout>"+ CENTRAL_REPOSITORY.getLayout() + "</layout>"
+      + "    </repository>"
+      + "  </repositories>"
 	  
       + "  <pluginRepositories>"
       + "    <pluginRepository>"
       + "      <releases>"
-      + "        <updatePolicy>never</updatePolicy>"
+      + "        <updatePolicy>" 
+                  + CENTRAL_PLUGIN_REPOSITORY.getReleases().getUpdatePolicy()
+                  + "</updatePolicy>"
       + "      </releases>"
       + "      <snapshots>"
-      + "        <enabled>false</enabled>"
+      + "        <enabled>"
+                 + CENTRAL_PLUGIN_REPOSITORY.getSnapshots().getEnabled()
+                 + "</enabled>"
       + "      </snapshots>"
-      + "      <name>Central repository</name>"
-      + "      <id>central</id>"
-      + "      <url>" + MavenConstants.PLUGIN_REPOSITORY_URL + "</url>"
-      + "      <layout>default</layout>"
+      + "      <name>" + CENTRAL_PLUGIN_REPOSITORY.getName() + "</name>"
+      + "      <id>" + CENTRAL_PLUGIN_REPOSITORY.getId() + "</id>"
+      + "      <url>" + CENTRAL_PLUGIN_REPOSITORY.getUrl() + "</url>"
+      + "      <layout>" + CENTRAL_PLUGIN_REPOSITORY.getLayout() + "</layout>"
       + "    </pluginRepository>"
       + "  </pluginRepositories>"
       

@@ -81,13 +81,18 @@ final class PhaseTargetBuilder extends TargetBuilderSpec<MavenBuilderContext> {
                     PhaseMavenProject.class,
                     target -> target.getModuleId().getId(), // module specific qualifier
                     target -> "Module target in phase " + phase.getName() + " for module  + " + target.getModuleId());
-                
+
                 // Depend on required plugins
                 prerequisiteBuilder.withPrerequisites(new PhasesPluginDownloadPrerequisiteBuilder<>(phases));
                 
                 // Depend on other modules in this phase
                 prerequisiteBuilder.withPrerequisites(new PhasesProjectDependenciesPrerequisiteBuilder(phase));
                 
+                // If this is the validate phase, then depend on retrieving external dependencies
+                if (phase.equals(Phases.VALIDATE)) {
+                    prerequisiteBuilder.withPrerequisites(new ExternalDependenciesPrerequisiteBuilder());
+                }
+
                 if (prevPhase != null) {
                 
                     // Depend on this module in last phase

@@ -12,4 +12,8 @@ public final class MavenPluginRepository extends BaseMavenRepository {
 
         super(releases, snapshots, name, id, url, layout);
     }
+
+    public MavenPluginRepository(BaseMavenRepository other) {
+        super(other);
+    }
 }

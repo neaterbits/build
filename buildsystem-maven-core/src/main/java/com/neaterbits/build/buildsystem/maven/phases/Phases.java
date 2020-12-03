@@ -11,6 +11,8 @@ import com.neaterbits.util.concurrency.scheduling.Constraint;
 
 public final class Phases {
 
+    public static final Phase VALIDATE = new Phase("validate", PrevPhase.ALL, Constraint.CPU);
+
     private static final Phases CLEAN_PHASES;
     
     private static final Phases BUILD_PHASES;
@@ -29,7 +31,7 @@ public final class Phases {
 
         final List<Phase> buildPhases = new ArrayList<>();
         
-        buildPhases.add(new Phase("validate",   PrevPhase.ALL, Constraint.CPU));
+        buildPhases.add(VALIDATE);
         buildPhases.add(new Phase("initialize", PrevPhase.ALL, Constraint.IO));
         
         buildPhases.add(new Phase("generate-sources",   PrevPhase.DEPS, Constraint.IO));

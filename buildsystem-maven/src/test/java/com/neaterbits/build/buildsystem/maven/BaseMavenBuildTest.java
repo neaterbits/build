@@ -69,8 +69,17 @@ public abstract class BaseMavenBuildTest {
     
     final void build(String phase, BuildState buildState) {
         
+        build(phase, buildState, null, null);
+    }
+
+    final void build(
+            String phase,
+            BuildState buildState,
+            String rootExtra,
+            String subExtra) {
+        
         try {
-            writePoms(buildState.tempDirectory);
+            writePoms(buildState.tempDirectory, rootExtra, subExtra);
         } catch (IOException | XMLReaderException ex) {
             throw new IllegalStateException(ex);
         }
@@ -116,7 +125,7 @@ public abstract class BaseMavenBuildTest {
         Files.deleteRecursively(buildState.tempDirectory);
     }
     
-    private final File [] writePoms(File directory) throws IOException, XMLReaderException {
+    private final File [] writePoms(File directory, String rootExtra, String subExtra) throws IOException, XMLReaderException {
         
         final String rootGroupId = "rootGroupId";
         final String rootArtifactId = "rootArtifactId";
@@ -128,11 +137,17 @@ public abstract class BaseMavenBuildTest {
               + "  <groupId>" + rootGroupId + "</groupId>"
               + "  <artifactId>" + rootArtifactId + "</artifactId>"
               + "  <version>" + rootVersion + "</version>"
+              
+              + "  <modules>"
+              + "    <module>subdir</module>"
+              + "  </modules>"
 
               + "  <properties>"
               + "    <rootProperty>rootValue</rootProperty>"
               + "    <overrideProperty>overridable</overrideProperty>"
               + "  </properties>"
+              
+              + (rootExtra != null ? rootExtra : "")
               
               + "</project>";
 
@@ -158,6 +173,8 @@ public abstract class BaseMavenBuildTest {
               + "    <subProperty>subValue</subProperty>"
               + "    <overrideProperty>overridden</overrideProperty>"
               + "  </properties>"
+              
+              + (subExtra != null ? subExtra : "")
               
               + "</project>";
 

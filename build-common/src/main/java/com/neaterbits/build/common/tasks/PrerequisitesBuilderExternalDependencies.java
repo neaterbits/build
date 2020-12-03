@@ -2,6 +2,8 @@ package com.neaterbits.build.common.tasks;
 
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.neaterbits.build.types.compile.ExternalModuleDependencyList;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
@@ -14,6 +16,46 @@ import com.neaterbits.util.concurrency.scheduling.Constraint;
 public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends TaskBuilderContext>
 			extends PrerequisitesBuilderSpec<CONTEXT, ProjectModuleResourcePath> {
 
+    private static class ProjectLibraryDependency {
+        
+        private final ProjectModuleResourcePath project;
+        private final LibraryDependency dependency;
+
+        ProjectLibraryDependency(ProjectModuleResourcePath project, LibraryDependency dependency) {
+            
+            Objects.requireNonNull(project);
+            Objects.requireNonNull(dependency);
+            
+            this.project = project;
+            this.dependency = dependency;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((dependency == null) ? 0 : dependency.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ProjectLibraryDependency other = (ProjectLibraryDependency) obj;
+            if (dependency == null) {
+                if (other.dependency != null)
+                    return false;
+            } else if (!dependency.equals(other.dependency))
+                return false;
+            return true;
+        }
+    }
+
 	@Override
 	public void buildSpec(PrerequisitesBuilder<CONTEXT, ProjectModuleResourcePath> builder) {
 
@@ -24,15 +66,13 @@ public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends Task
 			
 			.fromIteratingAndBuildingRecursively(
 					Constraint.NETWORK,
-					LibraryDependency.class,
+					ProjectLibraryDependency.class,
 					
 					// from project all module target
 					(context, module) -> {
 
 						final List<LibraryDependency> list = ModuleBuilderUtil.transitiveProjectExternalDependencies(context, module);
 
-						System.out.println("## get project transitive library dependencies for " + module + " " + list);
-						
 						try {
 							throw new Exception();
 						}
@@ -40,41 +80,38 @@ public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends Task
 							ex.printStackTrace();
 						}
 						
-						return list;
+						return list.stream()
+						        .map(libraryDependency -> new ProjectLibraryDependency(module, libraryDependency))
+						        .collect(Collectors.toList());
 					},
 						
 					// from external dependencies found above
 					(context, dep) -> {
 						
+						final List<LibraryDependency> list = ModuleBuilderUtil.transitiveLibraryDependencies(context, dep.dependency);
 						
-						final List<LibraryDependency> list = ModuleBuilderUtil.transitiveLibraryDependencies(context, dep);
-						
-						System.out.println("## get library transitive dependencies for " + dep + " " + list);
-						
-						
-						return list;
+						return list.stream()
+						        .map(libraryDependency -> new ProjectLibraryDependency(dep.project, libraryDependency))
+						        .collect(Collectors.toList());
 					},
 					dependency -> dependency) // already of ItemType
 			
 			.buildBy(st -> {
 				
 				st.addFileSubTarget(
-						LibraryDependency.class,
+						ProjectLibraryDependency.class,
 						LibraryResourcePath.class,
-						(context, dependency) -> dependency.getModulePath(),
+						(context, projectDependency) -> projectDependency.dependency.getModulePath(),
 						LibraryResourcePath::getFile,
-						dependency -> "External dependency " + dependency.getModulePath().getLast().getName())
+						projectDependency -> "External dependency " + projectDependency.dependency.getModulePath().getLast().getName())
 	
 				.action(Constraint.NETWORK, (context, target, actionParams) -> {
-					context.getBuildRoot().downloadExternalDependencyAndAddToBuildModel(target);
+					context.getBuildRoot().downloadExternalDependencyAndAddToBuildModel(target.project, target.dependency);
 					
 					return null;
 				});
 			})
 			.collectSubTargetsToProduct((module, dependencies) -> {
-				
-				System.out.println("## collect external dependencies " + module + " " + dependencies);
-				
 				return new ExternalModuleDependencyList(module, dependencies);
 			});
 

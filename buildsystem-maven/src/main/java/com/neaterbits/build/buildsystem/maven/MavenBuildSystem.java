@@ -75,8 +75,8 @@ public final class MavenBuildSystem implements BuildSystem {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <MODULE_ID extends ModuleId, PROJECT, DEPENDENCY>
-	BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> scan(File rootDirectory) throws ScanException {
+	public <MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPOSITORY>
+	BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> scan(File rootDirectory) throws ScanException {
 
 	    final EffectivePOMReader effectivePOMReader = new EffectivePOMReader();
 	    
@@ -98,7 +98,8 @@ public final class MavenBuildSystem implements BuildSystem {
 		        new MavenProjectsAccessImpl(),
 		        pluginsAccess,
 		        pluginsEnvironment,
-		        repositoryAccess);
+		        repositoryAccess,
+		        effectivePOMReader);
 	}
 
     @SuppressWarnings("unchecked")

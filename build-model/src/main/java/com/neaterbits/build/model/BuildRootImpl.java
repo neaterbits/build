@@ -1,6 +1,7 @@
 package com.neaterbits.build.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,10 +23,10 @@ import com.neaterbits.build.types.resource.SourceFolderResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
 import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
 
-public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> implements BuildRoot {
+public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPOSITORY> implements BuildRoot {
 
 	private final File path;
-	private final BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> buildSystemRoot;
+	private final BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> buildSystemRoot;
 
 	private final Map<ProjectModuleResourcePath, BuildProject<PROJECT>> projects;
 	private final Map<MODULE_ID, PROJECT> buildSystemProjectByModuleId;
@@ -33,7 +34,7 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> impl
 
 	private final List<BuildRootListener> listeners;
 
-	public BuildRootImpl(File path, BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> buildSystemRoot) {
+	public BuildRootImpl(File path, BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> buildSystemRoot) {
 
 		Objects.requireNonNull(path);
 
@@ -130,14 +131,17 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY> impl
 	}
 
 	@Override
-	public void downloadExternalDependencyAndAddToBuildModel(LibraryDependency dependency) {
+	public void downloadExternalDependencyAndAddToBuildModel(ProjectModuleResourcePath referencedFrom, LibraryDependency dependency)
+	            throws IOException, ScanException {
 
 		final LibraryDependencyImpl impl = (LibraryDependencyImpl)dependency;
 
 		@SuppressWarnings("unchecked")
 		final BuildDependency<DEPENDENCY> buildDependency = (BuildDependency<DEPENDENCY>)impl.getDependency();
 
-		buildSystemRoot.downloadExternalDependencyIfNotPresent(buildDependency.getDependency());
+		buildSystemRoot.downloadExternalDependencyIfNotPresentAndAddToModel(
+		        null, // TODO pass repositories buildSystemRoot.getProject(referencedFrom.getFile()),
+		        buildDependency.getDependency());
 	}
 
 	private List<LibraryDependency> getTransitiveExternalDependencies(BaseDependency dependency, Scope scope, boolean includeOptionalDependencies) throws ScanException {

@@ -9,8 +9,8 @@ public interface BuildSystem {
 
 	boolean isBuildSystemFor(File rootDirectory);
 
-	<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY>
-	BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY> scan(File rootDirectory) throws ScanException;
+	<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPOSITORY>
+	BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> scan(File rootDirectory) throws ScanException;
 
 	<CONTEXT extends TaskContext> BuildSpecifier<CONTEXT> getBuildSpecifier();
 }

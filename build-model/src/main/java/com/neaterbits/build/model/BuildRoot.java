@@ -1,11 +1,13 @@
 package com.neaterbits.build.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 import com.neaterbits.build.buildsystem.common.BuildSystemRootScan;
+import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
@@ -38,7 +40,8 @@ public interface BuildRoot {
 	
 	BuildSystemRootScan getBuildSystemRootScan();
 	
-	void downloadExternalDependencyAndAddToBuildModel(LibraryDependency dependency);
+	void downloadExternalDependencyAndAddToBuildModel(ProjectModuleResourcePath module, LibraryDependency dependency)
+	                            throws IOException, ScanException;
 
 	Scope getDependencyScope(BaseDependency dependency);
 	

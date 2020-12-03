@@ -29,6 +29,16 @@ public abstract class BaseMavenRepository {
         this.url = url;
         this.layout = layout;
     }
+    
+    protected BaseMavenRepository(BaseMavenRepository other) {
+        this(
+                other.releases,
+                other.snapshots,
+                other.name,
+                other.id,
+                other.url,
+                other.layout);
+    }
 
     public final MavenReleases getReleases() {
         return releases;
