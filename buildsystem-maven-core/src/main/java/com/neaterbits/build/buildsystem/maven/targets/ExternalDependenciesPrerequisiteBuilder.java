@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.targets;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
@@ -21,7 +23,7 @@ import com.neaterbits.util.concurrency.scheduling.Constraint;
 final class ExternalDependenciesPrerequisiteBuilder
     extends PrerequisitesBuilderSpec<MavenBuilderContext, PhaseMavenProject> {
     
-    private static class ProjectDependency {
+    static class ProjectDependency {
         private final MavenProject referencedFrom;
         private final List<BaseMavenRepository> referencedFromRepositories;
         
@@ -47,6 +49,10 @@ final class ExternalDependenciesPrerequisiteBuilder
             this.targetedDependency = targetedDependency;
             this.dependency = dependency;
             this.parentDependency = parentDependency;
+        }
+
+        MavenDependency getTargetedDependency() {
+            return targetedDependency;
         }
 
         @Override
@@ -112,16 +118,20 @@ final class ExternalDependenciesPrerequisiteBuilder
                         // Action for transitive dependencies
                         .action(Constraint.NETWORK, (context, target, actionParams) -> {
                             
-                            context.getBuildSystemRoot()
-                                        .downloadExternalDependencyIfNotPresentAndAddToModel(
-                                                                            target.referencedFromRepositories,
-                                                                            target.targetedDependency);
+                            downloadExternalDependencies(context.getBuildSystemRoot(), target);
                             
                             return FunctionActionLog.OK;
                         }));
     }
+    
+    static void downloadExternalDependencies(MavenBuildRoot buildRoot, ProjectDependency target) throws IOException, ScanException {
+        
+        buildRoot.downloadExternalDependencyIfNotPresentAndAddToModel(
+                                            target.referencedFromRepositories,
+                                            target.targetedDependency);
+    }
 
-    private static List<ProjectDependency> listOfFurtherDependencies(MavenBuildRoot buildRoot, ProjectDependency projectDependency) {
+    static List<ProjectDependency> listOfFurtherDependencies(MavenBuildRoot buildRoot, ProjectDependency projectDependency) {
         
         // List of further dependencies from last external pom file, prioritise parent pom files
         // before other dependencies because the parent dependencies may
@@ -145,8 +155,16 @@ final class ExternalDependenciesPrerequisiteBuilder
             MavenBuildRoot buildRoot,
             MavenDependency dependency,
             List<BaseMavenRepository> repositories) {
+
+        return getParentOrTransitiveDependencies(buildRoot, dependency.getModuleId(), repositories);
+    }
+
+    static List<ProjectDependency> getParentOrTransitiveDependencies(
+            MavenBuildRoot buildRoot,
+            MavenModuleId moduleId,
+            List<BaseMavenRepository> repositories) {
         
-        final MavenProject project = buildRoot.getExternalProject(dependency.getModuleId());
+        final MavenProject project = buildRoot.getExternalProject(moduleId);
         
         final List<ProjectDependency> result;
 
