@@ -41,7 +41,7 @@ final class GoalTargetBuilder extends TargetBuilderSpec<MavenBuilderContext> {
             .buildBy(st -> st.addInfoSubTarget(
                     MavenProject.class,
                     target -> target.getModuleId().getId(), // module specific qualifier
-                    target -> "Module target in for " + targetName + " for module  + " + target.getModuleId().getClass())
+                    target -> "Module target in for " + targetName + " for module " + target.getModuleId().getClass())
                 
                 // Must download plugin first if not downloaded
                 .withPrerequisites(new SpecificPluginDownloadPrerequisiteBuilder(plugin))

@@ -80,7 +80,7 @@ final class PhaseTargetBuilder extends TargetBuilderSpec<MavenBuilderContext> {
                     = st.addInfoSubTarget(
                     PhaseMavenProject.class,
                     target -> target.getModuleId().getId(), // module specific qualifier
-                    target -> "Module target in phase " + phase.getName() + " for module  + " + target.getModuleId());
+                    target -> "Phase " + phase.getName() + " for module " + target.getModuleId());
 
                 // Depend on required plugins
                 prerequisiteBuilder.withPrerequisites(new PhasesPluginDownloadPrerequisiteBuilder<>(phases));

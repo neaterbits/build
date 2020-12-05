@@ -31,4 +31,9 @@ final class PluginDownload {
     List<MavenPluginRepository> getRepositories() {
         return repositories;
     }
+
+    @Override
+    public String toString() {
+        return "PluginDownload [plugin=" + plugin.getModuleId().getId() + ", repositories=" + repositories + "]";
+    }
 }
