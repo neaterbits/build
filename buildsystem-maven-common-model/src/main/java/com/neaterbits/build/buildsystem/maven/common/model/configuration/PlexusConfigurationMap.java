@@ -17,9 +17,10 @@ public final class PlexusConfigurationMap {
     
     public PlexusConfigurationMap(Map<String, Object> values, String implementation) {
         
-        Objects.requireNonNull(values);
-        
-        this.values = Collections.unmodifiableMap(values);
+        this.values = values != null
+                    ? Collections.unmodifiableMap(values)
+                    : Collections.emptyMap();
+
         this.implementation = implementation;
     }
 
