@@ -13,7 +13,9 @@ public abstract class BaseXMLEventListener<PARAM>
     private final BaseEventListener delegate;
 
     protected abstract boolean allowTextForUnknownTag();
-    
+
+    protected abstract boolean withinUserUnknownTag();
+
     protected BaseXMLEventListener(BaseEventListener delegate) {
         
         Objects.requireNonNull(delegate);
@@ -22,6 +24,10 @@ public abstract class BaseXMLEventListener<PARAM>
     }
 
     private int unknownTag;
+    
+    protected final boolean withinUnknownTag() {
+        return unknownTag > 0;
+    }
 
     @Override
     public final void onStartDocument(PARAM param) {
@@ -40,7 +46,7 @@ public abstract class BaseXMLEventListener<PARAM>
     @Override
     public void onEndElement(Context context, String localPart, PARAM param) {
 
-        if (unknownTag == 0) {
+        if (unknownTag == 0 && !withinUserUnknownTag()) {
             throw new IllegalStateException();
         }
     

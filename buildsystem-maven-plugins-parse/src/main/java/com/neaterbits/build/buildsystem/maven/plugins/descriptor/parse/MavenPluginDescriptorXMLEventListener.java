@@ -20,8 +20,13 @@ final class MavenPluginDescriptorXMLEventListener extends BaseXMLEventListener<V
     }
 
     @Override
-    protected boolean allowTextForUnknownTag() {
+    protected boolean withinUserUnknownTag() {
         return false;
+    }
+
+    @Override
+    protected boolean allowTextForUnknownTag() {
+        return withinUserUnknownTag();
     }
     
     @Override

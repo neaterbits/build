@@ -29,13 +29,19 @@ public final class PomXMLEventListener
 	    // Within <properties>, call onText() for unknown tags
 	    // since property tag names may be user defined and do not follow any schema
 	    
+        return withinUserUnknownTag();
+    }
+
+	
+    @Override
+    protected boolean withinUserUnknownTag() {
         return inProperties || inConfiguration;
     }
 
     @Override
 	public void onStartElement(Context context, String localPart, List<XMLAttribute> attributes, Void param) {
-
-        if (withinUnknownTag()) {
+        
+        if (withinUnknownTag() || withinUserUnknownTag()) {
             super.onStartElement(context, localPart, attributes, param);
         }
         else {
