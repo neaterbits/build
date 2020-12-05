@@ -61,6 +61,21 @@ public abstract class BaseEntityStackEventListener
     }
 
     @Override
+    public void onPackagingStart(Context context) {
+        push(new StackPackaging(context));
+    }
+
+    @Override
+    public void onPackagingEnd(Context context) {
+
+        final StackPackaging stackPackaging = pop();
+        
+        final EntitySetter entitySetter = get();
+        
+        entitySetter.setPackaging(stackPackaging.getText());
+    }
+
+    @Override
     public final void onDependenciesStart(Context context) {
         push(new StackDependencies(context));
     }

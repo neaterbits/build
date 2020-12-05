@@ -88,7 +88,11 @@ public final class PomXMLEventListener
     			delegate.onVersionStart(context);
     			break;
     
-    		case "dependencyManagement":
+            case "packaging":
+                delegate.onPackagingStart(context);
+                break;
+
+            case "dependencyManagement":
     		    delegate.onDependencyManagementStart(context);
     		    break;
     			
@@ -550,6 +554,10 @@ public final class PomXMLEventListener
     			delegate.onVersionEnd(context);
     			break;
     
+            case "packaging":
+                delegate.onPackagingEnd(context);
+                break;
+
             case "dependencyManagement":
                 delegate.onDependencyManagementEnd(context);
                 break;

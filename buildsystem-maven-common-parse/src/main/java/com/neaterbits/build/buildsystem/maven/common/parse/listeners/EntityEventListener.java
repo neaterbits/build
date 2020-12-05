@@ -15,4 +15,8 @@ public interface EntityEventListener {
     void onVersionStart(Context context);
 
     void onVersionEnd(Context context);
+
+    void onPackagingStart(Context context);
+
+    void onPackagingEnd(Context context);
 }
