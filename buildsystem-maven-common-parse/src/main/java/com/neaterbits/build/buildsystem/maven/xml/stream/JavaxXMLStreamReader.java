@@ -159,6 +159,21 @@ final class JavaxXMLStreamReader implements XMLReader<Void> {
 
                 throw new IllegalStateException();
             }
+            else if (  buffered.get(0).getEventType() == XMLEvent.START_ELEMENT
+                    && buffered.get(1).getEventType() == XMLEvent.CHARACTERS
+                    && buffered.get(2).getEventType() == XMLEvent.CHARACTERS) {
+                
+                final Characters latter = (Characters)buffered.get(2);
+                
+                if (!latter.getData().isBlank()) {
+                    throw new IllegalStateException();
+                }
+
+                processXMLEvent(buffered.get(0), eventListener, param);
+                processXMLEvent(buffered.get(1), eventListener, param);
+
+                buffered.clear();
+            }
 	    }
 	    else if (buffered.size() == 2) {
 	        
