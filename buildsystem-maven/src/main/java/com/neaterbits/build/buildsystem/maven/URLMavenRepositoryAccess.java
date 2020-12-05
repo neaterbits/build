@@ -124,12 +124,9 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
     @Override
     public boolean isModulePresent(MavenModuleId moduleId) {
 
-        // Must verify that all jar and sha1 files are present
-
+        // Must verify that all jar are present, sha1 files only necessary for remote repositories
         return    isPresent(repositoryJarFile(moduleId))
-               && isPresent(repositoryJarSha1File(moduleId))
-               && isPresent(repositoryExternalPomFile(moduleId))
-               && isPresent(repositoryExternalPomSha1File(moduleId));
+               && isPresent(repositoryExternalPomFile(moduleId));
     }
 
     private boolean downloadFileIfNotPresent(MavenModuleId moduleId, File file, URL repository) {
