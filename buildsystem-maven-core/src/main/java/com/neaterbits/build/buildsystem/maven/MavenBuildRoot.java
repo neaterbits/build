@@ -217,7 +217,15 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 		return dependency.getModuleId();
 	}
 
-	@Override
+    @Override
+    public boolean isProjectModule(MavenModuleId moduleId) {
+        
+        Objects.requireNonNull(moduleId);
+        
+        return projects.stream().anyMatch(p -> p.getModuleId().equals(moduleId));
+    }
+
+    @Override
 	public File getTargetDirectory(File modulePath) {
 		return new File(modulePath, "target");
 	}

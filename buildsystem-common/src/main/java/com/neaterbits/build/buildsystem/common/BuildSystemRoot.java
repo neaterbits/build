@@ -53,6 +53,8 @@ public interface BuildSystemRoot<
 
 	MODULE_ID getDependencyModuleId(DEPENDENCY dependency);
 
+	boolean isProjectModule(MODULE_ID moduleId);
+
 	File repositoryJarFile(DEPENDENCY dependency);
 
 	File repositoryJarFile(MODULE_ID moduleId);

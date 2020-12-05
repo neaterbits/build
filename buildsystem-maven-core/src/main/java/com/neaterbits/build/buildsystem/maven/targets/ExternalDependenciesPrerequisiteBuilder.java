@@ -204,14 +204,15 @@ final class ExternalDependenciesPrerequisiteBuilder
     
     private static List<ProjectDependency> externalDependencies(
             MavenBuildRoot root,
-            MavenProject project,
+            MavenProject sourceProject,
             List<BaseMavenRepository> repositories) {
         
         return ModuleBuilderUtil.transitiveProjectDependencies(
-                project,
-                (MavenProject p) -> root.getDependencies(p).stream()
+                sourceProject,
+                (MavenProject project) -> root.getDependencies(project).stream()
+                    .filter(p -> !root.isProjectModule(p.getModuleId()))
                     .map(dep -> new ProjectDependency(
-                            project,
+                            sourceProject,
                             repositories,
                             dep,
                             dep,
