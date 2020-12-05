@@ -15,7 +15,6 @@ public final class MavenProfile {
             MavenCommon common) {
 
         Objects.requireNonNull(id);
-        Objects.requireNonNull(activation);
         Objects.requireNonNull(common);
         
         this.id = id;
