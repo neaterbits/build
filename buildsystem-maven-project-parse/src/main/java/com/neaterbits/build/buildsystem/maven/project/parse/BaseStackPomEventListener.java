@@ -152,9 +152,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         
         if (!stackProperties.getProperties().isEmpty()) {
             
-            final StackProject stackProject = get();
+            final PropertiesSetter propertiesSetter = get();
             
-            stackProject.setProperties(stackProperties.getProperties());
+            propertiesSetter.setProperties(stackProperties.getProperties());
         }
     }
 
@@ -1919,7 +1919,8 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final MavenProfile profile = new MavenProfile(
                                             stackProfile.getId(),
                                             stackProfile.getActivation(),
-                                            stackProfile.getCommon().makeMavenCommon());
+                                            stackProfile.getCommon().makeMavenCommon(),
+                                            stackProfile.getProperties());
         
         stackProfiles.add(profile);
     }

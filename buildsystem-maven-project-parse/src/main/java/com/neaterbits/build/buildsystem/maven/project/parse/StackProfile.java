@@ -1,6 +1,7 @@
 package com.neaterbits.build.buildsystem.maven.project.parse;
 
 import java.util.List;
+import java.util.Map;
 
 import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
@@ -14,13 +15,15 @@ import com.neaterbits.util.parse.context.Context;
 
 final class StackProfile
         extends StackBase
-        implements IdSetter, CommonSetter {
+        implements IdSetter, CommonSetter, PropertiesSetter {
 
     private String id;
     private MavenActivation activation;
     
     private final StackCommon common;
 
+    private Map<String, String> properties;
+    
     StackProfile(Context context) {
         super(context);
         
@@ -87,5 +90,14 @@ final class StackProfile
     public void setDependencies(List<MavenDependency> dependencies) {
 
         common.setDependencies(dependencies);
+    }
+
+    Map<String, String> getProperties() {
+        return properties;
+    }
+
+    @Override
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 }

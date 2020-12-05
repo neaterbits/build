@@ -1,5 +1,7 @@
 package com.neaterbits.build.buildsystem.maven.project.model;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 public final class MavenProfile {
@@ -8,11 +10,14 @@ public final class MavenProfile {
     private final MavenActivation activation;
     
     private final MavenCommon common;
+    
+    private final Map<String, String> properties;
    
     public MavenProfile(
             String id,
             MavenActivation activation,
-            MavenCommon common) {
+            MavenCommon common,
+            Map<String, String> properties) {
 
         Objects.requireNonNull(id);
         Objects.requireNonNull(common);
@@ -20,6 +25,9 @@ public final class MavenProfile {
         this.id = id;
         this.activation = activation;
         this.common = common;
+        this.properties = properties != null
+                ? Collections.unmodifiableMap(properties)
+                : null;
     }
 
     public String getId() {
@@ -32,5 +40,9 @@ public final class MavenProfile {
 
     public MavenCommon getCommon() {
         return common;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 }

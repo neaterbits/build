@@ -22,7 +22,7 @@ import com.neaterbits.util.parse.context.Context;
 
 final class StackProject
         extends StackEntity
-        implements NameSetter, UrlSetter, CommonSetter {
+        implements NameSetter, UrlSetter, CommonSetter, PropertiesSetter {
 
 	private String name;
 
@@ -94,7 +94,8 @@ final class StackProject
         return properties;
     }
 
-    void setProperties(Map<String, String> properties) {
+	@Override
+    public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
 
