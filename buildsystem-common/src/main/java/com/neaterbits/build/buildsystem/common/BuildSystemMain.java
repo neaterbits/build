@@ -39,6 +39,8 @@ public final class BuildSystemMain {
             if (buildSystem != null) {
                 
                 build(buildSystem, projectDir, args, targetExecutorLogger, onBuildResult);
+
+                buildPerformed = true;
             }
         }
 
