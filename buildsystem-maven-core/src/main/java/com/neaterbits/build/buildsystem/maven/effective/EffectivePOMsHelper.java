@@ -13,10 +13,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.neaterbits.build.buildsystem.maven.MavenConstants;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeFilter;
 import com.neaterbits.build.buildsystem.maven.effective.POMMerger.MergeMode;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenBuild;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenBuildPlugin;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenCommon;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenDependencyManagement;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginManagement;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProfile;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenReleases;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenRepository;
@@ -404,14 +411,169 @@ public class EffectivePOMsHelper {
 		
 		final MavenXMLProject<DOCUMENT> mavenXMLProjectWithVarReplace
 		    = replaceVariables(mavenXMLProject, pomMerger.getModel(), resolveContext);
-		
-		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenXMLProjectWithVarReplace.getProject());
+
+		final MavenProject mavenProjectWithResolveDependencyManagement
+          = replaceDependencyManagement(mavenXMLProjectWithVarReplace.getProject(), computed);
+
+		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenProjectWithResolveDependencyManagement);
 
 		if (computed.put(moduleId, effective) != null) {
 			throw new IllegalStateException();
 		}
 		
 		return effective;
+	}
+
+	private static <DOCUMENT>
+	MavenProject replaceDependencyManagement(
+	                            MavenProject project,
+	                            Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+	    
+	    return new MavenProject(
+	            project,
+	            resolveDependenciesInMavenCommon(project, project.getCommon(), computed),
+	            project.getProfiles() != null
+	                ? resolveDependenciesInProfiles(project, project.getProfiles(), computed)
+                    : null);
+	}
+
+    private static <DOCUMENT>
+    MavenCommon resolveDependenciesInMavenCommon(
+                                MavenProject project,
+                                MavenCommon common,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+
+        return new MavenCommon(
+                common,
+                common.getBuild() != null
+                    ? resolveDependenciesInMavenBuild(project, common.getBuild(), computed)
+                    : null,
+                common.getDependencies() != null
+                    ? resolveDependencies(project, common.getDependencies(), computed)
+                    : null);
+    }
+
+    private static <DOCUMENT>
+    MavenBuild resolveDependenciesInMavenBuild(
+                                MavenProject project,
+                                MavenBuild build,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+        
+        return new MavenBuild(
+                build,
+                build.getPluginManagement() != null
+                    ? resolveDependenciesInPluginManagement(project, build.getPluginManagement(), computed)
+                    : null,
+                build.getPlugins() != null
+                    ? resolveDependenciesInPlugins(project, build.getPlugins(), computed)
+                    : null);
+    }
+
+    private static <DOCUMENT>
+    List<MavenBuildPlugin> resolveDependenciesInPlugins(
+                                MavenProject project,
+                                List<MavenBuildPlugin> plugins,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+        
+        return plugins.stream()
+                .map(p -> resolveDependenciesInPlugin(project, p, computed))
+                .collect(Collectors.toList());
+    }
+
+    private static <DOCUMENT>
+    MavenBuildPlugin resolveDependenciesInPlugin(
+                                MavenProject project,
+                                MavenBuildPlugin plugin,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+
+        return plugin.getDependencies() != null
+                ? new MavenBuildPlugin(
+                        plugin,
+                        resolveDependencies(project, plugin.getDependencies(), computed))
+                : plugin;
+    }
+
+    private static <DOCUMENT>
+    MavenPluginManagement resolveDependenciesInPluginManagement(
+                                MavenProject project,
+                                MavenPluginManagement pluginManagement,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+
+        return pluginManagement.getPlugins() != null
+                ? new MavenPluginManagement(
+                        resolveDependenciesInPlugins(project, pluginManagement.getPlugins(), computed))
+                : pluginManagement;
+    }
+
+    private static <DOCUMENT>
+    List<MavenProfile> resolveDependenciesInProfiles(
+                                MavenProject project,
+                                List<MavenProfile> profiles,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+        
+        return profiles.stream()
+                .map(p -> resolveDependenciesInProfile(project, p, computed))
+                .collect(Collectors.toList());
+    }
+
+    private static <DOCUMENT>
+    MavenProfile resolveDependenciesInProfile(
+                                MavenProject project,
+                                MavenProfile profile,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+
+        return profile.getCommon() != null
+                ? new MavenProfile(profile, resolveDependenciesInMavenCommon(project, profile.getCommon(), computed))
+                : profile;
+    }
+
+    private static <DOCUMENT>
+    List<MavenDependency> resolveDependencies(
+                                MavenProject project,
+                                List<MavenDependency> dependencies,
+                                Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+        
+        return dependencies.stream()
+                .map(d -> {
+                    final MavenDependency updated = resolveDependency(project, d, computed);
+                    
+                    return updated != null ? updated : d;
+                })
+                .collect(Collectors.toList());
+    }
+	
+	private static <DOCUMENT>
+	MavenDependency resolveDependency(
+	                            MavenProject project,
+	                            MavenDependency dependency,
+	                            Map<MavenModuleId, Effective<DOCUMENT>> computed) {
+	    
+	    MavenDependency updated = null;
+	    
+	    if (project.getParent() != null) {
+	        
+	        final Effective<DOCUMENT> parentEffective = computed.get(project.getParentModuleId());
+	        
+	        if (parentEffective != null) {
+	            updated = resolveDependency(parentEffective.effective, dependency, computed);
+	        }
+	    }
+	    
+	    if (updated == null) {
+	        
+	        final MavenDependencyManagement depManagement = project.getCommon().getDependencyManagement();
+
+	        if (depManagement != null && depManagement.getDependencies() != null) {
+	        
+	            updated = depManagement.getDependencies().stream()
+	                    .filter(d ->    Objects.equals(d.getModuleId().getGroupId(), dependency.getModuleId().getGroupId())
+	                                 && Objects.equals(d.getModuleId().getArtifactId(), dependency.getModuleId().getArtifactId()))
+	                    .findFirst()
+	                    .orElse(null);
+	        }
+	    }
+	    
+	    return updated;
 	}
 	
 	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>

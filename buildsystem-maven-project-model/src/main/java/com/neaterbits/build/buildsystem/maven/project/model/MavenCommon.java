@@ -44,6 +44,17 @@ public final class MavenCommon {
                 ? Collections.unmodifiableList(dependencies)
                 : null;
     }
+    
+    public MavenCommon(MavenCommon other, MavenBuild build, List<MavenDependency> updatedDependencies) {
+        this(
+                other.modules,
+                build,
+                other.reporting,
+                other.repositories,
+                other.pluginRepositories,
+                other.dependencyManagement,
+                updatedDependencies);
+    }
 
     public List<String> getModules() {
         return modules;

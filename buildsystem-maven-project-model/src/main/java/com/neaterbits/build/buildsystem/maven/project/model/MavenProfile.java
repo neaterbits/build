@@ -29,6 +29,10 @@ public final class MavenProfile {
                 ? Collections.unmodifiableMap(properties)
                 : null;
     }
+    
+    public MavenProfile(MavenProfile other, MavenCommon common) {
+        this(other.id, other.activation, common, other.properties);
+    }
 
     public String getId() {
         return id;

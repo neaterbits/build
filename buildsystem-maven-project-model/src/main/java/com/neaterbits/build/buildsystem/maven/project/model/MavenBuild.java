@@ -30,6 +30,27 @@ public final class MavenBuild extends MavenBaseBuild {
         this.scriptSourceDirectory = scriptSourceDirectory;
         this.testSourceDirectory = testSourceDirectory;
     }
+	
+	public MavenBuild(
+	        MavenBuild other,
+	        MavenPluginManagement pluginManagement,
+            List<MavenBuildPlugin> plugins) {
+
+	    this(
+	            other.getDefaultGoal(),
+	            other.getDirectory(),
+	            other.getFinalName(),
+	            other.getFilters(),
+	            other.outputDirectory,
+	            other.sourceDirectory,
+	            other.scriptSourceDirectory,
+	            other.testSourceDirectory,
+	            other.getResources(),
+	            other.getTestResources(),
+	            pluginManagement,
+	            plugins);
+	    
+	}
 
     public String getOutputDirectory() {
         return outputDirectory;

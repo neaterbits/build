@@ -58,6 +58,30 @@ public final class MavenProject extends MavenModule {
         this.distributionManagement = distributionManagement;
 	}
 
+	public MavenProject(
+	        MavenProject other,
+	        MavenCommon common,
+	        List<MavenProfile> profiles) {
+	    
+	    this(
+	            other.getRootDirectory(),
+	            other.getModuleId(),
+	            other.getParent(),
+	            other.getPackaging(),
+	            other.getName(),
+	            other.getDescription(),
+	            other.getProperties(),
+	            common,
+	            other.organization,
+	            other.getIssueManagement(),
+	            other.ciManagement,
+	            other.mailingLists,
+	            other.scm,
+	            other.distributionManagement,
+	            profiles);
+	    
+	}
+
     public MavenOrganization getOrganization() {
         return organization;
     }

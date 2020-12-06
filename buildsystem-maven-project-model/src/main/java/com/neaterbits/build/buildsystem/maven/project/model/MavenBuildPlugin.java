@@ -44,6 +44,15 @@ public final class MavenBuildPlugin extends MavenConfiguredPlugin {
                 : null;
 	}
 
+	public MavenBuildPlugin(MavenBuildPlugin other, List<MavenDependency> dependencies) {
+	    this(
+	            other.getModuleId(),
+	            other.getConfiguration(),
+	            other.extensions,
+	            dependencies,
+	            other.executions);
+	}
+
     public Boolean getExtensions() {
         return extensions;
     }
