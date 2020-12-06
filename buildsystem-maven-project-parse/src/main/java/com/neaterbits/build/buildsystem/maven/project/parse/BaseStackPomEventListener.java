@@ -269,9 +269,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                                             stackReporting.getOutputDirectory(),
                                             stackReporting.getPlugins());
 
-        final StackProject stackProject = get();
+        final ReportingSetter reportingSetter = get();
 
-        stackProject.setReporting(reporting);
+        reportingSetter.setReporting(reporting);
     }
 
     @Override
