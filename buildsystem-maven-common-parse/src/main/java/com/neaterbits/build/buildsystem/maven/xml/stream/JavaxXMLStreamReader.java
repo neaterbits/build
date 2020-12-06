@@ -163,14 +163,12 @@ final class JavaxXMLStreamReader implements XMLReader<Void> {
                     && buffered.get(1).getEventType() == XMLEvent.CHARACTERS
                     && buffered.get(2).getEventType() == XMLEvent.CHARACTERS) {
                 
-                final Characters latter = (Characters)buffered.get(2);
-                
-                if (!latter.getData().isBlank()) {
-                    throw new IllegalStateException();
-                }
-
                 processXMLEvent(buffered.get(0), eventListener, param);
-                processXMLEvent(buffered.get(1), eventListener, param);
+
+                processCharElements(
+                        (Characters)buffered.get(1),
+                        (Characters)buffered.get(2),
+                        eventListener, param);
 
                 buffered.clear();
             }
@@ -219,6 +217,16 @@ final class JavaxXMLStreamReader implements XMLReader<Void> {
                 // buffer
             }
             else if (  buffered.get(0).getEventType() == XMLEvent.CHARACTERS
+                    && buffered.get(1).getEventType() == XMLEvent.CHARACTERS) {
+                
+                processCharElements(
+                        (Characters)buffered.get(0),
+                        (Characters)buffered.get(1),
+                        eventListener, param);
+
+                buffered.clear();
+            }
+            else if (  buffered.get(0).getEventType() == XMLEvent.CHARACTERS
                     && buffered.get(1).getEventType() == XMLEvent.START_ELEMENT) {
                 
                 // Skip characters without processing
@@ -261,6 +269,35 @@ final class JavaxXMLStreamReader implements XMLReader<Void> {
 	    }
 	    else {
 	        throw new IllegalStateException("Unexpected buffered size " + buffered.size() + "/" + bufferString(buffered));
+	    }
+	}
+	
+	private <T> void processCharElements(
+	            Characters former,
+	            Characters latter,
+	            XMLEventListener<T> eventListener,
+	            T param) {
+	    
+	    final String text;
+	    
+	    if (!former.getData().isBlank() && !latter.getData().isBlank()) {
+	        text = former.getData() + latter.getData();
+	    }
+	    else if (!former.getData().isBlank()) {
+	        text = former.getData();
+	    }
+        else if (!latter.getData().isBlank()) {
+            text = latter.getData();
+        }
+        else {
+            text = null;
+        }
+	    
+	    if (text != null) {
+            eventListener.onText(
+                    context(former, latter),
+                    text,
+                    null);
 	    }
 	}
 	
@@ -386,5 +423,18 @@ final class JavaxXMLStreamReader implements XMLReader<Void> {
 				event.getLocation().getCharacterOffset(),
 				null);
 
+	}
+
+	private Context context(XMLEvent former, XMLEvent latter) {
+	    
+        return new ImmutableFullContext(
+                file,
+                former.getLocation().getLineNumber(),
+                former.getLocation().getColumnNumber(),
+                former.getLocation().getCharacterOffset(),
+                latter.getLocation().getLineNumber(),
+                latter.getLocation().getColumnNumber(),
+                latter.getLocation().getCharacterOffset(),
+                null);
 	}
 }
