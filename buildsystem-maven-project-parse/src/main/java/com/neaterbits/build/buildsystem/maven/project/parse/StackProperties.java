@@ -21,7 +21,6 @@ final class StackProperties extends StackBase {
     void add(String name, String value) {
         
         Objects.requireNonNull(name);
-        Objects.requireNonNull(value);
         
         properties.put(name, value);
     }
