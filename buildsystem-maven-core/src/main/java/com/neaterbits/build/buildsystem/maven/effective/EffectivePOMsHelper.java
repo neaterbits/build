@@ -38,9 +38,9 @@ public class EffectivePOMsHelper {
 	private static class Effective<DOCUMENT> {
 		
 		private final DOCUMENT base;
-		private final MavenXMLProject<DOCUMENT> effective;
+		private final MavenProject effective;
 		
-		public Effective(DOCUMENT base, MavenXMLProject<DOCUMENT> effective) {
+		public Effective(DOCUMENT base, MavenProject effective) {
 			
 			Objects.requireNonNull(base);
 			Objects.requireNonNull(effective);
@@ -143,7 +143,7 @@ public class EffectivePOMsHelper {
 		}
 		
 		return projects.stream()
-		        .map(p -> computed.get(p.getProject().getModuleId()).effective.getProject())
+		        .map(p -> computed.get(p.getProject().getModuleId()).effective)
 		        .collect(Collectors.toUnmodifiableList());
 	}
 	
@@ -405,7 +405,7 @@ public class EffectivePOMsHelper {
 		final MavenXMLProject<DOCUMENT> mavenXMLProjectWithVarReplace
 		    = replaceVariables(mavenXMLProject, pomMerger.getModel(), resolveContext);
 		
-		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenXMLProjectWithVarReplace);
+		final Effective<DOCUMENT> effective = new Effective<DOCUMENT>(mergedBase, mavenXMLProjectWithVarReplace.getProject());
 
 		if (computed.put(moduleId, effective) != null) {
 			throw new IllegalStateException();
