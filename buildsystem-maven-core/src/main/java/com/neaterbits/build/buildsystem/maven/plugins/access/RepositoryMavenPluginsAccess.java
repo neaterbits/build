@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfoImpl;
@@ -52,9 +53,12 @@ public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
 
     @Override
     public boolean isPluginPresent(MavenPlugin mavenPlugin) {
-        return repositoryAccess.isModulePresent(mavenPlugin.getModuleId());
-    }
 
+        final MavenModuleId moduleId = mavenPlugin.getModuleId();
+
+        return repositoryAccess.isModulePomPresent(moduleId)
+                && repositoryAccess.isModuleFilePresent(moduleId, "jar");
+    }
 
     @Override
     public void downloadPluginIfNotPresent(
@@ -63,7 +67,9 @@ public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
     
             throws IOException {
 
-    
-        repositoryAccess.downloadModuleIfNotPresent(mavenPlugin.getModuleId(), repositories);
+        final MavenModuleId moduleId = mavenPlugin.getModuleId();
+
+        repositoryAccess.downloadModulePomIfNotPresent(moduleId, repositories);
+        repositoryAccess.downloadModuleFileIfNotPresent(moduleId, "jar", repositories);
     }
 }

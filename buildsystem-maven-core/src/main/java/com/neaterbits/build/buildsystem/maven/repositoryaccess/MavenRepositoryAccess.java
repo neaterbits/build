@@ -72,12 +72,19 @@ public interface MavenRepositoryAccess {
         return path;
     }
 
-    void downloadModuleIfNotPresent(
+    void downloadModulePomIfNotPresent(
             MavenModuleId mavenModule,
             List<? extends BaseMavenRepository> repositories) throws IOException;
 
-    boolean isModulePresent(MavenModuleId moduleId);
-    
+    boolean isModulePomPresent(MavenModuleId moduleId);
+
+    void downloadModuleFileIfNotPresent(
+            MavenModuleId mavenModule,
+            String fileSuffix,
+            List<? extends BaseMavenRepository> repositories) throws IOException;
+
+    boolean isModuleFilePresent(MavenModuleId moduleId, String fileSuffix);
+
     File repositoryJarFile(MavenDependency mavenDependency);
     
     File repositoryJarFile(MavenModuleId mavenModuleId);

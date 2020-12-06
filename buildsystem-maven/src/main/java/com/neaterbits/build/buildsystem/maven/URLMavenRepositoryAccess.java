@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,7 +76,6 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         
         return repositoryExternalPomFile(repositoryDirectory, mavenDependency.getModuleId());
     }
-
     
     private static File getFile(Path path) {
 
@@ -96,24 +94,32 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         return getFile(path);
     }
 
-    private static String getJarFileName(MavenModuleId moduleId) {
-
-        return MavenBuildRoot.getCompiledFileName(moduleId, null);
+    private static String getFileName(MavenModuleId moduleId, String packaging) {
+        return MavenBuildRoot.getCompiledFileName(moduleId, packaging);
     }
-    
+
+    private static String getSha1FileName(MavenModuleId moduleId, String packaging) {
+        return getFileName(moduleId, packaging) + ".sha1";
+    }
+
+    private File repositoryFile(MavenModuleId moduleId, String packaging) {
+
+        final Path path = repositoryDirectory(moduleId).resolve(getFileName(moduleId, packaging));
+
+        return getFile(path);
+    }
+
+    private File repositorySha1File(MavenModuleId moduleId, String packaging) {
+
+        final Path path = repositoryDirectory(moduleId).resolve(getSha1FileName(moduleId, packaging));
+
+        return getFile(path);
+    }
+
     @Override
     public File repositoryJarFile(MavenModuleId moduleId) {
-
-        final Path path = repositoryDirectory(moduleId).resolve(getJarFileName(moduleId));
-
-        return getFile(path);
-    }
-    
-    private File repositoryJarSha1File(MavenModuleId moduleId) {
-
-        final Path path = repositoryDirectory(moduleId).resolve(getJarFileName(moduleId) + ".sha1");
-
-        return getFile(path);
+        
+        return repositoryFile(moduleId, "jar");
     }
 
     private static boolean isPresent(File file) {
@@ -122,11 +128,14 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
     }
     
     @Override
-    public boolean isModulePresent(MavenModuleId moduleId) {
-
+    public boolean isModulePomPresent(MavenModuleId moduleId) {
         // Must verify that all jar are present, sha1 files only necessary for remote repositories
-        return    isPresent(repositoryJarFile(moduleId))
-               && isPresent(repositoryExternalPomFile(moduleId));
+        return isPresent(repositoryExternalPomFile(moduleId));
+    }
+
+    @Override
+    public boolean isModuleFilePresent(MavenModuleId moduleId, String fileSuffix) {
+        return isPresent(repositoryFile(moduleId, fileSuffix));
     }
 
     private boolean downloadFileIfNotPresent(MavenModuleId moduleId, File file, URL repository) {
@@ -152,43 +161,61 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
             ok = true;
         }
         catch (IOException ex) {
-            ex.printStackTrace();
         }
         
         return ok;
     }
 
-    private void downloadModuleFromURLsIfNotPresent(MavenModuleId moduleId, List<URL> repositories) throws IOException {
+    private BaseMavenRepository downloadModuleFileIfNotPresent(
+                                                MavenModuleId moduleId,
+                                                File file,
+                                                File sha1File,
+                                                List<? extends BaseMavenRepository> repositories) throws IOException {
 
-        boolean downloadedOk = false;
+        BaseMavenRepository downloadedOk = null;
         
-        for (URL repository : repositories) {
+        for (BaseMavenRepository repository : repositories) {
             
-            if (    downloadFileIfNotPresent(moduleId, repositoryJarFile(moduleId), repository)
-                 && downloadFileIfNotPresent(moduleId, repositoryJarSha1File(moduleId), repository)    
-                 && downloadFileIfNotPresent(moduleId, repositoryExternalPomFile(moduleId), repository)
-                 && downloadFileIfNotPresent(moduleId, repositoryExternalPomSha1File(moduleId), repository)) {
+            final URL url = new URL(repository.getUrl());
+            
+            if (    downloadFileIfNotPresent(moduleId, file, url)
+                 && downloadFileIfNotPresent(moduleId, sha1File, url)) {
                 
                 // TODO validate sha1
-                downloadedOk = true;
+                downloadedOk = repository;
                 break;
             }
         }
 
-        if (!downloadedOk) {
+        if (downloadedOk == null) {
             throw new IOException("Failed to download module " + moduleId);
         }
+        
+        return downloadedOk;
     }
 
     @Override
-    public void downloadModuleIfNotPresent(MavenModuleId mavenModule, List<? extends BaseMavenRepository> repositories) throws IOException {
+    public void downloadModulePomIfNotPresent(
+                                            MavenModuleId mavenModule,
+                                            List<? extends BaseMavenRepository> repositories) throws IOException {
+        downloadModuleFileIfNotPresent(
+                mavenModule,
+                repositoryExternalPomFile(mavenModule),
+                repositoryExternalPomSha1File(mavenModule),
+                repositories);
+    }
 
-        final List<URL> urls = new ArrayList<>(repositories.size());
+    @Override
+    public void downloadModuleFileIfNotPresent(
+            MavenModuleId mavenModule,
+            String fileSuffix,
+            List<? extends BaseMavenRepository> repositories)
+                    throws IOException {
         
-        for (BaseMavenRepository repository : repositories) {
-            urls.add(new URL(repository.getUrl()));
-        }
-        
-        downloadModuleFromURLsIfNotPresent(mavenModule, urls);
+        downloadModuleFileIfNotPresent(
+                mavenModule,
+                repositoryFile(mavenModule, fileSuffix),
+                repositorySha1File(mavenModule, fileSuffix),
+                repositories);
     }
 }

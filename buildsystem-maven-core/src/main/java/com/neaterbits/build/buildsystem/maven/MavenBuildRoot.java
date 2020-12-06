@@ -316,15 +316,13 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	    
 	    Objects.requireNonNull(dependency);
 	    
-	    System.out.println("## download " + dependency.getModuleId());
+	    final MavenModuleId moduleId = dependency.getModuleId();
 	    
-	    if (!externalDependencies.containsKey(dependency.getModuleId())) {
+	    if (!externalDependencies.containsKey(moduleId)) {
 	        
-	        if (!repositoryAccess.isModulePresent(dependency.getModuleId())) {
+	        if (!repositoryAccess.isModulePomPresent(moduleId)) {
 	            
-	            System.out.println("## download if not present " + dependency.getModuleId() + " " + referencedFromRepositories);
-	            
-	            repositoryAccess.downloadModuleIfNotPresent(dependency.getModuleId(), referencedFromRepositories);
+	            repositoryAccess.downloadModulePomIfNotPresent(moduleId, referencedFromRepositories);
 	        }
 	        
 	        final MavenXMLProject<Document> xmlProject;
@@ -334,12 +332,36 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
                         repositoryAccess.repositoryExternalPomFile(dependency),
                         xmlReaderFactory);
             } catch (XMLReaderException ex) {
-                throw new ScanException("Could not parse project " + dependency.getModuleId().getId(), ex);
+                throw new ScanException("Could not parse project " + moduleId.getId(), ex);
             }
             
-            externalDependencies.put(
-                    dependency.getModuleId(),
-                    new ExternalProject(xmlProject, null));
+            externalDependencies.put(moduleId, new ExternalProject(xmlProject, null));
+            
+            final String packaging;
+            
+            if (xmlProject.getProject().getPackaging() == null) {
+                packaging = "jar";
+            }
+            else {
+                packaging = xmlProject.getProject().getPackaging();
+            }
+            
+            final String fileSuffix;
+
+            switch (packaging) {
+            case "pom":
+                // Only pom file
+                fileSuffix = null;
+                break;
+                
+            default:
+                fileSuffix = "jar";
+                break;
+            }
+
+            if (fileSuffix != null && !repositoryAccess.isModuleFilePresent(moduleId, fileSuffix)) {
+                repositoryAccess.downloadModuleFileIfNotPresent(moduleId, fileSuffix, referencedFromRepositories);
+            }
 
             computeEffectiveWherePossible();
 	    }
@@ -358,8 +380,6 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
                         moduleId -> {
                             
                             Objects.requireNonNull(moduleId);
-                            
-                            System.out.println("## compute effective for " + moduleId);
                             
                             final ExternalProject ext = externalDependencies.get(moduleId);
                         
