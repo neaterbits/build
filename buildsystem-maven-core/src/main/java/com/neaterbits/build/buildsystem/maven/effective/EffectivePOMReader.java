@@ -1,7 +1,9 @@
 package com.neaterbits.build.buildsystem.maven.effective;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.w3c.dom.Document;
@@ -41,9 +43,21 @@ public final class EffectivePOMReader {
                                     MavenXMLProject<Document> project,
                                     Function<MavenModuleId, MavenXMLProject<Document>> getProject) {
         
+        final MavenModuleId projectModuleId = project.getProject().getModuleId();
+        
         final List<MavenXMLProject<Document>> projects = new ArrayList<>();
         
+        final Set<String> distinctArtifactIds = new HashSet<>();
+        
         for (MavenXMLProject<Document> toCompute = project; toCompute != null;) {
+            
+            final String artifactId = toCompute.getProject().getModuleId().getArtifactId();
+            
+            if (distinctArtifactIds.contains(artifactId)) {
+                throw new IllegalStateException("Non distinct artifactId");
+            }
+            
+            distinctArtifactIds.add(artifactId);
             
             projects.add(toCompute);
             
@@ -53,11 +67,11 @@ public final class EffectivePOMReader {
                             ? getProject.apply(parentModuleId)
                             : null;
         }
-        
+
         final List<MavenProject> computedProjects = computeEffectiveProjects(projects);
     
         return computedProjects.stream()
-                .filter(p -> p.getModuleId().equals(project.getProject().getModuleId()))
+                .filter(p -> p.getModuleId().getArtifactId().equals(projectModuleId.getArtifactId()))
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
     }
