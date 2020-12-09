@@ -18,6 +18,7 @@ import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
+import com.neaterbits.build.buildsystem.maven.effective.DocumentModule;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMReader;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenEnvironmentPluginExecutor;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
@@ -44,15 +45,17 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 
     private static class ExternalProject {
         
-        private final MavenXMLProject<Document> xmlProject;
+        private final DocumentModule<Document> module;
         private MavenProject effective;
         
-        ExternalProject(MavenXMLProject<Document> xmlProject, MavenProject effective) {
-            
-            Objects.requireNonNull(xmlProject);
+        ExternalProject(MavenModuleId moduleId, MavenXMLProject<Document> xmlProject, MavenProject effective) {
 
-            this.xmlProject = xmlProject;
+            this.module = new DocumentModule<>(moduleId, xmlProject);
             this.effective = effective;
+        }
+        
+        MavenXMLProject<Document> getXMLProject() {
+            return module.getXMLProject();
         }
     }
     
@@ -335,7 +338,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
                 throw new ScanException("Could not parse project " + moduleId.getId(), ex);
             }
             
-            externalDependencies.put(moduleId, new ExternalProject(xmlProject, null));
+            externalDependencies.put(moduleId, new ExternalProject(moduleId, xmlProject, null));
             
             final String packaging;
             
@@ -376,7 +379,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	        if (externalProject.effective == null && hasAllParentPoms(externalProject)) {
 	            
 	            final MavenProject effectiveProject = effectivePomReader.computeEffectiveProject(
-                        externalProject.xmlProject,
+                        externalProject.module,
                         moduleId -> {
                             
                             Objects.requireNonNull(moduleId);
@@ -387,7 +390,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
                                 throw new IllegalStateException("No external project for " + moduleId);
                             }
                             
-                            return ext.xmlProject;
+                            return ext.module;
                         });
 
 	            externalProject.effective = effectiveProject;
@@ -399,7 +402,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	    
 	    boolean hasAll = true;
 	    
-	    for (MavenModuleId parentModuleId = externalProject.xmlProject.getProject().getParentModuleId(); parentModuleId != null;) {
+	    for (MavenModuleId parentModuleId = externalProject.getXMLProject().getProject().getParentModuleId(); parentModuleId != null;) {
 
 	        final ExternalProject parentExternal = externalDependencies.get(parentModuleId);
 	        
@@ -408,7 +411,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	            break;
 	        }
 	        else {
-	            parentModuleId = parentExternal.xmlProject.getProject().getParentModuleId();
+	            parentModuleId = parentExternal.getXMLProject().getProject().getParentModuleId();
 	        }
 	    }
 	    
@@ -423,7 +426,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
         final ExternalProject externalProject = externalDependencies.get(moduleId);
         
         return externalProject != null
-                ? externalProject.xmlProject.getProject()
+                ? externalProject.getXMLProject().getProject()
                 : null;
     }
 

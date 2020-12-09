@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 
@@ -13,6 +14,8 @@ import com.neaterbits.build.buildsystem.common.BuildSystem;
 import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.http.HTTPDownloader;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
+import com.neaterbits.build.buildsystem.maven.effective.DocumentModule;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMReader;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
 import com.neaterbits.build.buildsystem.maven.plugins.access.MavenPluginsAccess;
@@ -90,7 +93,17 @@ public final class MavenBuildSystem implements BuildSystem {
 			throw new ScanException("Failed to scan project", ex);
 		}
 		
-		final List<MavenProject> mavenProjects = effectivePOMReader.computeEffectiveProjects(mavenXMLProjects);
+
+        final List<DocumentModule<Document>> modules = mavenXMLProjects.stream()
+                .map(p -> {
+                    
+                    final MavenModuleId moduleId = EffectivePOMReader.getProjectModuleId(p.getProject());
+                    
+                    return new DocumentModule<>(moduleId, p);
+                })
+                .collect(Collectors.toUnmodifiableList());
+
+        final List<MavenProject> mavenProjects = effectivePOMReader.computeEffectiveProjects(modules);
 
 		return (BuildSystemRoot)new MavenBuildRoot(
 		        mavenProjects,

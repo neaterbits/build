@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
+import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
 import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
@@ -116,10 +117,17 @@ public class EffectivePOMsHelperTest {
             subFile.delete();
         }
         
-        final List<MavenXMLProject<Document>> xmlProjects = Arrays.asList(rootPom, subPom);
+        final List<DocumentModule<Document>> modules = Arrays.asList(
+                new DocumentModule<>(
+                        new MavenModuleId(rootGroupId, rootArtifactId, rootVersion),
+                        rootPom),
+                
+                new DocumentModule<>(
+                        new MavenModuleId(subGroupId, subArtifactId, subVersion),
+                        subPom));
         
         final List<MavenProject> effectiveProjects = EffectivePOMsHelper.computeEffectiveProjects(
-                        xmlProjects,
+                        modules,
                         DOMModel.INSTANCE,
                         xmlReaderFactory,
                         superPom,
@@ -261,10 +269,17 @@ public class EffectivePOMsHelperTest {
             subFile.delete();
         }
         
-        final List<MavenXMLProject<Document>> xmlProjects = Arrays.asList(rootPom, subPom);
+        final List<DocumentModule<Document>> modules = Arrays.asList(
+                new DocumentModule<>(
+                        new MavenModuleId(rootGroupId, rootArtifactId, rootVersion),
+                        rootPom),
+                
+                new DocumentModule<>(
+                        new MavenModuleId(subGroupId, subArtifactId, subVersion),
+                        subPom));
         
         final List<MavenProject> effectiveProjects = EffectivePOMsHelper.computeEffectiveProjects(
-                        xmlProjects,
+                        modules,
                         DOMModel.INSTANCE,
                         xmlReaderFactory,
                         superPom,
@@ -362,10 +377,17 @@ public class EffectivePOMsHelperTest {
             subFile.delete();
         }
         
-        final List<MavenXMLProject<Document>> xmlProjects = Arrays.asList(rootPom, subPom);
+        final List<DocumentModule<Document>> modules = Arrays.asList(
+                new DocumentModule<>(
+                        new MavenModuleId(rootGroupId, rootArtifactId, rootVersion),
+                        rootPom),
+                
+                new DocumentModule<>(
+                        new MavenModuleId(subGroupId, subArtifactId, subVersion),
+                        subPom));
         
         final List<MavenProject> effectiveProjects = EffectivePOMsHelper.computeEffectiveProjects(
-                        xmlProjects,
+                        modules,
                         DOMModel.INSTANCE,
                         xmlReaderFactory,
                         superPom,
@@ -404,13 +426,20 @@ public class EffectivePOMsHelperTest {
 		final MavenXMLProject<Document> rootPom
 			= PomTreeParser.readModule(new File("../pom.xml"), xmlReaderFactory);
 
-		final MavenXMLProject<Document> buildsystemMavenPOM
+		final MavenXMLProject<Document> buildsystemMavenCorePOM
 			= PomTreeParser.readModule(new File("./pom.xml"), xmlReaderFactory);
 		
-		final List<MavenXMLProject<Document>> xmlProjects = Arrays.asList(rootPom, buildsystemMavenPOM);
+        final List<DocumentModule<Document>> modules = Arrays.asList(
+                new DocumentModule<>(
+                        new MavenModuleId("com.neaterbits.build", "root", "0.0.1-SNAPSHOT"),
+                        rootPom),
+                
+                new DocumentModule<>(
+                        new MavenModuleId("com.neaterbits.build", "buildsystem-maven-core", "0.0.1-SNAPSHOT"),
+                        buildsystemMavenCorePOM));
 		
 		final List<MavenProject> effectiveProjects = EffectivePOMsHelper.computeEffectiveProjects(
-				        xmlProjects,
+				        modules,
 				        DOMModel.INSTANCE,
 				        xmlReaderFactory,
 				        superPom,

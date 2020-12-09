@@ -126,31 +126,31 @@ public class EffectivePOMsHelper {
 
 	public static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 		List<MavenProject> computeEffectiveProjects(
-			List<MavenXMLProject<DOCUMENT>> projects,
+			List<DocumentModule<DOCUMENT>> modules,
 			DocumentModel<NODE, ELEMENT, DOCUMENT> model,
 			XMLReaderFactory<DOCUMENT> xmlReaderFactory,
 			String superPomString,
 			MavenResolveContext resolveContext) {
 
 		final Map<MavenModuleId, Effective<DOCUMENT>> computed
-			= new HashMap<>(projects.size() + 1);
+			= new HashMap<>(modules.size() + 1);
 		
 		final POMMerger<NODE, ELEMENT, DOCUMENT> pomMerger = new POMMerger<>(model);
 		
 		final DOCUMENT superPom = makeSuperPOM(xmlReaderFactory, superPomString);
 		
-		for (MavenXMLProject<DOCUMENT> project : projects) {
+		for (DocumentModule<DOCUMENT> module : modules) {
 		    
 		    // resolve() may compute recursively up hierarchy, so must verify not already added e.g. in case
 		    // a sub project is before the root project in the list
-		    if (!computed.containsKey(project.getProject().getModuleId())) {
+		    if (!computed.containsKey(module.getModuleId())) {
 
-		        resolve(project, projects, computed, pomMerger, superPom, resolveContext);
+		        resolve(module, modules, computed, pomMerger, superPom, resolveContext);
 		    }
 		}
 		
-		return projects.stream()
-		        .map(p -> computed.get(p.getProject().getModuleId()).effective)
+		return modules.stream()
+		        .map(p -> computed.get(p.getModuleId()).effective)
 		        .collect(Collectors.toUnmodifiableList());
 	}
 	
@@ -344,24 +344,24 @@ public class EffectivePOMsHelper {
 	
 	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 		Effective<DOCUMENT> resolve(
-			MavenXMLProject<DOCUMENT> project,
-			List<MavenXMLProject<DOCUMENT>> projects,
+			DocumentModule<DOCUMENT> module,
+			List<DocumentModule<DOCUMENT>> modules,
 			Map<MavenModuleId, Effective<DOCUMENT>> computed,
 			POMMerger<NODE, ELEMENT, DOCUMENT> pomMerger,
 			DOCUMENT superPom,
 			MavenResolveContext resolveContext) {
 
 	    if (DEBUG) {
-	        System.out.println("## resolve " + project.getProject().getModuleId().getArtifactId());
+	        System.out.println("## resolve " + module.getModuleId().getArtifactId());
 	    }
 
-		Objects.requireNonNull(project);
-		Objects.requireNonNull(projects);
+		Objects.requireNonNull(module);
+		Objects.requireNonNull(modules);
 		Objects.requireNonNull(computed);
 		Objects.requireNonNull(pomMerger);
 		Objects.requireNonNull(superPom);
 	
-		final MavenModuleId moduleId = project.getProject().getModuleId();
+		final MavenModuleId moduleId = module.getModuleId();
 		
 		if (computed.containsKey(moduleId)) {
 			throw new IllegalStateException();
@@ -369,12 +369,12 @@ public class EffectivePOMsHelper {
 
 		if (DEBUG) {
 		    System.out.println("##----------------------------- initial document");
-		    pomMerger.getModel().printDocument(project.getDocument(), System.out);
+		    pomMerger.getModel().printDocument(module.getXMLProject().getDocument(), System.out);
 		}
 
 		final DOCUMENT parentEffectiveBase = findEffectiveParentBasePom(
-		                                            project,
-		                                            projects,
+		                                            module,
+		                                            modules,
 		                                            computed,
 		                                            pomMerger,
 		                                            superPom,
@@ -386,25 +386,25 @@ public class EffectivePOMsHelper {
 		}
 		
 		// Current base document where only merging relevant fields
-		final DOCUMENT mergedBase = pomMerger.merge(parentEffectiveBase, project.getDocument(), MERGE_BASE_FILTER);
+		final DOCUMENT mergedBase = pomMerger.merge(parentEffectiveBase, module.getXMLProject().getDocument(), MERGE_BASE_FILTER);
 
 		if (DEBUG) {
 		    System.out.println("##----------------------------- merged base");
 		    pomMerger.getModel().printDocument(mergedBase, System.out);
 		
 		    System.out.println("##----------------------------- document to merge");
-		    pomMerger.getModel().printDocument(project.getDocument(), System.out);
+		    pomMerger.getModel().printDocument(module.getXMLProject().getDocument(), System.out);
 		}
 		
 		// Effective document where adding all fields from sub pom
-		final DOCUMENT mergedEffective = pomMerger.merge(parentEffectiveBase, project.getDocument(), MERGE_FILTER);
+		final DOCUMENT mergedEffective = pomMerger.merge(parentEffectiveBase, module.getXMLProject().getDocument(), MERGE_FILTER);
 
 		if (DEBUG) {
 		    System.out.println("##----------------------------- merged effective");
 		    pomMerger.getModel().printDocument(mergedEffective, System.out);
 		}
 	
-		final File rootDirectory = project.getProject().getRootDirectory();
+		final File rootDirectory = module.getXMLProject().getProject().getRootDirectory();
 
 		// Parse into effective
 		final MavenXMLProject<DOCUMENT> mavenXMLProject = parse(mergedEffective, pomMerger.getModel(), rootDirectory);
@@ -623,24 +623,24 @@ public class EffectivePOMsHelper {
 	// Find the parts from base POM that shall be merged with POM 
 	private static <NODE, ELEMENT extends NODE, DOCUMENT extends NODE>
 	    DOCUMENT findEffectiveParentBasePom(
-	            MavenXMLProject<DOCUMENT> project,
-	            List<MavenXMLProject<DOCUMENT>> projects,
+	            DocumentModule<DOCUMENT> module,
+	            List<DocumentModule<DOCUMENT>> modules,
 	            Map<MavenModuleId, Effective<DOCUMENT>> computed,
 	            POMMerger<NODE, ELEMENT, DOCUMENT> pomMerger,
 	            DOCUMENT superPom,
 	            MavenResolveContext resolveContext) {
 	    
-        final MavenXMLProject<DOCUMENT> parentProject = findParentProject(projects, project);
+        final DocumentModule<DOCUMENT> parentModule = findParentModule(modules, module);
         
         final DOCUMENT parentEffectiveBase;
         
-        if (parentProject != null) {
+        if (parentModule != null) {
             
             if (DEBUG) {
-                System.out.println("## found parent project " + parentProject.getProject().getModuleId());
+                System.out.println("## found parent project " + parentModule.getModuleId());
             }
             
-            final ModuleId parentModuleId = parentProject.getProject().getModuleId();
+            final ModuleId parentModuleId = parentModule.getModuleId();
         
             Effective<DOCUMENT> parentEffective = computed.get(parentModuleId);
             
@@ -651,7 +651,7 @@ public class EffectivePOMsHelper {
                 }
                 
                 // resolve parent
-                parentEffective = resolve(parentProject, projects, computed, pomMerger, superPom, resolveContext);
+                parentEffective = resolve(parentModule, modules, computed, pomMerger, superPom, resolveContext);
                 
                 if (parentEffective == null) {
                     throw new IllegalStateException();
@@ -683,24 +683,24 @@ public class EffectivePOMsHelper {
 	}
 	
 	private static <DOCUMENT>
-		MavenXMLProject<DOCUMENT> findParentProject(
-				List<MavenXMLProject<DOCUMENT>> projects,
-				MavenXMLProject<DOCUMENT> sub) {
+		DocumentModule<DOCUMENT> findParentModule(
+				List<DocumentModule<DOCUMENT>> modules,
+				DocumentModule<DOCUMENT> sub) {
 		
-	    final MavenModuleId parentModuleId = sub.getProject().getParentModuleId();
+	    final MavenModuleId parentModuleId = sub.getXMLProject().getProject().getParentModuleId();
 
-	    final MavenXMLProject<DOCUMENT> parentXMLProject;
+	    final DocumentModule<DOCUMENT> parentModule;
 	    
 	    if (parentModuleId == null) {
-	        parentXMLProject = null;
+	        parentModule = null;
 	    }
 	    else {
-	        parentXMLProject = projects.stream()
-				.filter(p -> parentModuleId.equals(p.getProject().getModuleId()))
+	        parentModule = modules.stream()
+				.filter(m -> parentModuleId.equals(m.getModuleId()))
 				.findFirst()
 				.orElse(null);
 	    }
 
-	    return parentXMLProject;
+	    return parentModule;
 	}
 }
