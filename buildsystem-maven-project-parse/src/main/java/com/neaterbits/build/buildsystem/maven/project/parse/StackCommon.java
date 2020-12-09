@@ -6,6 +6,7 @@ import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenCommon;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenDependencyManagement;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenDistributionManagement;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenRepository;
@@ -19,6 +20,7 @@ final class StackCommon {
     private List<MavenPluginRepository> pluginRepositories;
     private MavenDependencyManagement dependencyManagement;
     private List<MavenDependency> dependencies;
+    private MavenDistributionManagement distributionManagement;
 
     MavenCommon makeMavenCommon() {
         
@@ -29,6 +31,7 @@ final class StackCommon {
                 repositories,
                 pluginRepositories,
                 dependencyManagement,
+                distributionManagement,
                 dependencies);
     }
     
@@ -38,6 +41,10 @@ final class StackCommon {
 
     void setDependencyManagement(MavenDependencyManagement dependencyManagement) {
         this.dependencyManagement = dependencyManagement;
+    }
+
+    void setDistributionManagement(MavenDistributionManagement distributionManagement) {
+        this.distributionManagement = distributionManagement;
     }
 
     void setDependencies(List<MavenDependency> dependencies) {

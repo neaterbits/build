@@ -14,7 +14,6 @@ public final class MavenProject extends MavenModule {
     private final MavenCiManagement ciManagement;
     private final List<MavenMailingList> mailingLists;
     private final MavenScm scm;
-    private final MavenDistributionManagement distributionManagement;
     
 	public MavenProject(
 			File rootDirectory,
@@ -30,7 +29,6 @@ public final class MavenProject extends MavenModule {
 			MavenCiManagement ciManagement,
 			List<MavenMailingList> mailingLists,
 			MavenScm scm,
-			MavenDistributionManagement distributionManagement,
 			List<MavenProfile> profiles) {
 		
 		super(
@@ -55,7 +53,6 @@ public final class MavenProject extends MavenModule {
                     : null;
 
         this.scm = scm;
-        this.distributionManagement = distributionManagement;
 	}
 
 	public MavenProject(
@@ -77,9 +74,7 @@ public final class MavenProject extends MavenModule {
 	            other.ciManagement,
 	            other.mailingLists,
 	            other.scm,
-	            other.distributionManagement,
 	            profiles);
-	    
 	}
 
     public MavenOrganization getOrganization() {
@@ -96,9 +91,5 @@ public final class MavenProject extends MavenModule {
 
     public MavenScm getScm() {
         return scm;
-    }
-
-    public MavenDistributionManagement getDistributionManagement() {
-        return distributionManagement;
     }
 }

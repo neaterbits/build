@@ -65,7 +65,7 @@ public class DistributionManagementParserTest extends BasePomParserTest {
 
         final MavenProject project = parse(pomString);
         
-        final MavenDistributionManagement distributionManagement = project.getDistributionManagement();
+        final MavenDistributionManagement distributionManagement = project.getCommon().getDistributionManagement();
         assertThat(distributionManagement).isNotNull();
 
         assertThat(distributionManagement.getDownloadUrl()).isEqualTo("https://download.url");

@@ -22,7 +22,7 @@ import com.neaterbits.util.parse.context.Context;
 
 final class StackProject
         extends StackEntity
-        implements NameSetter, UrlSetter, CommonSetter, PropertiesSetter {
+        implements NameSetter, UrlSetter, CommonSetter, PropertiesSetter, DistributionManagementSetter {
 
 	private String name;
 
@@ -45,8 +45,6 @@ final class StackProject
 	private List<MavenMailingList> mailingLists;
 	
 	private MavenScm scm;
-	
-	private MavenDistributionManagement distributionManagement;
 	
 	private List<MavenProfile> profiles;
 	
@@ -184,12 +182,9 @@ final class StackProject
         this.scm = scm;
     }
 
-    MavenDistributionManagement getDistributionManagement() {
-        return distributionManagement;
-    }
-
-    void setDistributionManagement(MavenDistributionManagement distributionManagement) {
-        this.distributionManagement = distributionManagement;
+    @Override
+    public void setDistributionManagement(MavenDistributionManagement distributionManagement) {
+        common.setDistributionManagement(distributionManagement);
     }
 
     List<MavenProfile> getProfiles() {

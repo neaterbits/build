@@ -123,10 +123,6 @@ public class ConvertModel {
             model.setIssueManagement(convertIssueManagement(project.getIssueManagement()));
         }
         
-        if (project.getDistributionManagement() != null) {
-            model.setDistributionManagement(convertDistributionManagement(project.getDistributionManagement()));
-        }
-        
         if (project.getMailingLists() != null) {
             model.setMailingLists(project.getMailingLists().stream()
                         .map(ConvertModel::convertMailingList)
@@ -169,6 +165,10 @@ public class ConvertModel {
         
         if (common.getDependencyManagement() != null) {
             model.setDependencyManagement(convertDependencyManagement(common.getDependencyManagement()));
+        }
+        
+        if (common.getDistributionManagement() != null) {
+            model.setDistributionManagement(convertDistributionManagement(common.getDistributionManagement()));
         }
         
         if (common.getReporting() != null) {

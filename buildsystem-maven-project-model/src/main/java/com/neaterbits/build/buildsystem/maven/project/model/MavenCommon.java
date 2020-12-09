@@ -14,6 +14,7 @@ public final class MavenCommon {
     private final List<MavenRepository> repositories;
     private final MavenDependencyManagement dependencyManagement;
     private final List<MavenPluginRepository> pluginRepositories;
+    private final MavenDistributionManagement distributionManagement;
 
     public MavenCommon(List<String> modules,
             MavenBuild build,
@@ -21,6 +22,7 @@ public final class MavenCommon {
             List<MavenRepository> repositories,
             List<MavenPluginRepository> pluginRepositories,
             MavenDependencyManagement dependencyManagement,
+            MavenDistributionManagement distributionManagement,
             List<MavenDependency> dependencies) {
         
         this.modules = modules != null
@@ -39,6 +41,8 @@ public final class MavenCommon {
                 : null;
 
         this.dependencyManagement = dependencyManagement;
+        
+        this.distributionManagement = distributionManagement;
                 
         this.dependencies = dependencies != null
                 ? Collections.unmodifiableList(dependencies)
@@ -53,6 +57,7 @@ public final class MavenCommon {
                 other.repositories,
                 other.pluginRepositories,
                 other.dependencyManagement,
+                other.distributionManagement,
                 updatedDependencies);
     }
 
@@ -78,6 +83,10 @@ public final class MavenCommon {
 
     public MavenDependencyManagement getDependencyManagement() {
         return dependencyManagement;
+    }
+
+    public MavenDistributionManagement getDistributionManagement() {
+        return distributionManagement;
     }
 
     public List<MavenDependency> getDependencies() {

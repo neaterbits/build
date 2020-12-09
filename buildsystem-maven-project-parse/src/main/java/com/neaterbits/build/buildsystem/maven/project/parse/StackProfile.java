@@ -8,6 +8,7 @@ import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenActivation;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenBuild;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenDependencyManagement;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenDistributionManagement;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenReporting;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenRepository;
@@ -15,7 +16,7 @@ import com.neaterbits.util.parse.context.Context;
 
 final class StackProfile
         extends StackBase
-        implements IdSetter, CommonSetter, PropertiesSetter {
+        implements IdSetter, CommonSetter, PropertiesSetter, DistributionManagementSetter {
 
     private String id;
     private MavenActivation activation;
@@ -84,6 +85,11 @@ final class StackProfile
     @Override
     public void setDependencyManagement(MavenDependencyManagement dependencyManagement) {
         common.setDependencyManagement(dependencyManagement);
+    }
+
+    @Override
+    public void setDistributionManagement(MavenDistributionManagement distributionManagement) {
+        common.setDistributionManagement(distributionManagement);
     }
 
     @Override

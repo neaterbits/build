@@ -1700,7 +1700,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackDistributionManagement stackDistributionManagement = pop();
         
-        final StackProject stackProject = get();
+        final DistributionManagementSetter distributionManagementSetter = get();
         
         final MavenDistributionManagement distributionManagement = new MavenDistributionManagement(
                                                                             stackDistributionManagement.getDownloadUrl(),
@@ -1710,7 +1710,7 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
                                                                             stackDistributionManagement.getSite(),
                                                                             stackDistributionManagement.getRelocation());
         
-        stackProject.setDistributionManagement(distributionManagement);
+        distributionManagementSetter.setDistributionManagement(distributionManagement);
     }
 
     @Override
