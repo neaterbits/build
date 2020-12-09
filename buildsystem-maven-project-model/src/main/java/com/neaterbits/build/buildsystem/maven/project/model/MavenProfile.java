@@ -19,7 +19,6 @@ public final class MavenProfile {
             MavenCommon common,
             Map<String, String> properties) {
 
-        Objects.requireNonNull(id);
         Objects.requireNonNull(common);
         
         this.id = id;
