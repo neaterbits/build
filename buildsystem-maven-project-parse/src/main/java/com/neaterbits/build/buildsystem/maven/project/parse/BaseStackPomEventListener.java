@@ -5,6 +5,7 @@ import java.util.List;
 import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.common.model.configuration.MavenConfiguration;
 import com.neaterbits.build.buildsystem.maven.common.parse.BaseEntityStackEventListener;
+import com.neaterbits.build.buildsystem.maven.common.parse.TypeSetter;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenActivation;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenActivationFile;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenActivationOS;
@@ -997,9 +998,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackType stackType = pop();
         
-        final StackNotifier stackNotifier = get();
+        final TypeSetter typeSetter = get();
         
-        stackNotifier.setType(stackType.getText());
+        typeSetter.setType(stackType.getText());
     }
 
     @Override
