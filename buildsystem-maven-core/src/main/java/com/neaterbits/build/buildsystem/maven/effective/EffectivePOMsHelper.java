@@ -352,7 +352,7 @@ public class EffectivePOMsHelper {
 			MavenResolveContext resolveContext) {
 
 	    if (DEBUG) {
-	        System.out.println("## resolve " + module.getModuleId().getArtifactId());
+	        System.out.println("## resolve " + module.getModuleId());
 	    }
 
 		Objects.requireNonNull(module);
@@ -537,7 +537,25 @@ public class EffectivePOMsHelper {
                 .map(d -> {
                     final MavenDependency updated = resolveDependency(project, d, computed);
                     
-                    return updated != null ? updated : d;
+                    final MavenDependency result;
+                    
+                    if (updated == null || d.getModuleId().getVersion() != null) {
+                        result = d;
+                    }
+                    else {
+                        result = new MavenDependency(
+                                new MavenModuleId(
+                                        d.getModuleId().getGroupId(),
+                                        d.getModuleId().getArtifactId(),
+                                        updated.getModuleId().getVersion()),
+                                d.getType(),
+                                d.getClassifier(),
+                                d.getScope(),
+                                d.getOptional(),
+                                d.getExclusions());
+                    }
+                    
+                    return result;
                 })
                 .collect(Collectors.toList());
     }
@@ -557,6 +575,9 @@ public class EffectivePOMsHelper {
 	        if (parentEffective != null) {
 	            updated = resolveDependency(parentEffective.effective, dependency, computed);
 	        }
+            else {
+                throw new IllegalStateException("parentEffective " + project.getParentModuleId() + " not computed");
+            }
 	    }
 	    
 	    if (updated == null) {
