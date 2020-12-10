@@ -89,5 +89,5 @@ public interface MavenRepositoryAccess {
     
     File repositoryJarFile(MavenModuleId mavenModuleId);
 
-    File repositoryExternalPomFile(MavenDependency mavenDependency);
+    File repositoryExternalPomFile(MavenModuleId moduleId);
 }

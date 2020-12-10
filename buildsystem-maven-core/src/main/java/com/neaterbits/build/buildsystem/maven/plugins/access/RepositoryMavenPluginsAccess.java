@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.model.MavenFileDependency;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfo;
 import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginInfoImpl;
 import com.neaterbits.build.buildsystem.maven.plugins.descriptor.model.MavenPluginDescriptor;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
-import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
 
 public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
@@ -49,27 +47,5 @@ public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
                 mavenFileDependencies);
 
         return pluginInfo;
-    }
-
-    @Override
-    public boolean isPluginPresent(MavenPlugin mavenPlugin) {
-
-        final MavenModuleId moduleId = mavenPlugin.getModuleId();
-
-        return repositoryAccess.isModulePomPresent(moduleId)
-                && repositoryAccess.isModuleFilePresent(moduleId, "jar");
-    }
-
-    @Override
-    public void downloadPluginIfNotPresent(
-            MavenPlugin mavenPlugin,
-            List<MavenPluginRepository> repositories)
-    
-            throws IOException {
-
-        final MavenModuleId moduleId = mavenPlugin.getModuleId();
-
-        repositoryAccess.downloadModulePomIfNotPresent(moduleId, repositories);
-        repositoryAccess.downloadModuleFileIfNotPresent(moduleId, "jar", repositories);
     }
 }

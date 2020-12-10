@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.mockito.Mockito;
+import org.w3c.dom.Document;
 
 import com.neaterbits.build.buildsystem.common.ArgumentException;
 import com.neaterbits.build.buildsystem.common.BuildSystemMain;
@@ -12,6 +13,7 @@ import com.neaterbits.build.buildsystem.maven.plugins.MavenPluginsEnvironment;
 import com.neaterbits.build.buildsystem.maven.plugins.access.MavenPluginsAccess;
 import com.neaterbits.build.buildsystem.maven.plugins.execute.MavenPluginsEnvironmentImpl;
 import com.neaterbits.build.buildsystem.maven.plugins.instantiate.MavenPluginInstantiator;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomProjectParser;
 import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
 import com.neaterbits.util.Files;
@@ -27,20 +29,25 @@ public abstract class BaseMavenBuildTest {
 
         final File tempDirectory;
         final MavenRepositoryAccess repositoryAccess;
+        final PomProjectParser<Document> pomProjectParser;
+        private final boolean pomProjectParserIsMock;
         final MavenPluginsAccess pluginsAccess;
         final MavenPluginInstantiator pluginInstantiator;
         final MavenPluginsEnvironment pluginsEnvironment;
 
         BuildState(
                 File tempDirectory,
-                MavenRepositoryAccess
-                repositoryAccess,
+                MavenRepositoryAccess repositoryAccess,
+                PomProjectParser<Document> pomProjectParser,
+                boolean pomProjectParserIsMock,
                 MavenPluginsAccess pluginsAccess,
                 MavenPluginInstantiator pluginInstantiator,
                 MavenPluginsEnvironment pluginsEnvironment) {
 
             this.tempDirectory = tempDirectory;
             this.repositoryAccess = repositoryAccess;
+            this.pomProjectParser = pomProjectParser;
+            this.pomProjectParserIsMock = pomProjectParserIsMock;
             this.pluginsAccess = pluginsAccess;
             this.pluginInstantiator = pluginInstantiator;
             this.pluginsEnvironment = pluginsEnvironment;
@@ -48,6 +55,19 @@ public abstract class BaseMavenBuildTest {
     }
 
     final BuildState prepareBuild() {
+
+        @SuppressWarnings("unchecked")
+        final PomProjectParser<Document> pomProjectParser = Mockito.mock(PomProjectParser.class);
+
+        return prepareBuild(pomProjectParser, true);
+    }
+    
+    final BuildState prepareBuild(PomProjectParser<Document> pomProjectParser) {
+        
+        return prepareBuild(pomProjectParser, false);
+    }
+
+    private BuildState prepareBuild(PomProjectParser<Document> pomProjectParser, boolean pomProjectParserIsMock) {
         
         final File tempDirectory;
         try {
@@ -64,7 +84,14 @@ public abstract class BaseMavenBuildTest {
         
         final MavenPluginsEnvironment pluginsEnvironment = new MavenPluginsEnvironmentImpl(pluginInstantiator);
     
-        return new BuildState(tempDirectory, repositoryAccess, pluginsAccess, pluginInstantiator, pluginsEnvironment);
+        return new BuildState(
+                tempDirectory,
+                repositoryAccess,
+                pomProjectParser,
+                pomProjectParserIsMock,
+                pluginsAccess,
+                pluginInstantiator,
+                pluginsEnvironment);
     }
     
     final void build(String phase, BuildState buildState) {
@@ -87,7 +114,8 @@ public abstract class BaseMavenBuildTest {
         final MavenBuildSystem buildSystem = new MavenBuildSystem(
                                                     buildState.pluginsAccess,
                                                     buildState.pluginsEnvironment,
-                                                    buildState.repositoryAccess);
+                                                    buildState.repositoryAccess,
+                                                    buildState.pomProjectParser);
         
         final TargetExecutorLogger targetExecutorLogger = new PrintlnTargetExecutorLogger() {
 
@@ -121,6 +149,10 @@ public abstract class BaseMavenBuildTest {
                 buildState.pluginsAccess,
                 buildState.repositoryAccess,
                 buildState.pluginInstantiator);
+    
+        if (buildState.pomProjectParserIsMock) {
+            Mockito.verifyNoMoreInteractions(buildState.pomProjectParser);
+        }
 
         Files.deleteRecursively(buildState.tempDirectory);
     }

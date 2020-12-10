@@ -57,7 +57,8 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         return repositoryDirectory.resolve(getPomFileName(moduleId)).toFile();
     }
 
-    private File repositoryExternalPomFile(MavenModuleId moduleId) {
+    @Override
+    public File repositoryExternalPomFile(MavenModuleId moduleId) {
         
         final Path repositoryDirectory = repositoryDirectory(moduleId);
     
@@ -69,14 +70,6 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         return repositoryDirectory(moduleId).resolve(getPomFileName(moduleId) + ".sha1").toFile();
     }
 
-    @Override
-    public File repositoryExternalPomFile(MavenDependency mavenDependency) {
-
-        final Path repositoryDirectory = repositoryDirectory(mavenDependency);
-        
-        return repositoryExternalPomFile(repositoryDirectory, mavenDependency.getModuleId());
-    }
-    
     private static File getFile(Path path) {
 
         try {

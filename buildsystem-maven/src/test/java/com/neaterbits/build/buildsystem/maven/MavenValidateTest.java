@@ -6,14 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.eq;
 
-import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMsHelper;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenRepository;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
 import com.neaterbits.util.IOUtils;
 
@@ -32,7 +34,7 @@ public class MavenValidateTest extends BaseMavenBuildTest {
     @Test
     public void testValidatePhase() throws IOException {
 
-        final BuildState buildState = prepareBuild();
+        final BuildState buildState = prepareBuild(PomTreeParser::readModule);
 
         final String rootDepGroupId = "rootDepGroupId";
         final String rootDepArtifactId = "rootDepArtifactId";
@@ -130,27 +132,23 @@ public class MavenValidateTest extends BaseMavenBuildTest {
             
             build("validate", buildState, rootExtra, subExtra);
             
-            final MavenDependency rootDep = createDependency(rootDepId);
-            final MavenDependency rootDepParent = createDependency(rootDepParentId);
-            final MavenDependency subDep = createDependency(subDepId);
-            
             Mockito.verify(buildState.repositoryAccess).isModulePomPresent(rootDepId);
             Mockito.verify(buildState.repositoryAccess).downloadModulePomIfNotPresent(rootDepId, REPOSITORIES);
-            Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(rootDep);
+            Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(rootDepId);
 
             Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(rootDepId, "jar");
             Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(rootDepId, "jar", REPOSITORIES);
 
             Mockito.verify(buildState.repositoryAccess).isModulePomPresent(subDepId);
             Mockito.verify(buildState.repositoryAccess).downloadModulePomIfNotPresent(subDepId, REPOSITORIES);
-            Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(subDep);
+            Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(subDepId);
 
             Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(subDepId, "jar");
             Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(subDepId, "jar", REPOSITORIES);
 
             Mockito.verify(buildState.repositoryAccess).isModulePomPresent(rootDepParentId);
             Mockito.verify(buildState.repositoryAccess).downloadModulePomIfNotPresent(rootDepParentId, REPOSITORIES);
-            Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(rootDepParent);
+            Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(rootDepParentId);
 
             Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(rootDepParentId, "jar");
             Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(rootDepParentId, "jar", REPOSITORIES);
@@ -173,31 +171,20 @@ public class MavenValidateTest extends BaseMavenBuildTest {
             MavenModuleId subDepId,
             File subDepFile) {
         
+        Objects.requireNonNull(rootDepFile);
+        Objects.requireNonNull(rootDepParentFile);
+        Objects.requireNonNull(subDepFile);
+        
         Mockito.when(repositoryAccess.isModulePomPresent(rootDepId)).thenReturn(false);
         Mockito.when(repositoryAccess.isModulePomPresent(rootDepParentId)).thenReturn(false);
         Mockito.when(repositoryAccess.isModulePomPresent(subDepId)).thenReturn(false);
 
+        Mockito.when(repositoryAccess.repositoryExternalPomFile(eq(rootDepId))).thenReturn(rootDepFile);
+        Mockito.when(repositoryAccess.repositoryExternalPomFile(eq(rootDepParentId))).thenReturn(rootDepParentFile);
+        Mockito.when(repositoryAccess.repositoryExternalPomFile(eq(subDepId))).thenReturn(subDepFile);
+
         Mockito.when(repositoryAccess.isModuleFilePresent(rootDepId, "jar")).thenReturn(false);
         Mockito.when(repositoryAccess.isModuleFilePresent(rootDepParentId, "jar")).thenReturn(false);
         Mockito.when(repositoryAccess.isModuleFilePresent(subDepId, "jar")).thenReturn(false);
-         
-        final MavenDependency rootDep = createDependency(rootDepId);
-        final MavenDependency rootDepParent = createDependency(rootDepParentId);
-        final MavenDependency subDep = createDependency(subDepId);
-        
-        Mockito.when(repositoryAccess.repositoryExternalPomFile(rootDep)).thenReturn(rootDepFile);
-        Mockito.when(repositoryAccess.repositoryExternalPomFile(rootDepParent)).thenReturn(rootDepParentFile);
-        Mockito.when(repositoryAccess.repositoryExternalPomFile(subDep)).thenReturn(subDepFile);
-    }
-    
-    private static MavenDependency createDependency(MavenModuleId moduleId) {
-        
-        return new MavenDependency(
-                moduleId,
-                null,
-                null,
-                null,
-                null,
-                null);
     }
 }

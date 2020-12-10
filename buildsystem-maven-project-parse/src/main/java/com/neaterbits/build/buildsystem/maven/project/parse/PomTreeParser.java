@@ -39,7 +39,7 @@ public final class PomTreeParser {
                XMLReaderFactory<DOCUMENT> xmlReaderFactory,
                String filePath) throws XMLReaderException, IOException {
        
-       final PomEventListener pomEventListener = new StackInputStreamPomEventListener();
+       final StackInputStreamPomEventListener pomEventListener = new StackInputStreamPomEventListener();
 
        final DOCUMENT document;
        
@@ -49,7 +49,7 @@ public final class PomTreeParser {
                new PomXMLEventListener(pomEventListener),
                null);
 
-       return new MavenXMLProject<>(document, null);
+       return new MavenXMLProject<>(document, pomEventListener.makeProject(new File(filePath).getParentFile()));
    }
 
 	

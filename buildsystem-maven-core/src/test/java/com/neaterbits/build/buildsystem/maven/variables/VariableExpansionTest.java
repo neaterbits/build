@@ -175,7 +175,7 @@ public class VariableExpansionTest {
         final DOMReaderFactory xmlReaderFactory = new DOMReaderFactory();
 
         final MavenXMLProject<Document> rootPom
-            = PomTreeParser.readModule(new ByteArrayInputStream(rootPomString.getBytes()), xmlReaderFactory, "pom.xml");
+            = PomTreeParser.readModule(new ByteArrayInputStream(rootPomString.getBytes()), xmlReaderFactory, "./pom.xml");
 
         assertThat(VariableExpansion.replaceVariable("test-${project.groupId}-value", null, null, DOMModel.INSTANCE, rootPom.getDocument()))
             .isEqualTo("test-" + groupId + "-value");

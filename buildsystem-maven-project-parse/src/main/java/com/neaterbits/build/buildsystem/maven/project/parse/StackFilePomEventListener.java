@@ -28,21 +28,7 @@ final class StackFilePomEventListener extends BaseStackPomEventListener {
 
 		final StackProject project = pop();
 
-		final MavenProject mavenProject = new MavenProject(
-				rootDirectory,
-				project.makeModuleId(),
-				project.getParent(),
-				project.getPackaging(),
-				project.getName(),
-				project.getDescription(),
-				project.getProperties(),
-				project.getCommon().makeMavenCommon(),
-				project.getOrganization(),
-				project.getIssueManagement(),
-				project.getCiManagement(),
-				project.getMailingLists(),
-				project.getScm(),
-				project.getProfiles());
+		final MavenProject mavenProject = makeProject(project, rootDirectory);
 
 		this.mavenProject = mavenProject;
 	}

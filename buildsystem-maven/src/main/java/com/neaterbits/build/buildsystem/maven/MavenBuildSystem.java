@@ -24,6 +24,8 @@ import com.neaterbits.build.buildsystem.maven.plugins.execute.MavenPluginsEnviro
 import com.neaterbits.build.buildsystem.maven.plugins.instantiate.MavenPluginInstantiatorImpl;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.build.buildsystem.maven.project.model.xml.MavenXMLProject;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomProjectParser;
+import com.neaterbits.build.buildsystem.maven.project.parse.PomTreeParser;
 import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
 import com.neaterbits.build.buildsystem.maven.targets.MavenBuildSpecifier;
 import com.neaterbits.build.buildsystem.maven.xml.XMLReaderException;
@@ -36,6 +38,7 @@ public final class MavenBuildSystem implements BuildSystem {
     private final MavenPluginsAccess pluginsAccess;
     private final MavenPluginsEnvironment pluginsEnvironment;
     private final MavenRepositoryAccess repositoryAccess;
+    private final PomProjectParser<Document> pomProjectParser;
     
     public MavenBuildSystem(String mavenRepositoryDir) {
         this(
@@ -50,21 +53,25 @@ public final class MavenBuildSystem implements BuildSystem {
 	    this(
 	            new RepositoryMavenPluginsAccess(repositoryAccess),
 	            new MavenPluginsEnvironmentImpl(new MavenPluginInstantiatorImpl()),
-	            repositoryAccess);
+	            repositoryAccess,
+	            PomTreeParser::readModule);
     }
 
 	MavenBuildSystem(
 	        MavenPluginsAccess pluginsAccess,
 	        MavenPluginsEnvironment pluginsEnvironment,
-	        MavenRepositoryAccess repositoryAccess) {
+	        MavenRepositoryAccess repositoryAccess,
+	        PomProjectParser<Document> pomProjectParser) {
 
 	    Objects.requireNonNull(pluginsAccess);
 	    Objects.requireNonNull(pluginsEnvironment);
         Objects.requireNonNull(repositoryAccess);
+        Objects.requireNonNull(pomProjectParser);
         
         this.pluginsAccess = pluginsAccess;
         this.pluginsEnvironment = pluginsEnvironment;
         this.repositoryAccess = repositoryAccess;
+        this.pomProjectParser = pomProjectParser;
     }
 
 	
@@ -92,7 +99,6 @@ public final class MavenBuildSystem implements BuildSystem {
 		} catch (XMLReaderException | IOException ex) {
 			throw new ScanException("Failed to scan project", ex);
 		}
-		
 
         final List<DocumentModule<Document>> modules = mavenXMLProjects.stream()
                 .map(p -> {
@@ -108,6 +114,7 @@ public final class MavenBuildSystem implements BuildSystem {
 		return (BuildSystemRoot)new MavenBuildRoot(
 		        mavenProjects,
 		        xmlReaderFactory,
+		        pomProjectParser,
 		        new MavenProjectsAccessImpl(),
 		        pluginsAccess,
 		        pluginsEnvironment,

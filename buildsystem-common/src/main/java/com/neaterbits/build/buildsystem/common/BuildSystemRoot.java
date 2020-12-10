@@ -1,9 +1,7 @@
 package com.neaterbits.build.buildsystem.common;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import com.neaterbits.build.types.ModuleId;
 
@@ -23,6 +21,17 @@ public interface BuildSystemRoot<
 	            .filter(p -> getModuleId(p).equals(moduleId))
 	            .findFirst()
 	            .orElse(null);
+	}
+
+	default boolean isProjectModule(PROJECT project) {
+	    
+	    return isProjectModule(getModuleId(project));
+	}
+
+	default boolean isProjectModule(MODULE_ID moduleId) {
+	    
+	    return getProjects().stream()
+	            .anyMatch(p -> getModuleId(p).equals(moduleId));
 	}
 	
 	MODULE_ID getModuleId(PROJECT project);
@@ -53,8 +62,6 @@ public interface BuildSystemRoot<
 
 	MODULE_ID getDependencyModuleId(DEPENDENCY dependency);
 
-	boolean isProjectModule(MODULE_ID moduleId);
-
 	File repositoryJarFile(DEPENDENCY dependency);
 
 	File repositoryJarFile(MODULE_ID moduleId);
@@ -62,16 +69,6 @@ public interface BuildSystemRoot<
 	String compiledFileName(DEPENDENCY dependency);
 
 	void addListener(BuildSystemRootListener listener);
-
-    void downloadExternalDependencyIfNotPresentAndAddToModel(
-            List<REPOSITORY> referencedFromRepositories,
-            DEPENDENCY dependency)
-    
-                        throws IOException, ScanException;
-    
-    PROJECT getExternalProject(MODULE_ID moduleId);
-
-    PROJECT getEffectiveExternalProject(MODULE_ID moduleId);
 
     Collection<DEPENDENCY> getTransitiveExternalDependencies(DEPENDENCY dependency) throws ScanException;
 

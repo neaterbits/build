@@ -134,6 +134,7 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPO
 	public void downloadExternalDependencyAndAddToBuildModel(ProjectModuleResourcePath referencedFrom, LibraryDependency dependency)
 	            throws IOException, ScanException {
 
+	    /* TODO
 		final LibraryDependencyImpl impl = (LibraryDependencyImpl)dependency;
 
 		@SuppressWarnings("unchecked")
@@ -142,6 +143,7 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPO
 		buildSystemRoot.downloadExternalDependencyIfNotPresentAndAddToModel(
 		        null, // TODO pass repositories buildSystemRoot.getProject(referencedFrom.getFile()),
 		        buildDependency.getDependency());
+	    */
 	}
 
 	private List<LibraryDependency> getTransitiveExternalDependencies(BaseDependency dependency, Scope scope, boolean includeOptionalDependencies) throws ScanException {

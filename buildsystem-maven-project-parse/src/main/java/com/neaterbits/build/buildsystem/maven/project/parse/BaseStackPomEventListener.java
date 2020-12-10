@@ -1,5 +1,6 @@
 package com.neaterbits.build.buildsystem.maven.project.parse;
 
+import java.io.File;
 import java.util.List;
 
 import com.neaterbits.build.buildsystem.common.parse.StackBase;
@@ -28,6 +29,7 @@ import com.neaterbits.build.buildsystem.maven.project.model.MavenParent;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginManagement;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProfile;
+import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenReleases;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenReportPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenReportSet;
@@ -1934,5 +1936,24 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
         final StackProject stackProject = get();
         
         stackProject.setProfiles(stackProfiles.getProfiles());
+    }
+
+    protected final MavenProject makeProject(StackProject project, File rootDirectory) {
+        
+        return new MavenProject(
+                rootDirectory,
+                project.makeModuleId(),
+                project.getParent(),
+                project.getPackaging(),
+                project.getName(),
+                project.getDescription(),
+                project.getProperties(),
+                project.getCommon().makeMavenCommon(),
+                project.getOrganization(),
+                project.getIssueManagement(),
+                project.getCiManagement(),
+                project.getMailingLists(),
+                project.getScm(),
+                project.getProfiles());
     }
 }
