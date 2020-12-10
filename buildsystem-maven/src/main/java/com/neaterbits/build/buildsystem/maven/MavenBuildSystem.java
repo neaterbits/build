@@ -88,7 +88,7 @@ public final class MavenBuildSystem implements BuildSystem {
 	public <MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPOSITORY>
 	BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> scan(File rootDirectory) throws ScanException {
 
-	    final EffectivePOMReader effectivePOMReader = new EffectivePOMReader(false);
+	    final EffectivePOMReader effectivePOMReader = new EffectivePOMReader(true);
 	    
 		final List<MavenXMLProject<Document>> mavenXMLProjects;
 

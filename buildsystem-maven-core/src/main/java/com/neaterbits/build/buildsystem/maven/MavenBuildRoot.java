@@ -285,7 +285,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	@Override
     public File repositoryJarFile(MavenDependency dependency) {
 	    
-        return repositoryAccess.repositoryJarFile(dependency);
+        return repositoryAccess.repositoryJarFile(dependency.getModuleId());
     }
 
     @Override

@@ -38,7 +38,7 @@ public final class RepositoryMavenPluginsAccess implements MavenPluginsAccess {
         final MavenPluginDescriptor pluginDescriptor = PluginDescriptorUtil.getPluginDescriptor(pluginJarFile);
         
         final List<MavenFileDependency> mavenFileDependencies = pluginDescriptor.getDependencies().stream()
-                .map(dep -> new MavenFileDependency(dep, repositoryAccess.repositoryJarFile(dep)))
+                .map(dep -> new MavenFileDependency(dep, repositoryAccess.repositoryJarFile(dep.getModuleId())))
                 .collect(Collectors.toList());
 
         final MavenPluginInfo pluginInfo = new MavenPluginInfoImpl(

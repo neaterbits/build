@@ -85,8 +85,6 @@ public interface MavenRepositoryAccess {
 
     boolean isModuleFilePresent(MavenModuleId moduleId, String fileSuffix);
 
-    File repositoryJarFile(MavenDependency mavenDependency);
-    
     File repositoryJarFile(MavenModuleId mavenModuleId);
 
     File repositoryExternalPomFile(MavenModuleId moduleId);

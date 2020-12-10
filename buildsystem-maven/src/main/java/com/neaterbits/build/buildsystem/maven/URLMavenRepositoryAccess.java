@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.neaterbits.build.buildsystem.common.http.HTTPDownloader;
-import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
 import com.neaterbits.build.buildsystem.maven.repositoryaccess.MavenRepositoryAccess;
@@ -30,21 +29,9 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         this.downloader = downloader;
     }
 
-    private Path repositoryDirectory(MavenDependency mavenDependency) {
-
-        final MavenModuleId moduleId = mavenDependency.getModuleId();
-    
-        return repositoryDirectory(moduleId);
-    }
-
     private Path repositoryDirectory(MavenModuleId moduleId) {
         
         return MavenRepositoryAccess.repositoryDirectory(repository, moduleId);
-    }
-
-    private Path repositoryPomFile(MavenDependency mavenDependency) {
-
-        return repositoryDirectory(mavenDependency).resolve("pom.xml");
     }
 
     private static String getPomFileName(MavenModuleId moduleId) {
@@ -77,14 +64,6 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
-    }
-
-    @Override
-    public File repositoryJarFile(MavenDependency mavenDependency) {
-
-        final Path path = repositoryDirectory(mavenDependency).resolve(MavenBuildRoot.getCompiledFileName(mavenDependency));
-
-        return getFile(path);
     }
 
     private static String getFileName(MavenModuleId moduleId, String packaging) {
