@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 
@@ -16,6 +17,8 @@ import com.neaterbits.build.buildsystem.maven.xml.dom.DOMReaderFactory;
 
 public final class EffectivePOMReader {
 
+    private final boolean debug;
+    
     private final XMLReaderFactory<Document> xmlReaderFactory;
     private final MavenResolveContext resolveContext;
     
@@ -46,8 +49,11 @@ public final class EffectivePOMReader {
 
         return moduleId;
     }
-
-    public EffectivePOMReader() {
+    
+    public EffectivePOMReader(boolean debug) {
+        
+        this.debug = debug;
+        
         this.xmlReaderFactory = new DOMReaderFactory();
         this.resolveContext = MavenResolveContext.now();
     }
@@ -70,6 +76,10 @@ public final class EffectivePOMReader {
                                     DocumentModule<Document> module,
                                     Function<MavenModuleId, DocumentModule<Document>> getModule) {
         
+        if (debug) {
+            System.out.println("## ENTER computeEffectiveProject() " + module.getModuleId());
+        }
+
         final MavenModuleId projectModuleId = module.getModuleId();
         
         final List<DocumentModule<Document>> modules = new ArrayList<>();
@@ -77,7 +87,13 @@ public final class EffectivePOMReader {
         final Set<MavenModuleId> distinctModuleIds = new HashSet<>();
         
         for (DocumentModule<Document> toCompute = module; toCompute != null;) {
-            
+
+            if (debug) {
+                System.out.println("## computeEffectiveProject toCompute " + toCompute.getModuleId());
+
+                // DOMModel.INSTANCE.printDocument(toCompute.getDocument(), System.out);
+            }
+
             final MavenModuleId moduleId = toCompute.getModuleId();
             
             if (distinctModuleIds.contains(moduleId)) {
@@ -86,6 +102,10 @@ public final class EffectivePOMReader {
             
             distinctModuleIds.add(moduleId);
             
+            if (debug) {
+                System.out.println("## computeEffectiveProject add to compute " + moduleId);
+            }
+            
             modules.add(toCompute);
             
             final MavenModuleId parentModuleId = toCompute.getXMLProject().getProject().getParentModuleId();
@@ -93,13 +113,31 @@ public final class EffectivePOMReader {
             toCompute = parentModuleId != null
                             ? getModule.apply(parentModuleId)
                             : null;
+
+        }
+
+        if (debug) {
+            System.out.println("## compute effective with " + modules.stream()
+                .map(DocumentModule::getModuleId)
+                .collect(Collectors.toList()));
         }
 
         final List<MavenProject> computedProjects = computeEffectiveProjects(modules);
     
-        return computedProjects.stream()
+        final MavenProject result = computedProjects.stream()
                 .filter(p -> p.getModuleId().getArtifactId().equals(projectModuleId.getArtifactId()))
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
+        
+        if (debug) {
+            System.out.println("## EXIT computeEffectiveProject() " + result 
+                    + (result.getCommon().getDependencies() != null
+                                ? result.getCommon().getDependencies().stream()
+                                        .map(dep -> dep.getModuleId())
+                                        .collect(Collectors.toList())
+                                : ""));
+        }
+
+        return result;
     }
 }
