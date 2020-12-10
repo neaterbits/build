@@ -6,7 +6,7 @@ import com.neaterbits.build.buildsystem.common.parse.StackBase;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenReportPlugin;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackReporting extends StackBase {
+final class StackReporting extends StackBase implements OutputDirectorySetter {
 
     private String excludeDefaults;
 
@@ -30,7 +30,8 @@ final class StackReporting extends StackBase {
         return outputDirectory;
     }
 
-    void setOutputDirectory(String outputDirectory) {
+    @Override
+    public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 

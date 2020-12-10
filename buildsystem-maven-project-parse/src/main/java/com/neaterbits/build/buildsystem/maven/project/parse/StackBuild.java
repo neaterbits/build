@@ -5,7 +5,7 @@ import java.util.List;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenExtension;
 import com.neaterbits.util.parse.context.Context;
 
-final class StackBuild extends StackBaseBuild {
+final class StackBuild extends StackBaseBuild implements OutputDirectorySetter {
 
     private String outputDirectory;
     private String sourceDirectory;
@@ -22,7 +22,8 @@ final class StackBuild extends StackBaseBuild {
         return outputDirectory;
     }
 
-    final void setOutputDirectory(String outputDirectory) {
+    @Override
+    public final void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 

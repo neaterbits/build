@@ -374,9 +374,9 @@ abstract class BaseStackPomEventListener extends BaseEntityStackEventListener im
 
         final StackOutputDirectory stackOutputDirectory = pop();
         
-        final StackBuild stackBuild = get();
+        final OutputDirectorySetter outputDirectorySetter = get();
         
-        stackBuild.setOutputDirectory(stackOutputDirectory.getText());
+        outputDirectorySetter.setOutputDirectory(stackOutputDirectory.getText());
     }
 
     @Override
