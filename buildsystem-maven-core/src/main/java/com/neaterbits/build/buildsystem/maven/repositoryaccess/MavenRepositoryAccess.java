@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.maven.common.model.MavenDependency;
 import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
 import com.neaterbits.util.StringUtils;
@@ -80,12 +79,13 @@ public interface MavenRepositoryAccess {
 
     void downloadModuleFileIfNotPresent(
             MavenModuleId mavenModule,
+            String classifier,
             String fileSuffix,
             List<? extends BaseMavenRepository> repositories) throws IOException;
 
-    boolean isModuleFilePresent(MavenModuleId moduleId, String fileSuffix);
+    boolean isModuleFilePresent(MavenModuleId moduleId, String classifier, String fileSuffix);
 
-    File repositoryJarFile(MavenModuleId mavenModuleId);
+    File repositoryJarFile(MavenModuleId mavenModuleId, String classifier);
 
     File repositoryExternalPomFile(MavenModuleId moduleId);
 }

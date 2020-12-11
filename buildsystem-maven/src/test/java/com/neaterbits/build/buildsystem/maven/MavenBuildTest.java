@@ -89,7 +89,7 @@ public class MavenBuildTest extends BaseMavenBuildTest {
         Mockito.when(pomProjectParser.parse(same(pluginMock.pomFile), any()))
             .thenReturn(pluginMock.pluginProject);
 
-        Mockito.when(repositoryAccess.isModuleFilePresent(pluginMock.getModuleId(), "jar")).thenReturn(false);
+        Mockito.when(repositoryAccess.isModuleFilePresent(pluginMock.getModuleId(), null, "jar")).thenReturn(false);
 
         // Expectations for plugin descriptor for each plugin
         Mockito.when(pluginsAccess.getPluginInfo(pluginMock.plugin))
@@ -151,10 +151,10 @@ public class MavenBuildTest extends BaseMavenBuildTest {
         
         Mockito.verify(pomProjectParser, Mockito.atLeastOnce()).parse(same(pluginMock.pomFile), any());
         
-        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).isModuleFilePresent(pluginMock.getModuleId(), "jar");
+        Mockito.verify(repositoryAccess, Mockito.atLeastOnce()).isModuleFilePresent(pluginMock.getModuleId(), null, "jar");
         
         Mockito.verify(repositoryAccess, Mockito.atLeastOnce())
-            .downloadModuleFileIfNotPresent(pluginMock.getModuleId(), "jar", PLUGIN_REPOSITORIES);
+            .downloadModuleFileIfNotPresent(pluginMock.getModuleId(), null, "jar", PLUGIN_REPOSITORIES);
 
         Mockito.verify(pluginsAccess, Mockito.atLeastOnce()).getPluginInfo(pluginMock.plugin);
     }

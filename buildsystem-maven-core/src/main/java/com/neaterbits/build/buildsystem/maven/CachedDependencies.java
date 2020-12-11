@@ -80,12 +80,13 @@ public final class CachedDependencies {
             List<BaseMavenRepository> referencedFromRepositories,
             MavenPlugin plugin) throws IOException, ScanException {
         
-        downloadExternalDependencyIfNotPresentAndAddToModel(referencedFromRepositories, plugin.getModuleId());
+        downloadExternalDependencyIfNotPresentAndAddToModel(referencedFromRepositories, plugin.getModuleId(), null);
     }
 
     public void downloadExternalDependencyIfNotPresentAndAddToModel(
             List<BaseMavenRepository> referencedFromRepositories,
-            MavenModuleId moduleId) throws IOException, ScanException {
+            MavenModuleId moduleId,
+            String classifier) throws IOException, ScanException {
 
         Objects.requireNonNull(moduleId);
         
@@ -153,9 +154,9 @@ public final class CachedDependencies {
                     break;
                 }
     
-                if (fileSuffix != null && !repositoryAccess.isModuleFilePresent(moduleId, fileSuffix)) {
+                if (fileSuffix != null && !repositoryAccess.isModuleFilePresent(moduleId, classifier, fileSuffix)) {
                     try {
-                        repositoryAccess.downloadModuleFileIfNotPresent(moduleId, fileSuffix, referencedFromRepositories);
+                        repositoryAccess.downloadModuleFileIfNotPresent(moduleId, classifier, fileSuffix, referencedFromRepositories);
                     }
                     catch (IOException ex) {
                         System.err.println("Warn: failed to download " + fileSuffix + " file of " + moduleId);

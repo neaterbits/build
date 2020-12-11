@@ -66,32 +66,32 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
         }
     }
 
-    private static String getFileName(MavenModuleId moduleId, String packaging) {
-        return MavenBuildRoot.getCompiledFileName(moduleId, packaging);
+    static String getFileName(MavenModuleId moduleId, String classifier, String packaging) {
+        return MavenBuildRoot.getCompiledFileName(moduleId, classifier, packaging);
     }
 
-    private static String getSha1FileName(MavenModuleId moduleId, String packaging) {
-        return getFileName(moduleId, packaging) + ".sha1";
+    private static String getSha1FileName(MavenModuleId moduleId, String classifier, String packaging) {
+        return getFileName(moduleId, classifier, packaging) + ".sha1";
     }
 
-    private File repositoryFile(MavenModuleId moduleId, String packaging) {
+    private File repositoryFile(MavenModuleId moduleId, String classifier, String packaging) {
 
-        final Path path = repositoryDirectory(moduleId).resolve(getFileName(moduleId, packaging));
+        final Path path = repositoryDirectory(moduleId).resolve(getFileName(moduleId, classifier, packaging));
 
         return getFile(path);
     }
 
-    private File repositorySha1File(MavenModuleId moduleId, String packaging) {
+    private File repositorySha1File(MavenModuleId moduleId, String classifier, String packaging) {
 
-        final Path path = repositoryDirectory(moduleId).resolve(getSha1FileName(moduleId, packaging));
+        final Path path = repositoryDirectory(moduleId).resolve(getSha1FileName(moduleId, classifier, packaging));
 
         return getFile(path);
     }
 
     @Override
-    public File repositoryJarFile(MavenModuleId moduleId) {
+    public File repositoryJarFile(MavenModuleId moduleId, String classifier) {
         
-        return repositoryFile(moduleId, "jar");
+        return repositoryFile(moduleId, classifier, "jar");
     }
 
     private static boolean isPresent(File file) {
@@ -106,8 +106,8 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
     }
 
     @Override
-    public boolean isModuleFilePresent(MavenModuleId moduleId, String fileSuffix) {
-        return isPresent(repositoryFile(moduleId, fileSuffix));
+    public boolean isModuleFilePresent(MavenModuleId moduleId, String classifier, String fileSuffix) {
+        return isPresent(repositoryFile(moduleId, classifier, fileSuffix));
     }
 
     private boolean downloadFileIfNotPresent(MavenModuleId moduleId, File file, URL repository) {
@@ -180,14 +180,15 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
     @Override
     public void downloadModuleFileIfNotPresent(
             MavenModuleId mavenModule,
+            String classifier,
             String fileSuffix,
             List<? extends BaseMavenRepository> repositories)
                     throws IOException {
         
         downloadModuleFileIfNotPresent(
                 mavenModule,
-                repositoryFile(mavenModule, fileSuffix),
-                repositorySha1File(mavenModule, fileSuffix),
+                repositoryFile(mavenModule, classifier, fileSuffix),
+                repositorySha1File(mavenModule, classifier, fileSuffix),
                 repositories);
     }
 }

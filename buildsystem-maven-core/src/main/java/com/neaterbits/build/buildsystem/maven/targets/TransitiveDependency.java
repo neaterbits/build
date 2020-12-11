@@ -7,10 +7,10 @@ import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 
-class TransitiveDependency extends ProjectDependency {
+abstract class TransitiveDependency extends ProjectDependency {
 
     private final MavenModuleId transitiveDependency;
-
+    
     public TransitiveDependency(
             ProjectDependency referencedFrom,
             MavenProject projectReferencedFrom,

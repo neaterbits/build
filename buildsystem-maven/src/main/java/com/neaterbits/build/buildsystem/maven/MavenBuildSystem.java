@@ -71,6 +71,7 @@ public final class MavenBuildSystem implements BuildSystem {
         this.pluginsAccess = pluginsAccess;
         this.pluginsEnvironment = pluginsEnvironment;
         this.repositoryAccess = repositoryAccess;
+
         this.pomProjectParser = pomProjectParser;
     }
 

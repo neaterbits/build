@@ -36,7 +36,7 @@ class DepsHelper {
                                                 sourceProject.getCommon().getRepositories()
                                                     .stream()
                                                     .collect(Collectors.toList()),
-                                                dep.getModuleId()))
+                                                dep))
                         .collect(Collectors.toList())
                         
                 : Collections.emptyList();
@@ -316,11 +316,11 @@ class DepsHelper {
                 }
                 
                 final TransitiveDependency transitiveDependency
-                    = new TransitiveDependency(
+                    = new PomDependency(
                             referencedFrom,
                             projectReferencedFrom,
                             referencedFrom.getReferencedFromRepositories(),
-                            dependency.getModuleId());
+                            dependency);
                 
                 result.add(transitiveDependency);
             }

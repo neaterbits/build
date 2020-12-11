@@ -7,7 +7,7 @@ import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPluginRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 
-final class PluginDependency extends InitialTransitiveDependency {
+final class PluginDependency extends TransitiveDependency {
 
     private final MavenPlugin plugin;
 
@@ -17,6 +17,7 @@ final class PluginDependency extends InitialTransitiveDependency {
             MavenPlugin plugin) {
         
         super(
+                null,
                 originalDependency,
                 referencedFromRepositories.stream().collect(Collectors.toList()),
                 plugin.getModuleId());
@@ -26,5 +27,10 @@ final class PluginDependency extends InitialTransitiveDependency {
 
     MavenPlugin getPlugin() {
         return plugin;
+    }
+
+    @Override
+    String getTargetedDependencyClassifier() {
+        return null;
     }
 }

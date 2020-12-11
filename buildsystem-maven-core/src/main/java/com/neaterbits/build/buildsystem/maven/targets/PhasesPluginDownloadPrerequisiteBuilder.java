@@ -109,7 +109,8 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
                         .downloadExternalDependencyIfNotPresentAndAddToModel(
                                 target.getReferencedFromRepositories().stream()
                                     .collect(Collectors.toList()),
-                                target.getTargetedDependency());
+                                target.getTargetedDependency(),
+                                target.getTargetedDependencyClassifier());
                 }
                     
                 return FunctionActionLog.OK;

@@ -218,7 +218,7 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	@Override
 	public File getCompiledModuleFile(MavenProject project, File modulePath) {
 
-		final String fileName = getCompiledFileName(getModuleId(project), project.getPackaging());
+		final String fileName = getCompiledFileName(getModuleId(project), null, project.getPackaging());
 
 		return new File(getTargetDirectory(modulePath), fileName);
 	}
@@ -252,16 +252,17 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
     
 		final MavenModuleId moduleId = mavenDependency.getModuleId();
 
-		return getCompiledFileName(moduleId, mavenDependency.getPackaging());
+		return getCompiledFileName(moduleId, mavenDependency.getClassifier(), mavenDependency.getPackaging());
 	}
 
-	public static String getCompiledFileName(MavenModuleId moduleId, String packaging) {
+	public static String getCompiledFileName(MavenModuleId moduleId, String classifier, String packaging) {
 
 		if (moduleId.getVersion() == null) {
 			throw new IllegalArgumentException("No version for module " + moduleId);
 		}
 
 		return moduleId.getArtifactId() + '-' + moduleId.getVersion()
+		        + (classifier != null ? "-" + classifier : "")
 				+ (packaging != null ? ('.' + packaging) : ".jar");
 	}
 
@@ -285,13 +286,13 @@ public final class MavenBuildRoot implements BuildSystemRoot<MavenModuleId, Mave
 	@Override
     public File repositoryJarFile(MavenDependency dependency) {
 	    
-        return repositoryAccess.repositoryJarFile(dependency.getModuleId());
+        return repositoryAccess.repositoryJarFile(dependency.getModuleId(), dependency.getClassifier());
     }
 
     @Override
-    public File repositoryJarFile(MavenModuleId moduleId) {
+    public File repositoryJarFile(MavenModuleId moduleId, String classifier) {
 
-        return repositoryAccess.repositoryJarFile(moduleId);
+        return repositoryAccess.repositoryJarFile(moduleId, classifier);
     }
     
     public final CachedDependencies getExternalDependencies() {

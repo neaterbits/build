@@ -64,7 +64,7 @@ public interface BuildSystemRoot<
 
 	File repositoryJarFile(DEPENDENCY dependency);
 
-	File repositoryJarFile(MODULE_ID moduleId);
+	File repositoryJarFile(MODULE_ID moduleId, String classifier);
 
 	String compiledFileName(DEPENDENCY dependency);
 

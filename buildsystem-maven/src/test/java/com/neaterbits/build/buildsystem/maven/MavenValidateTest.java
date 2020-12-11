@@ -136,22 +136,22 @@ public class MavenValidateTest extends BaseMavenBuildTest {
             Mockito.verify(buildState.repositoryAccess).downloadModulePomIfNotPresent(rootDepId, REPOSITORIES);
             Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(rootDepId);
 
-            Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(rootDepId, "jar");
-            Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(rootDepId, "jar", REPOSITORIES);
+            Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(rootDepId, null, "jar");
+            Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(rootDepId, null, "jar", REPOSITORIES);
 
             Mockito.verify(buildState.repositoryAccess).isModulePomPresent(subDepId);
             Mockito.verify(buildState.repositoryAccess).downloadModulePomIfNotPresent(subDepId, REPOSITORIES);
             Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(subDepId);
 
-            Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(subDepId, "jar");
-            Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(subDepId, "jar", REPOSITORIES);
+            Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(subDepId, null, "jar");
+            Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(subDepId, null, "jar", REPOSITORIES);
 
             Mockito.verify(buildState.repositoryAccess).isModulePomPresent(rootDepParentId);
             Mockito.verify(buildState.repositoryAccess).downloadModulePomIfNotPresent(rootDepParentId, REPOSITORIES);
             Mockito.verify(buildState.repositoryAccess).repositoryExternalPomFile(rootDepParentId);
 
-            Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(rootDepParentId, "jar");
-            Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(rootDepParentId, "jar", REPOSITORIES);
+            Mockito.verify(buildState.repositoryAccess).isModuleFilePresent(rootDepParentId, null, "jar");
+            Mockito.verify(buildState.repositoryAccess).downloadModuleFileIfNotPresent(rootDepParentId, null, "jar", REPOSITORIES);
         }
         finally {
             
@@ -183,8 +183,8 @@ public class MavenValidateTest extends BaseMavenBuildTest {
         Mockito.when(repositoryAccess.repositoryExternalPomFile(eq(rootDepParentId))).thenReturn(rootDepParentFile);
         Mockito.when(repositoryAccess.repositoryExternalPomFile(eq(subDepId))).thenReturn(subDepFile);
 
-        Mockito.when(repositoryAccess.isModuleFilePresent(rootDepId, "jar")).thenReturn(false);
-        Mockito.when(repositoryAccess.isModuleFilePresent(rootDepParentId, "jar")).thenReturn(false);
-        Mockito.when(repositoryAccess.isModuleFilePresent(subDepId, "jar")).thenReturn(false);
+        Mockito.when(repositoryAccess.isModuleFilePresent(rootDepId, null, "jar")).thenReturn(false);
+        Mockito.when(repositoryAccess.isModuleFilePresent(rootDepParentId, null, "jar")).thenReturn(false);
+        Mockito.when(repositoryAccess.isModuleFilePresent(subDepId, null, "jar")).thenReturn(false);
     }
 }

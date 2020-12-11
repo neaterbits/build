@@ -17,6 +17,8 @@ abstract class ProjectDependency {
     
     abstract MavenModuleId getTargetedDependency();
 
+    abstract String getTargetedDependencyClassifier();
+
     ProjectDependency(
             ProjectDependency referencedFrom,
             MavenProject projectReferencedFrom,
