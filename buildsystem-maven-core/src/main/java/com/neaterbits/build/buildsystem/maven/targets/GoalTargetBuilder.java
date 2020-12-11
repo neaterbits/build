@@ -35,11 +35,13 @@ final class GoalTargetBuilder extends TargetBuilderSpec<MavenBuilderContext> {
         
         final String targetName = getTargetName();
 
-        targetBuilder.addTarget(targetName, "Goal target for goal " + targetName)
+        targetBuilder.addTarget(targetName, "goal", "execute", "Goal target for goal " + targetName)
             .withPrerequisites("Submodules")
             .fromIterating(tc -> tc.getBuildSystemRoot().getProjects())
             .buildBy(st -> st.addInfoSubTarget(
                     MavenProject.class,
+                    "module_goal",
+                    "execute_" + targetName,
                     target -> target.getModuleId().getId(), // module specific qualifier
                     target -> "Module target in for " + targetName + " for module " + target.getModuleId().getClass())
                 

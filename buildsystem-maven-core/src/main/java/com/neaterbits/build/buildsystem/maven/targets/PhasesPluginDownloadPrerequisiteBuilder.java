@@ -80,6 +80,8 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
             .buildBy(pt -> pt
                     .addFilesSubTarget(
                             ProjectDependency.class,
+                            "plugindep",
+                            "download",
                             (context, target, prerequisites) -> false,
                             projectDep -> projectDep.getTargetedDependency().getId(),
                             projectDep -> "Plugin dependency " + projectDep.getTargetedDependency().getId())

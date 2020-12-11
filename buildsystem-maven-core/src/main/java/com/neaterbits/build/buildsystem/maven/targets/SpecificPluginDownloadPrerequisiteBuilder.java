@@ -34,6 +34,8 @@ public class SpecificPluginDownloadPrerequisiteBuilder
                 .buildBy(pt -> pt
                         .addFileSubTarget(
                                 MavenPlugin.class,
+                                "plugin",
+                                "download",
                                 target -> getPluginLocalFile(target),
                                 target -> "Download plugin " + target.getModuleId().getId())
 

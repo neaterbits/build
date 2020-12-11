@@ -100,6 +100,8 @@ public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends Task
 				
 				st.addFileSubTarget(
 						ProjectLibraryDependency.class,
+						"library",
+						"download",
 						LibraryResourcePath.class,
 						(context, projectDependency) -> projectDependency.dependency.getModulePath(),
 						LibraryResourcePath::getFile,

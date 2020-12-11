@@ -69,7 +69,7 @@ final class PhaseTargetBuilder extends TargetBuilderSpec<MavenBuilderContext> {
         
         final String targetName = phaseTarget(phase);
         
-        targetBuilder.addTarget(targetName, "Phase target for phase " + phase.getName())
+        targetBuilder.addTarget(targetName, "phase", "execute", "Phase target for phase " + phase.getName())
             .withPrerequisites("Modules in phase " + phase.getName())
             .fromIterating(tc -> tc.getBuildSystemRoot().getProjects().stream()
                     .map(project -> new PhaseMavenProject(phase, project))
@@ -79,6 +79,8 @@ final class PhaseTargetBuilder extends TargetBuilderSpec<MavenBuilderContext> {
                 final PrerequisitesOrActionBuilder<MavenBuilderContext, PhaseMavenProject> prerequisiteBuilder
                     = st.addInfoSubTarget(
                     PhaseMavenProject.class,
+                    "module_phase",
+                    "execute_" + phase.getName(),
                     target -> target.getModuleId().getId(), // module specific qualifier
                     target -> "Phase " + phase.getName() + " for module " + target.getModuleId());
 

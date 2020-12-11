@@ -26,6 +26,8 @@ final class PrerequisitesBuilderProjectDependencies extends PrerequisitesBuilder
 			.buildBy(st -> {
 				st.addFileSubTarget(
 						ProjectModuleResourcePath.class,
+						"module",
+						"collect",
 						CompiledModuleFileResourcePath.class,
 						(context, resourcePath) -> context.getBuildRoot().getCompiledModuleFile(resourcePath),
 						CompiledModuleFileResourcePath::getFile,

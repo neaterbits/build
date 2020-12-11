@@ -44,6 +44,8 @@ final class ExternalDependenciesPrerequisiteBuilder
                     externalDependencyBuild -> externalDependencyBuild
                         .addFilesSubTarget(
                                 ProjectDependency.class,
+                                "external",
+                                "download",
                                 (context, target, prerequisites) -> false,
                                 projectDep -> projectDep.getTargetedDependency().getId(),
                                 projectDep -> "External dependency " + projectDep.getTargetedDependency().getId())

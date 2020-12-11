@@ -26,6 +26,8 @@ public class PrerequisitesBuilderModuleCompileList extends PrerequisitesBuilderS
 					
 				.addInfoSubTarget(
 						SourceFolderResourcePath.class,
+                        "folder",
+                        "collect",
 						sourceFolder -> sourceFolder.getModule().getName(),
 						sourceFolder -> "Class files for source folder " + sourceFolder.getName())
 				
@@ -35,7 +37,12 @@ public class PrerequisitesBuilderModuleCompileList extends PrerequisitesBuilderS
 						.fromIterating(Constraint.IO, (ctx, sourceFolder) -> SourceFilesBuilderUtil.getSourceFiles(ctx, sourceFolder))
 
 						.buildBy(sourceFileTarget -> sourceFileTarget
-							.addFileSubTarget(FileCompilation.class, FileCompilation::getCompiledFile, classFile -> "Class file for source file " + classFile.getSourceFile().getName())
+							.addFileSubTarget(
+							        FileCompilation.class,
+							        "classfile",
+							        "collect",
+							        FileCompilation::getCompiledFile,
+							        classFile -> "Class file for source file " + classFile.getSourceFile().getName())
 								.withPrerequisite("Source file")
 								.from(FileCompilation::getSourcePath)
 								.withFile(SourceFileResourcePath::getFile)

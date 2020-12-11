@@ -29,12 +29,15 @@ public class TargetBuilderModules extends TargetBuilderSpec<ModulesBuildContext>
 	@Override
 	protected void buildSpec(TargetBuilder<ModulesBuildContext> targetBuilder) {
 		
-		targetBuilder.addTarget(TARGET_COMPILEALL, "Compile all modules")
+		targetBuilder.addTarget(TARGET_COMPILEALL, "modules", "compile", "Compile all modules")
 			.withPrerequisites("Modules")
 			.fromIterating(context -> context.getModules())
 			.buildBy(subTarget-> subTarget
 					
-				.addFileSubTarget(ProjectModuleResourcePath.class,
+				.addFileSubTarget(
+				        ProjectModuleResourcePath.class,
+                        "module",
+                        "compile",
 						CompiledModuleFileResourcePath.class,
 						(context, module) -> context.getCompiledModuleFile(module),
 						CompiledModuleFileResourcePath::getFile,
