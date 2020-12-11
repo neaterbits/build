@@ -103,6 +103,10 @@ public final class PomXMLEventListener
     		case "dependency":
     			delegate.onDependencyStart(context);
     			break;
+    			
+    		case "classifier":
+    		    delegate.onClassifierStart(context);
+    		    break;
     
     		case "scope":
     			delegate.onScopeStart(context);
@@ -566,7 +570,11 @@ public final class PomXMLEventListener
     			delegate.onDependenciesEnd(context);
     			break;
     
-    		case "scope":
+            case "classifier":
+                delegate.onClassifierEnd(context);
+                break;
+
+            case "scope":
     			delegate.onScopeEnd(context);
     			break;
     

@@ -86,6 +86,21 @@ public abstract class BaseEntityStackEventListener
     }
 
     @Override
+    public final void onClassifierStart(Context context) {
+        push(new StackClassifier(context));
+    }
+
+    @Override
+    public final void onClassifierEnd(Context context) {
+
+        final StackClassifier stackClassifier = pop();
+        
+        final StackDependency stackDependency = get();
+        
+        stackDependency.setClassifier(stackClassifier.getText());
+    }
+
+    @Override
     public final void onScopeStart(Context context) {
         push(new StackScope(context));
     }
@@ -159,9 +174,9 @@ public abstract class BaseEntityStackEventListener
         
         final MavenDependency dependency = new MavenDependency(
                 stackDependency.makeModuleId(),
-                stackDependency.getPackaging(),
-                stackDependency.getScope(),
                 stackDependency.getType(),
+                stackDependency.getClassifier(),
+                stackDependency.getScope(),
                 stackDependency.getOptional(),
                 stackDependency.getExclusions());
 

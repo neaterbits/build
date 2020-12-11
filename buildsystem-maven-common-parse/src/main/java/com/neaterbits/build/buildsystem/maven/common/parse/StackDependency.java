@@ -7,22 +7,15 @@ import com.neaterbits.util.parse.context.Context;
 
 final class StackDependency extends StackEntity implements TypeSetter {
 
-	private String scope;
     private String type;
+    private String classifier;
+    private String scope;
 	private String optional;
 	
 	private List<MavenExclusion> exclusions;
 
 	StackDependency(Context context) {
 		super(context);
-	}
-
-    String getScope() {
-		return scope;
-	}
-
-	void setScope(String scope) {
-		this.scope = scope;
 	}
 
     String getType() {
@@ -34,9 +27,25 @@ final class StackDependency extends StackEntity implements TypeSetter {
         this.type = type;
     }
 
+    String getClassifier() {
+        return classifier;
+    }
+
+    void setClassifier(String classifier) {
+        this.classifier = classifier;
+    }
+
     String getOptional() {
 		return optional;
 	}
+
+    String getScope() {
+        return scope;
+    }
+
+    void setScope(String scope) {
+        this.scope = scope;
+    }
 
 	void setOptional(String optional) {
 		this.optional = optional;

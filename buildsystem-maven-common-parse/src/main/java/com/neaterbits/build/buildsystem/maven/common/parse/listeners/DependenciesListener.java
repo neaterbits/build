@@ -8,6 +8,10 @@ public interface DependenciesListener {
 
     void onDependencyStart(Context context);
 
+    void onClassifierStart(Context context);
+
+    void onClassifierEnd(Context context);
+
     void onScopeStart(Context context);
 
     void onScopeEnd(Context context);
