@@ -17,6 +17,16 @@ import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.util.Indent;
 
 class DepsHelper {
+    
+    @FunctionalInterface
+    interface DepsFilter {
+        
+        public static final DepsFilter NOT_TEST = dep -> !"test".equals(dep.getScope());
+
+        public static final DepsFilter NOT_TEST_OR_PROVIDED = dep -> NOT_TEST.include(dep) && !"provided".equals(dep.getScope());
+
+        boolean include(MavenDependency dependency);
+    }
 
     static List<ProjectDependency> externalDependencies(
             MavenBuildRoot buildRoot,
@@ -52,6 +62,7 @@ class DepsHelper {
             int indent,
             boolean debug,
             MavenBuildRoot buildRoot,
+            DepsFilter depsFilter,
             CachedDependencies cached,
             ProjectDependency projectDependency) {
 
@@ -109,7 +120,14 @@ class DepsHelper {
 
                 // Reached entry with no parent dependency, find all transitive
                 
-                result = onDependencyRootReached(indent + 1, debug, buildRoot, project, parentDependency, cached);
+                result = onDependencyRootReached(
+                        indent + 1,
+                        debug,
+                        buildRoot,
+                        depsFilter,
+                        project,
+                        parentDependency,
+                        cached);
             }
         }
         else if (projectDependency instanceof TransitiveDependency) {
@@ -146,6 +164,7 @@ class DepsHelper {
                             indent,
                             debug,
                             buildRoot,
+                            depsFilter,
                             result,
                             effective,
                             projectDependency,
@@ -186,6 +205,7 @@ class DepsHelper {
                                                 int indent,
                                                 boolean debug,
                                                 MavenBuildRoot buildRoot,
+                                                DepsFilter depsFilter,
                                                 MavenProject project,
                                                 ParentDependency parentDependency,
                                                 CachedDependencies cached) {
@@ -215,6 +235,7 @@ class DepsHelper {
                     indent + 1,
                     debug,
                     buildRoot,
+                    depsFilter,
                     result,
                     effective,
                     parentDependency,
@@ -240,6 +261,7 @@ class DepsHelper {
                         indent + 1,
                         debug,
                         buildRoot,
+                        depsFilter,
                         result,
                         effective,
                         parentDep,
@@ -262,6 +284,7 @@ class DepsHelper {
                             indent + 1,
                             debug,
                             buildRoot,
+                            depsFilter,
                             result,
                             effective,
                             transitiveDependency,
@@ -286,6 +309,7 @@ class DepsHelper {
             int indent,
             boolean debug,
             MavenBuildRoot root,
+            DepsFilter depsFilter,
             List<ProjectDependency> result,
             EffectiveProject effectiveProject,
             ProjectDependency referencedFrom,
@@ -304,6 +328,15 @@ class DepsHelper {
         if (effectiveProject.getDependencies() != null) {
             
             for (MavenDependency dependency : effectiveProject.getDependencies()) {
+                
+                if (!depsFilter.include(dependency)) {
+                    if (debug) {
+                        System.out.println(Indent.indent(indent)
+                                + "## addAnyTransitiveDependencies skipping dependency " + dependency);
+                    }
+                    
+                    continue;
+                }
                 
                 if (debug) {
                     System.out.println(Indent.indent(indent)

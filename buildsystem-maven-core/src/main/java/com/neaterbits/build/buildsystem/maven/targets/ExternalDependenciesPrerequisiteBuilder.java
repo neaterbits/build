@@ -3,6 +3,7 @@ package com.neaterbits.build.buildsystem.maven.targets;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.neaterbits.build.buildsystem.maven.targets.DepsHelper.DepsFilter;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
@@ -34,6 +35,7 @@ final class ExternalDependenciesPrerequisiteBuilder
                                         0,
                                         DEBUG,
                                         context.getBuildSystemRoot(),
+                                        DepsFilter.NOT_TEST_OR_PROVIDED,
                                         context.getBuildSystemRoot().getExternalDependencies(),
                                         externalProjectDependency),
                     

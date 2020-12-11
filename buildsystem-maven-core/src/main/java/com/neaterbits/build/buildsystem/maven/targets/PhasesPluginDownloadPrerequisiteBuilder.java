@@ -9,6 +9,7 @@ import com.neaterbits.build.buildsystem.maven.phases.Phases;
 import com.neaterbits.build.buildsystem.maven.plugins.access.PluginFinder;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
+import com.neaterbits.build.buildsystem.maven.targets.DepsHelper.DepsFilter;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
@@ -62,6 +63,7 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
                                 0,
                                 DEBUG,
                                 tc.getBuildSystemRoot(),
+                                DepsFilter.NOT_TEST_OR_PROVIDED,
                                 tc.getBuildSystemRoot().getPluginDependencies(),
                                 externalPluginDependency);
 
