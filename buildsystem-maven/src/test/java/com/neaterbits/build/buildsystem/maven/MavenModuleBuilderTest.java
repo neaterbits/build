@@ -5,7 +5,7 @@ import com.neaterbits.build.buildsystem.maven.common.model.MavenModuleId;
 import com.neaterbits.build.test.BaseModuleBuilderTest;
 import com.neaterbits.build.types.ModuleId;
 
-public class MavenModuleBuilderTest extends BaseModuleBuilderTest{
+public class MavenModuleBuilderTest extends BaseModuleBuilderTest {
 
 	@Override
 	protected String getJarFileName(String moduleName, ModuleId rootModuleId) {
@@ -17,6 +17,6 @@ public class MavenModuleBuilderTest extends BaseModuleBuilderTest{
 
 	@Override
 	protected BuildSystem makeBuildSystem() {
-		return new MavenBuildSystem(".build/maven");
+		return new MavenBuildSystem();
 	}
 }

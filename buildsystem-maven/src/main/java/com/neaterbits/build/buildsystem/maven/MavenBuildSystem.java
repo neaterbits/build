@@ -39,13 +39,15 @@ public final class MavenBuildSystem implements BuildSystem {
     private final MavenPluginsEnvironment pluginsEnvironment;
     private final MavenRepositoryAccess repositoryAccess;
     private final PomProjectParser<Document> pomProjectParser;
-    
-    public MavenBuildSystem(String mavenRepositoryDir) {
+
+    public MavenBuildSystem() {
+        this(MavenRepositoryAccess.baseMavenRepositoryPath());
+    }
+
+    public MavenBuildSystem(Path mavenRepositoryDir) {
         this(
                 new URLMavenRepositoryAccess(
-                        Path.of(System.getProperty("user.home"))
-                                .resolve(mavenRepositoryDir)
-                                .toFile(),
+                        mavenRepositoryDir,
                         HTTPDownloader.create()));
     }
     

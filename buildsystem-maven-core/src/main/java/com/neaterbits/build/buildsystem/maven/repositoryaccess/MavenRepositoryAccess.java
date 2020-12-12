@@ -17,18 +17,11 @@ public interface MavenRepositoryAccess {
         T add(T path, String toAdd);
     }
     
-    public static Path mavenRepositoryDirectory(MavenModuleId moduleId) {
+    public static Path baseMavenRepositoryPath() {
 
-        return mavenRepositoryDirectory(Path.of(System.getProperty("user.home")), moduleId);
+        return Path.of(System.getProperty("user.home")).resolve(".build").resolve("maven");
     }
-
-    public static Path mavenRepositoryDirectory(Path baseDir, MavenModuleId moduleId) {
-        
-        final Path mavenRepositoryDir = baseDir.resolve(".m2").resolve("repository");
-                
-        return repositoryDirectory(mavenRepositoryDir, moduleId);
-    }
-
+    
     public static Path repositoryDirectory(Path mavenRepositoryDir, MavenModuleId moduleId) {
         
         return repositoryDirectoryPart(mavenRepositoryDir, moduleId, Path::resolve);

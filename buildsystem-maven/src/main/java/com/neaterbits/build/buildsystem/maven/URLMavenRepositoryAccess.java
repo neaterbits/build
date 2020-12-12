@@ -20,12 +20,12 @@ final class URLMavenRepositoryAccess implements MavenRepositoryAccess {
     private final Path repository;
     private final HTTPDownloader downloader;
     
-    URLMavenRepositoryAccess(File repository, HTTPDownloader downloader) {
+    URLMavenRepositoryAccess(Path repository, HTTPDownloader downloader) {
     
         Objects.requireNonNull(repository);
         Objects.requireNonNull(downloader);
         
-        this.repository = repository.toPath();
+        this.repository = repository;
         this.downloader = downloader;
     }
 
