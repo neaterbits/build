@@ -539,18 +539,24 @@ public class EffectivePOMsHelper {
                     
                     final MavenDependency result;
                     
-                    if (updated == null || d.getModuleId().getVersion() != null) {
+                    if (updated == null) {
                         result = d;
                     }
                     else {
+                        final MavenModuleId moduleId = new MavenModuleId(
+                                d.getModuleId().getGroupId(),
+                                d.getModuleId().getArtifactId(),
+                                updated.getModuleId().getVersion() != null
+                                    ? updated.getModuleId().getVersion()
+                                    : d.getModuleId().getVersion()); 
+                        
                         result = new MavenDependency(
-                                new MavenModuleId(
-                                        d.getModuleId().getGroupId(),
-                                        d.getModuleId().getArtifactId(),
-                                        updated.getModuleId().getVersion()),
+                                moduleId,
                                 d.getType(),
                                 d.getClassifier(),
-                                d.getScope(),
+                                updated.getScope() != null
+                                    ? updated.getScope()
+                                    : d.getScope(),
                                 d.getOptional(),
                                 d.getExclusions());
                     }

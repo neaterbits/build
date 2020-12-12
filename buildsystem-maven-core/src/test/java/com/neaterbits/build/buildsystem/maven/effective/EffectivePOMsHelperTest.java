@@ -1006,6 +1006,8 @@ public class EffectivePOMsHelperTest {
         final String rootPomDependencyOtherArtifactId = "rootPomDependencyOtherArtifactId";
         final String rootPomDependencyOtherVersion = "rootPomDependencyOtherVersion";
 
+        final String subPomDependencyArtifactId = "subPomDependencyArtifactId";
+
         final String rootPomString =
                 "<project>"
 
@@ -1019,11 +1021,18 @@ public class EffectivePOMsHelperTest {
               + "        <groupId>" + rootPomDependencyGroupId + "</groupId>"
               + "        <artifactId>" + rootPomDependencyArtifactId + "</artifactId>"
               + "        <version>" + rootPomDependencyVersion + "</version>"
+              + "        <scope>runtime</scope>"
               + "      </dependency>"
               + "      <dependency>"
               + "        <groupId>" + rootPomDependencyGroupId + "</groupId>"
               + "        <artifactId>" + rootPomDependencyOtherArtifactId + "</artifactId>"
               + "        <version>" + rootPomDependencyOtherVersion + "</version>"
+              + "        <scope>test</scope>"
+              + "      </dependency>"
+              + "      <dependency>"
+              + "        <groupId>" + rootPomDependencyGroupId + "</groupId>"
+              + "        <artifactId>" + subPomDependencyArtifactId + "</artifactId>"
+              + "        <scope>compile</scope>"
               + "      </dependency>"
               + "    </dependencies>"
               + "  </dependencyManagement>"
@@ -1054,6 +1063,13 @@ public class EffectivePOMsHelperTest {
               + "    <dependency>"
               + "      <groupId>" + rootPomDependencyGroupId + "</groupId>"
               + "      <artifactId>" + rootPomDependencyOtherArtifactId + "</artifactId>"
+              + "      <version>1.0</version>"
+              + "      <scope>provided</scope>"
+              + "    </dependency>"
+
+              + "    <dependency>"
+              + "      <groupId>" + rootPomDependencyGroupId + "</groupId>"
+              + "      <artifactId>" + subPomDependencyArtifactId + "</artifactId>"
               + "      <version>1.1</version>"
               + "    </dependency>"
               + "  </dependencies>"
@@ -1127,7 +1143,7 @@ public class EffectivePOMsHelperTest {
 
         final List<MavenDependency> subDependencies = subProject.getCommon().getDependencies();
 
-        assertThat(subDependencies.size()).isEqualTo(3);
+        assertThat(subDependencies.size()).isEqualTo(4);
         
         assertThat(subDependencies.get(0).getModuleId().getGroupId())
                 .isEqualTo(superPomDependencyGroupId);
@@ -1147,6 +1163,9 @@ public class EffectivePOMsHelperTest {
         assertThat(subDependencies.get(1).getModuleId().getVersion())
                 .isEqualTo(rootPomDependencyVersion);
 
+        assertThat(subDependencies.get(1).getScope())
+            .isEqualTo("runtime");
+
         assertThat(subDependencies.get(2).getModuleId().getGroupId())
             .isEqualTo(rootPomDependencyGroupId);
 
@@ -1154,6 +1173,21 @@ public class EffectivePOMsHelperTest {
             .isEqualTo(rootPomDependencyOtherArtifactId);
 
         assertThat(subDependencies.get(2).getModuleId().getVersion())
+            .isEqualTo(rootPomDependencyOtherVersion);
+
+        assertThat(subDependencies.get(2).getScope())
+            .isEqualTo("test");
+
+        assertThat(subDependencies.get(3).getModuleId().getGroupId())
+        .isEqualTo(rootPomDependencyGroupId);
+
+        assertThat(subDependencies.get(3).getModuleId().getArtifactId())
+            .isEqualTo(subPomDependencyArtifactId);
+    
+        assertThat(subDependencies.get(3).getModuleId().getVersion())
             .isEqualTo("1.1");
+    
+        assertThat(subDependencies.get(3).getScope())
+            .isEqualTo("compile");
     }
 }
