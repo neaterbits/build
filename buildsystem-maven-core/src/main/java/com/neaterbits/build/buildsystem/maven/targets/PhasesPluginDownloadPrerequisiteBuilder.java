@@ -10,6 +10,8 @@ import com.neaterbits.build.buildsystem.maven.plugins.access.PluginFinder;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenPlugin;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.build.buildsystem.maven.targets.DepsHelper.DepsFilter;
+import com.neaterbits.util.coll.MapOfList;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.SubPrerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
@@ -59,7 +61,7 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
                             System.out.println("## ENTER plugin further with target " + externalPluginDependency.getTargetedDependency().getId());
                         }
                         
-                        final List<ProjectDependency> deps = DepsHelper.listOfFurtherDependencies(
+                        final MapOfList<ProjectDependency, ProjectDependency> deps = DepsHelper.listOfFurtherDependencies(
                                 0,
                                 DEBUG,
                                 tc.getBuildSystemRoot(),
@@ -69,12 +71,12 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
 
                         
                         if (DEBUG) {
-                            System.out.println("## EXIT plugin further " + deps.stream()
+                            System.out.println("## EXIT plugin further " + deps.valuesStream()
                                 .map(d -> d.getTargetedDependency().getId())
                                 .collect(Collectors.toList()));
                         }
     
-                        return deps;
+                        return new SubPrerequisites<>(ProjectDependency.class, deps);
                     },
                     Function.identity())
             .buildBy(pt -> pt

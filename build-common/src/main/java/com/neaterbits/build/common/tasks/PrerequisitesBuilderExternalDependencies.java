@@ -9,6 +9,7 @@ import com.neaterbits.build.types.compile.ExternalModuleDependencyList;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.resource.LibraryResourcePath;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.SubPrerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
@@ -90,9 +91,11 @@ public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends Task
 						
 						final List<LibraryDependency> list = ModuleBuilderUtil.transitiveLibraryDependencies(context, dep.dependency);
 						
-						return list.stream()
+						final List<ProjectLibraryDependency> libraries = list.stream()
 						        .map(libraryDependency -> new ProjectLibraryDependency(dep.project, libraryDependency))
 						        .collect(Collectors.toList());
+						
+						return new SubPrerequisites<>(ProjectLibraryDependency.class, libraries);
 					},
 					dependency -> dependency) // already of ItemType
 			

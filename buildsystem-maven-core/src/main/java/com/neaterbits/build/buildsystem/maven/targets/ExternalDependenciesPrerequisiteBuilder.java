@@ -4,6 +4,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.neaterbits.build.buildsystem.maven.targets.DepsHelper.DepsFilter;
+import com.neaterbits.util.coll.MapOfList;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.SubPrerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
@@ -30,15 +32,18 @@ final class ExternalDependenciesPrerequisiteBuilder
                                         .stream() // downcast
                                         .collect(Collectors.toList())),
                     
-                    (context, externalProjectDependency)
-                                -> DepsHelper.listOfFurtherDependencies(
+                    (context, externalProjectDependency) -> {
+                        
+                        final MapOfList<ProjectDependency, ProjectDependency> deps
+                            = DepsHelper.listOfFurtherDependencies(
                                         0,
                                         DEBUG,
                                         context.getBuildSystemRoot(),
                                         DepsFilter.NOT_TEST_OR_PROVIDED,
                                         context.getBuildSystemRoot().getExternalDependencies(),
-                                        externalProjectDependency),
-                    
+                                        externalProjectDependency);
+                        return new SubPrerequisites<>(ProjectDependency.class, deps);
+                    },
                     Function.identity())
             .buildBy(
                     externalDependencyBuild -> externalDependencyBuild

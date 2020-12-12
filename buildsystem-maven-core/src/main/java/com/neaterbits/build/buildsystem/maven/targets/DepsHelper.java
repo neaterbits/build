@@ -1,7 +1,5 @@
 package com.neaterbits.build.buildsystem.maven.targets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +13,7 @@ import com.neaterbits.build.buildsystem.maven.effective.EffectivePOMReader;
 import com.neaterbits.build.buildsystem.maven.project.model.BaseMavenRepository;
 import com.neaterbits.build.buildsystem.maven.project.model.MavenProject;
 import com.neaterbits.util.Indent;
+import com.neaterbits.util.coll.MapOfList;
 
 class DepsHelper {
     
@@ -58,7 +57,7 @@ class DepsHelper {
         return result;
     }
 
-    static List<ProjectDependency> listOfFurtherDependencies(
+    static MapOfList<ProjectDependency, ProjectDependency> listOfFurtherDependencies(
             int indent,
             boolean debug,
             MavenBuildRoot buildRoot,
@@ -83,7 +82,7 @@ class DepsHelper {
         
         final MavenProject project = cached.getExternalProject(moduleId);
 
-        final List<ProjectDependency> result;
+        final MapOfList<ProjectDependency, ProjectDependency> result = new MapOfList<>();
 
         if (project == null) {
 
@@ -92,7 +91,6 @@ class DepsHelper {
             }
             
             // Parent dependency not downloaded yet so return empty list
-            result = Collections.emptyList();
         }
         else if (projectDependency instanceof ParentDependency) {
 
@@ -110,7 +108,7 @@ class DepsHelper {
                         parentDependency.getReferencedFromRepositories(),
                         project.getParentModuleId());
                 
-                result = Arrays.asList(nextDependency);
+                result.add(parentDependency, nextDependency);
             }
             else {
                 
@@ -120,13 +118,14 @@ class DepsHelper {
 
                 // Reached entry with no parent dependency, find all transitive
                 
-                result = onDependencyRootReached(
+                onDependencyRootReached(
                         indent + 1,
                         debug,
                         buildRoot,
                         depsFilter,
                         project,
                         parentDependency,
+                        result,
                         cached);
             }
         }
@@ -146,7 +145,7 @@ class DepsHelper {
                         transitiveDependency.getReferencedFromRepositories(),
                         project.getParentModuleId());
                 
-                result = Arrays.asList(nextDependency);
+                result.add(transitiveDependency, nextDependency);
             }
             else {
 
@@ -155,8 +154,6 @@ class DepsHelper {
                 }
                 
                 if (project.getCommon().getDependencies() != null) {
-                    
-                    result = new ArrayList<>(project.getCommon().getDependencies().size());
                     
                     final EffectiveProject effective = getEffectiveExternalProject(cached, project);
                     
@@ -172,7 +169,6 @@ class DepsHelper {
                 }
                 else {
                     // No further dependencies
-                    result = Collections.emptyList();
                 }
             }
         }
@@ -180,7 +176,7 @@ class DepsHelper {
             throw new IllegalStateException();
         }
  
-        if (result.stream().anyMatch(dep -> !buildRoot.isProjectModule(dep.getOriginalDependency()))) {
+        if (result.valuesStream().anyMatch(dep -> !buildRoot.isProjectModule(dep.getOriginalDependency()))) {
             throw new IllegalStateException();
         }
 
@@ -201,20 +197,19 @@ class DepsHelper {
         return cached.getEffectiveExternalProject(moduleId);
     }
     
-    private static List<ProjectDependency> onDependencyRootReached(
+    private static void onDependencyRootReached(
                                                 int indent,
                                                 boolean debug,
                                                 MavenBuildRoot buildRoot,
                                                 DepsFilter depsFilter,
                                                 MavenProject project,
                                                 ParentDependency parentDependency,
+                                                MapOfList<ProjectDependency, ProjectDependency> result,
                                                 CachedDependencies cached) {
         
         if (debug) {
             System.out.println(Indent.indent(indent) + "## ENTER onDependencyRootReached(" + project.getModuleId().getId() + ")");
         }
-        
-        final List<ProjectDependency> result = new ArrayList<>();
         
         if (project.getParent() != null) {
             throw new IllegalArgumentException();
@@ -301,8 +296,6 @@ class DepsHelper {
                       Indent.indent(indent)
                     + "## EXIT onDependencyRootReached(" + project.getModuleId().getId() + ")");
         }
-        
-        return result;
     }
     
     private static void addAnyTransitiveDependencies(
@@ -310,7 +303,7 @@ class DepsHelper {
             boolean debug,
             MavenBuildRoot root,
             DepsFilter depsFilter,
-            List<ProjectDependency> result,
+            MapOfList<ProjectDependency, ProjectDependency> result,
             EffectiveProject effectiveProject,
             ProjectDependency referencedFrom,
             MavenProject projectReferencedFrom) {
@@ -355,7 +348,7 @@ class DepsHelper {
                             referencedFrom.getReferencedFromRepositories(),
                             dependency);
                 
-                result.add(transitiveDependency);
+                result.add(referencedFrom, transitiveDependency);
             }
         }
 
