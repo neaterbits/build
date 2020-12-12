@@ -29,7 +29,7 @@ public class PhasesPluginDownloadPrerequisiteBuilder<TARGET>
         this.phases = phases;
     }
 
-    private static final Boolean DEBUG = Boolean.TRUE;
+    private static final Boolean DEBUG = Boolean.FALSE;
 
     @Override
     public void buildSpec(PrerequisitesBuilder<MavenBuilderContext, PhaseMavenProject> builder) {

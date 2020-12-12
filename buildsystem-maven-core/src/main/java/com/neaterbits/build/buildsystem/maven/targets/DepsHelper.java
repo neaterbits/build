@@ -221,8 +221,10 @@ class DepsHelper {
 
         if (project.getCommon().getDependencies() != null) {
 
-            System.out.println(Indent.indent(indent)
+            if (debug) {
+                System.out.println(Indent.indent(indent)
                         + "## onDependencyRootReached transitive in project " + project.getModuleId());
+            }
             
             final EffectiveProject effective = getEffectiveExternalProject(cached, project);
             
@@ -248,7 +250,9 @@ class DepsHelper {
                 
                 final ParentDependency parentDep = (ParentDependency)dep;
 
-                System.out.println(Indent.indent(indent) + "## onDependencyRootReached parent " + dep.getTargetedDependency());
+                if (debug) {
+                    System.out.println(Indent.indent(indent) + "## onDependencyRootReached parent " + dep.getTargetedDependency());
+                }
 
                 final EffectiveProject effective = getEffectiveExternalProject(cached, depProject);
         
@@ -266,14 +270,19 @@ class DepsHelper {
 
                 final TransitiveDependency transitiveDependency = (TransitiveDependency)dep;
                 
-                System.out.println(Indent.indent(indent) + "## onDependencyRootReached transitive " + dep.getTargetedDependency());
+                if (debug) {
+                    System.out.println(Indent.indent(indent) + "## onDependencyRootReached transitive " + dep.getTargetedDependency());
+                }
                 
                 final EffectiveProject effective = getEffectiveExternalProject(cached, depProject);
                 
                 if (effective.getDependencies() != null && !effective.getDependencies().isEmpty()) {
-                    System.out.println(Indent.indent(indent)
+                    
+                    if (debug) {
+                        System.out.println(Indent.indent(indent)
                             + "## onDependencyRootReached dependencies in transitive for "
                             + effective.getModuleId());
+                    }
                     
                     addAnyTransitiveDependencies(
                             indent + 1,
@@ -365,9 +374,11 @@ class DepsHelper {
         
         if ("true".equals(dependency.getOptional())) {
 
-            System.out.println(Indent.indent(indent)
+            if (debug) {
+                System.out.println(Indent.indent(indent)
                     + "## isOptional skip optional "
                     + dependency.getModuleId().getId());
+            }
         
             optional = true;
         }

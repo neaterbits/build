@@ -14,7 +14,7 @@ import com.neaterbits.util.concurrency.scheduling.Constraint;
 final class ExternalDependenciesPrerequisiteBuilder
     extends PrerequisitesBuilderSpec<MavenBuilderContext, PhaseMavenProject> {
 
-    private static final Boolean DEBUG = Boolean.TRUE;
+    private static final Boolean DEBUG = Boolean.FALSE;
     
     @Override
     public void buildSpec(PrerequisitesBuilder<MavenBuilderContext, PhaseMavenProject> builder) {
