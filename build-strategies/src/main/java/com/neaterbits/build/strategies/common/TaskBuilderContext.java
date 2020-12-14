@@ -1,4 +1,4 @@
-package com.neaterbits.build.common.tasks;
+package com.neaterbits.build.strategies.common;
 
 import com.neaterbits.build.common.language.BuildableLanguage;
 import com.neaterbits.build.model.BuildRoot;

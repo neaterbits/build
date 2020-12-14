@@ -1,4 +1,4 @@
-package com.neaterbits.build.common.tasks;
+package com.neaterbits.build.strategies.common;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.neaterbits.build.model.BuildRoot;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePath;
+import com.neaterbits.build.types.resource.compile.TargetDirectoryResourcePath;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 abstract class BuildRootContext extends TaskContext {
@@ -29,6 +30,11 @@ abstract class BuildRootContext extends TaskContext {
 
     public final Collection<ProjectModuleResourcePath> getModules() {
         return buildRoot.getModules();
+    }
+    
+    public final TargetDirectoryResourcePath getTargetDirectory(ProjectModuleResourcePath path) {
+
+        return buildRoot.getTargetDirectory(path);
     }
 
     public final CompiledModuleFileResourcePath getCompiledModuleFile(ProjectModuleResourcePath module) {

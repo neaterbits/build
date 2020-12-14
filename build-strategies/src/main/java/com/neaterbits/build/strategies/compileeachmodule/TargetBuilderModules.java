@@ -1,4 +1,4 @@
-package com.neaterbits.build.common.tasks;
+package com.neaterbits.build.strategies.compileeachmodule;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 import com.neaterbits.build.types.compile.Compiler;
 import com.neaterbits.build.types.compile.CompilerStatus;
 import com.neaterbits.build.common.compile.BuildException;
+import com.neaterbits.build.strategies.common.ModulesBuildContext;
+import com.neaterbits.build.strategies.common.PrerequisitesBuilderExternalDependencies;
+import com.neaterbits.build.strategies.common.PrerequisitesBuilderModuleCompileList;
+import com.neaterbits.build.strategies.common.PrerequisitesBuilderProjectDependencies;
 import com.neaterbits.build.types.compile.ExternalModuleDependencyList;
 import com.neaterbits.build.types.compile.ModuleCompileList;
 import com.neaterbits.build.types.compile.ProjectModuleDependencyList;
@@ -97,9 +101,9 @@ public class TargetBuilderModules extends TargetBuilderSpec<ModulesBuildContext>
 						
 						if (!moduleCompileList.getSourceFiles().isEmpty()) {
 						
-							final File targetDirectory = context.getBuildRoot().getTargetDirectory(target).getFile();
+							final File targetDirectory = context.getTargetDirectory(target).getFile();
 	
-							actionLog = compileSourceFiles(context.compiler, moduleCompileList, targetDirectory, projectDependencyList, externalDependencyList);
+							actionLog = compileSourceFiles(context.getCompiler(), moduleCompileList, targetDirectory, projectDependencyList, externalDependencyList);
 						}
 						else {
 							actionLog = null;

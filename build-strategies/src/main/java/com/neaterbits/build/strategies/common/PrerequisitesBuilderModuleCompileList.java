@@ -1,4 +1,4 @@
-package com.neaterbits.build.common.tasks;
+package com.neaterbits.build.strategies.common;
 
 import com.neaterbits.build.types.compile.FileCompilation;
 import com.neaterbits.build.types.compile.ModuleCompileList;
@@ -10,7 +10,7 @@ import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBu
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 
-public class PrerequisitesBuilderModuleCompileList extends PrerequisitesBuilderSpec<ModulesBuildContext, ProjectModuleResourcePath> {
+public final class PrerequisitesBuilderModuleCompileList extends PrerequisitesBuilderSpec<ModulesBuildContext, ProjectModuleResourcePath> {
 
 	@Override
 	public void buildSpec(PrerequisitesBuilder<ModulesBuildContext, ProjectModuleResourcePath> builder) {

@@ -1,4 +1,4 @@
-package com.neaterbits.build.common.tasks;
+package com.neaterbits.build.strategies.common;
 
 
 import java.util.List;
@@ -72,7 +72,7 @@ public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends Task
 					// from project all module target
 					(context, module) -> {
 
-						final List<LibraryDependency> list = ModuleBuilderUtil.transitiveProjectExternalDependencies(context, module);
+						final List<LibraryDependency> list = StrategiesBuilderUtil.transitiveProjectExternalDependencies(context, module);
 
 						try {
 							throw new Exception();
@@ -89,7 +89,7 @@ public final class PrerequisitesBuilderExternalDependencies<CONTEXT extends Task
 					// from external dependencies found above
 					(context, dep) -> {
 						
-						final List<LibraryDependency> list = ModuleBuilderUtil.transitiveLibraryDependencies(context, dep.dependency);
+						final List<LibraryDependency> list = StrategiesBuilderUtil.transitiveLibraryDependencies(context, dep.dependency);
 						
 						final List<ProjectLibraryDependency> libraries = list.stream()
 						        .map(libraryDependency -> new ProjectLibraryDependency(dep.project, libraryDependency))

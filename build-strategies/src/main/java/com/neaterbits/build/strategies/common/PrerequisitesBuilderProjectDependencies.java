@@ -1,4 +1,4 @@
-package com.neaterbits.build.common.tasks;
+package com.neaterbits.build.strategies.common;
 
 import java.util.stream.Collectors;
 
@@ -9,7 +9,7 @@ import com.neaterbits.build.types.resource.compile.CompiledModuleFileResourcePat
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.PrerequisitesBuilder;
 
-final class PrerequisitesBuilderProjectDependencies extends PrerequisitesBuilderSpec<ModulesBuildContext, ProjectModuleResourcePath> {
+public final class PrerequisitesBuilderProjectDependencies extends PrerequisitesBuilderSpec<ModulesBuildContext, ProjectModuleResourcePath> {
 
 	@Override
 	public void buildSpec(PrerequisitesBuilder<ModulesBuildContext, ProjectModuleResourcePath> builder) {
@@ -19,7 +19,7 @@ final class PrerequisitesBuilderProjectDependencies extends PrerequisitesBuilder
 			.makingProduct(ProjectModuleDependencyList.class)
 			.fromItemType(ProjectDependency.class)
 			
-			.fromIterating(null, (context, dependency) -> ModuleBuilderUtil.transitiveProjectDependencies(context, dependency).stream()
+			.fromIterating(null, (context, dependency) -> StrategiesBuilderUtil.transitiveProjectDependencies(context, dependency).stream()
 					.map(projectDependency -> projectDependency.getModulePath())
 					.collect(Collectors.toList()))
 			

@@ -63,6 +63,7 @@
 		<module>buildsystem-maven-common-model</module>
 		<module>buildsystem-maven-plugins-execute</module>
 		<module>buildsystem-maven-core</module>
+		<module>build-strategies</module>
 	</modules>
 
 	<build>
