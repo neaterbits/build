@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.function.Function;
 
-import com.neaterbits.build.buildsystem.common.BuildSpecifier.Build;
+import com.neaterbits.build.types.Build;
 import com.neaterbits.build.types.ModuleId;
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.TargetBuildResult;

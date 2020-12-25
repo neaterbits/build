@@ -7,6 +7,7 @@ import com.neaterbits.build.buildsystem.common.BuildSpecifier;
 import com.neaterbits.build.buildsystem.common.BuildSystemRootScan;
 import com.neaterbits.build.buildsystem.maven.MavenBuildRoot;
 import com.neaterbits.build.buildsystem.maven.phases.UnknownPhaseException;
+import com.neaterbits.build.types.Build;
 
 public final class MavenBuildSpecifier implements BuildSpecifier<MavenBuilderContext> {
 

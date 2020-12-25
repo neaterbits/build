@@ -3,9 +3,9 @@ package com.neaterbits.build.buildsystem.maven.targets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.neaterbits.build.buildsystem.common.BuildSpecifier.Build;
 import com.neaterbits.build.buildsystem.maven.phases.Phases;
 import com.neaterbits.build.buildsystem.maven.phases.UnknownPhaseException;
+import com.neaterbits.build.types.Build;
 import com.neaterbits.util.StringUtils;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetBuilderSpec;
 
