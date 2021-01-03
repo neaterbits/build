@@ -80,6 +80,13 @@ public final class ScopedName {
 	public boolean hasScope() {
 		return scope != null;
 	}
+	
+	public String getDebugString() {
+	    
+	    return scope != null
+	            ? StringUtils.join(scope, '.') + '.' + name
+                : name;
+	}
 
 	public String [] getParts() {
 

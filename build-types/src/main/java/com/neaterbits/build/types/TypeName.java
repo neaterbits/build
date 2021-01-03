@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
-import com.neaterbits.util.StringUtils;
+import java.util.function.Consumer;
 
 public class TypeName {
 
@@ -78,23 +77,51 @@ public class TypeName {
 	}
 
 	public String join(char separator) {
-		final StringBuilder sb = new StringBuilder();
+	    
+        final StringBuilder sb = new StringBuilder();
+        
+        join(separator, sb::append);
+        
+        return sb.toString();
+	}
+
+    public void join(char separator, Consumer<String> append) {
+        join(String.valueOf(separator), append);
+    }
+    
+    private static void join(String [] strings, String separator, Consumer<String> append) {
+        
+        for (int i = 0; i < strings.length; ++ i) {
+            if (i > 0) {
+                append.accept(separator);
+            }
+
+            append.accept(strings[i]);
+        }
+    }
+
+    public void join(String separator, Consumer<String> append) {
 
 		if (namespace != null) {
-			sb.append(StringUtils.join(namespace, separator));
+		    join(namespace, separator, append);
 		}
 
 		if (outerTypes != null) {
-			sb.append(StringUtils.join(outerTypes, separator));
+		    if (namespace != null && namespace.length > 0) {
+		        append.accept(separator);
+		    }
+		    
+            join(outerTypes, separator, append);
 		}
 
-		if (sb.length() != 0) {
-			sb.append(separator);
+		if (
+		           (namespace != null && namespace.length > 0)
+		        || (outerTypes != null && outerTypes.length > 0)) {
+
+		    append.accept(separator);
 		}
 
-		sb.append(name);
-
-		return sb.toString();
+		append.accept(name);
 	}
 
 	public String toDebugString() {

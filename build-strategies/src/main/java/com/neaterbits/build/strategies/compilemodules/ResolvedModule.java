@@ -8,12 +8,12 @@ import com.neaterbits.util.coll.Coll;
 public final class ResolvedModule<PARSED_FILE, RESOLVE_ERROR> {
 
     private final CompileModule compileModule;
-    private final ParsedModule<PARSED_FILE> parsedModule;
+    private final ParsedModule<PARSED_FILE, RESOLVE_ERROR> parsedModule;
     private final List<RESOLVE_ERROR> resolveErrors;
     
     ResolvedModule(
             CompileModule compileModule,
-            ParsedModule<PARSED_FILE> parsedModule,
+            ParsedModule<PARSED_FILE, RESOLVE_ERROR> parsedModule,
             List<RESOLVE_ERROR> resolveErrors) {
         
         Objects.requireNonNull(compileModule);
@@ -30,7 +30,7 @@ public final class ResolvedModule<PARSED_FILE, RESOLVE_ERROR> {
         return compileModule;
     }
 
-    public ParsedModule<PARSED_FILE> getParsedModule() {
+    public ParsedModule<PARSED_FILE, RESOLVE_ERROR> getParsedModule() {
         return parsedModule;
     }
 

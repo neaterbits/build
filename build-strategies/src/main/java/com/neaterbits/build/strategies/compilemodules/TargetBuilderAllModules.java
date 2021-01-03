@@ -103,19 +103,19 @@ public final class TargetBuilderAllModules<PARSED_FILE, CODE_MAP, RESOLVE_ERROR>
             })
             .actionWithResult(Constraint.CPU, (context, target, parameters) -> {
                 
-                final List<ParsedWithCachedRefs<PARSED_FILE>> parsedFiles = new ArrayList<>();
+                final List<ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR>> parsedFiles = new ArrayList<>();
                 
                 for (SourceFileResourcePath sourceFile : target.getSourceFiles()) {
                     
                     final BuildSourceFile bsf = new BuildSourceFile(sourceFile, target);
                     
                     @SuppressWarnings("unchecked")
-                    final ParsedWithCachedRefs<PARSED_FILE> parsed
+                    final ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR> parsed
                         = parameters.getTargetActionResult(bsf, ParsedWithCachedRefs.class);
                     parsedFiles.add(parsed);
                 }
                 
-                final ParsedModule<PARSED_FILE> parsedModule = new ParsedModule<>(parsedFiles);
+                final ParsedModule<PARSED_FILE, RESOLVE_ERROR> parsedModule = new ParsedModule<>(parsedFiles);
               
                 return new ActionResult<>(parsedModule, FunctionActionLog.OK);
             });
@@ -147,7 +147,7 @@ public final class TargetBuilderAllModules<PARSED_FILE, CODE_MAP, RESOLVE_ERROR>
                     System.out.println("## resolve module");
 
                     @SuppressWarnings("unchecked")
-                    final ParsedModule<PARSED_FILE> parsedModule
+                    final ParsedModule<PARSED_FILE, RESOLVE_ERROR> parsedModule
                         = actionParameters.getTargetActionResult(target.getCompileModule(), ParsedModule.class);
 
                     return resolve(context, target.getCompileModule(), parsedModule);
@@ -166,16 +166,16 @@ public final class TargetBuilderAllModules<PARSED_FILE, CODE_MAP, RESOLVE_ERROR>
         return new ResolveModule(compileModule);
     }
 
-    private ActionResult<ParsedWithCachedRefs<PARSED_FILE>>
+    private ActionResult<ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR>>
             parseAndCollectRefs(
                     AllModulesBuildContext<PARSED_FILE, CODE_MAP, RESOLVE_ERROR> context,
                     BuildSourceFile target,
                     ActionParameters<BuildSourceFile> parametes) {
         
-        ActionResult<ParsedWithCachedRefs<PARSED_FILE>> result; 
+        ActionResult<ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR>> result; 
         
         try {
-            final ParsedWithCachedRefs<PARSED_FILE> parsed = context.getCompiler().parseFile(
+            final ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR> parsed = context.getCompiler().parseFile(
                     target.sourceFile,
                     target.compileModule.getCharset(),
                     context.getCodeMap());
@@ -192,7 +192,7 @@ public final class TargetBuilderAllModules<PARSED_FILE, CODE_MAP, RESOLVE_ERROR>
     private ActionResult<ResolvedModule<PARSED_FILE, RESOLVE_ERROR>> resolve(
             AllModulesBuildContext<PARSED_FILE, CODE_MAP, RESOLVE_ERROR> context,
             CompileModule compileModule,
-            ParsedModule<PARSED_FILE> parsedModule) {
+            ParsedModule<PARSED_FILE, RESOLVE_ERROR> parsedModule) {
         
         Objects.requireNonNull(context);
         Objects.requireNonNull(compileModule);

@@ -28,7 +28,8 @@ public interface AllModulesCompiler<PARSED_FILE, CODE_MAP, RESOLVE_ERROR> {
      *         
      * @throws IOException in case of IO error
      */
-    ParsedWithCachedRefs<PARSED_FILE> parseFile(SourceFileResourcePath sourceFile, Charset charset, CODE_MAP codeMap)
+    ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR>
+    parseFile(SourceFileResourcePath sourceFile, Charset charset, CODE_MAP codeMap)
                 throws IOException, ParserException;
     
     /**
@@ -41,6 +42,8 @@ public interface AllModulesCompiler<PARSED_FILE, CODE_MAP, RESOLVE_ERROR> {
      * @return collection of all parsed modules and resulting codemap.
      */
     
-    List<RESOLVE_ERROR> resolveParseTreeInPlaceFromCodeMap(ParsedModule<PARSED_FILE> modules, CODE_MAP codeMap);
+    List<RESOLVE_ERROR> resolveParseTreeInPlaceFromCodeMap(
+                                        ParsedModule<PARSED_FILE, RESOLVE_ERROR> modules,
+                                        CODE_MAP codeMap);
     
 }
