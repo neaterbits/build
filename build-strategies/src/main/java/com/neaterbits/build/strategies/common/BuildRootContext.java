@@ -24,7 +24,7 @@ abstract class BuildRootContext extends TaskContext {
         this(context.buildRoot);
     }
 
-    BuildRoot getBuildRoot() {
+    public final BuildRoot getBuildRoot() {
         return buildRoot;
     }
 

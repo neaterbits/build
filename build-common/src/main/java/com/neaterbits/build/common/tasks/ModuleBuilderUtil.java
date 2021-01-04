@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.neaterbits.build.model.BuildRoot;
+import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 
@@ -18,7 +19,12 @@ public class ModuleBuilderUtil {
 	            buildRoot::getProjectDependenciesForProjectModule,
 	            ProjectDependency::getModulePath);
 	}
-		
+
+    public static List<LibraryDependency> transitiveProjectExternalDependencies(BuildRoot buildRoot, ProjectModuleResourcePath module) {
+
+        throw new UnsupportedOperationException();
+    }
+	
 	public static <PROJECT, DEPENDENCY>
 	List<DEPENDENCY> transitiveProjectDependencies(
 	        PROJECT module,
