@@ -10,52 +10,33 @@ import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
 import com.neaterbits.build.types.resource.SourceFileResourcePath;
 import com.neaterbits.util.coll.Coll;
 
-public final class CompileModule {
+public final class CompileModule extends BaseCompileModule {
 
     private final ProjectModuleResourcePath path;
-    private final Charset charset;
     private final List<SourceFileResourcePath> sourceFiles;
-    private final List<ProjectDependency> projectDependencies;
-    private final List<LibraryDependency> libraryDependencies;
 
     public CompileModule(
             ProjectModuleResourcePath path,
-            Charset charset,
             List<SourceFileResourcePath> sourceFiles,
+            Charset charset,
             List<ProjectDependency> projectDependencies,
             List<LibraryDependency> libraryDependencies) {
         
+        super(charset, projectDependencies, libraryDependencies);
+        
         Objects.requireNonNull(path);
-        Objects.requireNonNull(charset);
         Objects.requireNonNull(sourceFiles);
-        Objects.requireNonNull(projectDependencies);
-        Objects.requireNonNull(libraryDependencies);
         
         this.path = path;
-        this.charset = charset;
-        this.sourceFiles = sourceFiles;
-        this.projectDependencies = Coll.immutable(projectDependencies);
-        this.libraryDependencies = Coll.immutable(libraryDependencies);
+        this.sourceFiles = Coll.immutable(sourceFiles);
     }
 
     ProjectModuleResourcePath getPath() {
         return path;
     }
 
-    Charset getCharset() {
-        return charset;
-    }
-
     List<SourceFileResourcePath> getSourceFiles() {
         return sourceFiles;
-    }
-
-    List<ProjectDependency> getProjectDependencies() {
-        return projectDependencies;
-    }
-
-    List<LibraryDependency> getLibraryDependencies() {
-        return libraryDependencies;
     }
 
     @Override

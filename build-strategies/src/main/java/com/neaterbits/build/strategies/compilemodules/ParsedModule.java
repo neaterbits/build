@@ -9,7 +9,7 @@ public class ParsedModule<PARSED_FILE, RESOLVE_ERROR> {
 
     private final List<ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR>> parsed;
 
-    protected ParsedModule(List<ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR>> parsed) {
+    public ParsedModule(List<ParsedWithCachedRefs<PARSED_FILE, RESOLVE_ERROR>> parsed) {
 
         Objects.requireNonNull(parsed);
 
