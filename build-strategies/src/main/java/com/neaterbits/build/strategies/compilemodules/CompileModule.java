@@ -35,7 +35,7 @@ public final class CompileModule extends BaseCompileModule {
         return path;
     }
 
-    List<SourceFileResourcePath> getSourceFiles() {
+    public List<SourceFileResourcePath> getSourceFiles() {
         return sourceFiles;
     }
 
