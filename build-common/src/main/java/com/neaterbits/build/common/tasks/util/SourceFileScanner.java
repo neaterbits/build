@@ -1,6 +1,7 @@
 package com.neaterbits.build.common.tasks.util;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -92,10 +93,10 @@ public class SourceFileScanner {
 
 		final File directory = sourceFile.getParentFile();
 
-		String dirPath = PathUtil.removeDirectoryFromPath(sourceFolderFile, directory);
+		final String dirPath = PathUtil.removeDirectoryFromPath(sourceFolderFile, directory);
 
-		final String [] namespaceParts = StringUtils.split(dirPath, '/');
-
+		final String [] namespaceParts = StringUtils.split(dirPath, File.separatorChar);
+		
 		final NamespaceResource namespaceResource = new NamespaceResource(directory, namespaceParts);
 
 		return new Namespace(dirPath, namespaceResource);

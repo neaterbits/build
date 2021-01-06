@@ -4,7 +4,7 @@ import java.io.File;
 
 import com.neaterbits.util.StringUtils;
 
-public class NamespaceResource extends SourceFileHolderResource {
+public final class NamespaceResource extends SourceFileHolderResource {
 
 	private final String [] namespace;
 
