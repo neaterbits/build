@@ -10,6 +10,9 @@ public interface Compiler {
 
 	boolean supportsCompilingMultipleFiles();
 	
-	CompilerStatus compile(List<SourceFileResourcePath> sourceFiles, File targetDirectory, List<File> compiledDependencies) throws IOException;
+	CompilerStatus compile(
+	        List<SourceFileResourcePath> sourceFiles,
+	        File targetDirectory,
+	        List<File> compiledDependencies) throws IOException;
 	
 }

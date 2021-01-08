@@ -13,6 +13,13 @@
 			<artifactId>build-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>${compilerGroupId}</groupId>
+			<artifactId>bytecode-java</artifactId>
+			<version>${compilerVersion}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>${utilGroupId}</groupId>
 			<artifactId>util-base</artifactId>

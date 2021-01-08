@@ -9,6 +9,7 @@ import java.util.function.Function;
 import com.neaterbits.build.buildsystem.common.BuildSystemRootScan;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
+import com.neaterbits.build.model.runtimeenvironment.RuntimeEnvironment;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
 import com.neaterbits.build.types.dependencies.ProjectDependency;
 import com.neaterbits.build.types.resource.ProjectModuleResourcePath;
@@ -40,6 +41,8 @@ public interface BuildRoot {
 	
 	BuildSystemRootScan getBuildSystemRootScan();
 	
+	RuntimeEnvironment getRuntimeEnvironment(ProjectModuleResourcePath module);
+	
 	void downloadExternalDependencyAndAddToBuildModel(ProjectModuleResourcePath module, LibraryDependency dependency)
 	                            throws IOException, ScanException;
 
@@ -48,7 +51,9 @@ public interface BuildRoot {
 	default <T> T forEachSourceFolder(Function<SourceFolderResourcePath, T> function) {
 		
 		for (ProjectModuleResourcePath module : getModules()) {
+		    
 			for (SourceFolderResourcePath sourceFolder : getSourceFolders(module)) {
+			    
 				final T result = function.apply(sourceFolder);
 				
 				if (result != null) {

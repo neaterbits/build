@@ -24,7 +24,10 @@ public final class JavaCompiler implements Compiler {
 	}
 
 	@Override
-	public CompilerStatus compile(List<SourceFileResourcePath> sourceFiles, File targetDirectory, List<File> compiledDependencies) throws IOException {
+	public CompilerStatus compile(
+	        List<SourceFileResourcePath> sourceFiles,
+	        File targetDirectory,
+	        List<File> compiledDependencies) throws IOException {
 
 		/*
 		System.out.println("## compile to " + targetDirectory.getPath() + ": " + sourceFiles.stream()
@@ -42,21 +45,9 @@ public final class JavaCompiler implements Compiler {
 
 		arguments.add("-d");
 		arguments.add(targetDirectory.getPath());
-
+		
 		if (compiledDependencies != null) {
-
-			/*
-			for (File compiledDependency : compiledDependencies) {
-
-				arguments.add("-cp");
-
-				arguments.add(compiledDependency.getPath());
-			}
-			*/
-
-			arguments.add("-cp");
-
-			arguments.add(StringUtils.join(compiledDependencies, ':', File::getPath));
+		    ClassPathHelper.addClassPathOption(arguments, compiledDependencies);
 		}
 
 		arguments.addAll(sourceFiles.stream()

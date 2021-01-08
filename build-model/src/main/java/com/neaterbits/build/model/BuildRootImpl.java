@@ -14,6 +14,7 @@ import com.neaterbits.build.buildsystem.common.BuildSystemRoot;
 import com.neaterbits.build.buildsystem.common.BuildSystemRootScan;
 import com.neaterbits.build.buildsystem.common.ScanException;
 import com.neaterbits.build.buildsystem.common.Scope;
+import com.neaterbits.build.model.runtimeenvironment.RuntimeEnvironment;
 import com.neaterbits.build.types.ModuleId;
 import com.neaterbits.build.types.dependencies.DependencyType;
 import com.neaterbits.build.types.dependencies.LibraryDependency;
@@ -27,6 +28,7 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPO
 
 	private final File path;
 	private final BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> buildSystemRoot;
+	private final RuntimeEnvironment runtimeEnvironment;
 
 	private final Map<ProjectModuleResourcePath, BuildProject<PROJECT>> projects;
 	private final Map<MODULE_ID, PROJECT> buildSystemProjectByModuleId;
@@ -34,13 +36,18 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPO
 
 	private final List<BuildRootListener> listeners;
 
-	public BuildRootImpl(File path, BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> buildSystemRoot) {
+	public BuildRootImpl(
+	        File path,
+	        BuildSystemRoot<MODULE_ID, PROJECT, DEPENDENCY, REPOSITORY> buildSystemRoot,
+	        RuntimeEnvironment runtimeEnvironment) {
 
 		Objects.requireNonNull(path);
 
 		this.path = path;
 
 		this.buildSystemRoot = buildSystemRoot;
+		this.runtimeEnvironment = runtimeEnvironment;
+		
 		this.listeners = new ArrayList<>();
 
 		final Collection<PROJECT> projects = buildSystemRoot.getProjects();
@@ -174,4 +181,9 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPO
 	public BuildSystemRootScan getBuildSystemRootScan() {
 		return buildSystemRoot;
 	}
+
+    @Override
+    public RuntimeEnvironment getRuntimeEnvironment(ProjectModuleResourcePath module) {
+        return runtimeEnvironment;
+    }
 }

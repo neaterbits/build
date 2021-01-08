@@ -21,6 +21,9 @@
 		<utilDiVersion>0.0.1-SNAPSHOT</utilDiVersion>
 		<utilConcurrencyVersion>0.0.1-SNAPSHOT</utilConcurrencyVersion>
 		<utilParseVersion>0.0.1-SNAPSHOT</utilParseVersion>
+		
+		<compilerGroupId>com.neaterbits.compiler</compilerGroupId>
+		<compilerVersion>0.0.1-SNAPSHOT</compilerVersion>
 	</properties>
 
 	<dependencies>
