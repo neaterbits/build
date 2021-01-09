@@ -1,6 +1,7 @@
 package com.neaterbits.build.model.runtimeenvironment;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import com.neaterbits.build.types.ClassLibs;
@@ -24,4 +25,9 @@ public interface RuntimeEnvironment {
 
     boolean canReadCodeMapFromCompiledCode();
     
+    String[] getCommandLineForRunning(
+            List<CompiledModuleFileResourcePath> projects,
+            List<LibraryResourcePath> libraries,
+            TypeName entryPointType);
+
 }

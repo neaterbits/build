@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,39 @@ public class JavaRuntimeEnvironment implements RuntimeEnvironment {
             throw new IllegalStateException(ex);
         }
     }
+
+    @Override
+    public String[] getCommandLineForRunning(
+            List<CompiledModuleFileResourcePath> projects,
+            List<LibraryResourcePath> libraries,
+            TypeName entryPointType) {
+        
+        Objects.requireNonNull(projects);
+        Objects.requireNonNull(entryPointType);
+
+        final List<String> arguments = new ArrayList<>();
+
+        arguments.add("java");
+
+        final List<File> files = new ArrayList<>(projects.size() + (libraries != null ? libraries.size() : 0));
+        
+        for (CompiledModuleFileResourcePath project : projects) {
+            files.add(project.getFile());
+        }
+        
+        if (libraries != null) {
+            for (LibraryResourcePath library : libraries) {
+                files.add(library.getFile());
+            }
+        }
+        
+        arguments.add(entryPointType.join('.'));
+        
+        ClassPathHelper.addClassPathOption(arguments, files);
+        
+        return arguments.toArray(new String[arguments.size()]);
+    }
+
 
     @Override
     public final BytecodeFormat getBytecodeFormat() {
