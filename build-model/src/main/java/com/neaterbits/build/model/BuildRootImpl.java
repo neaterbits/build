@@ -95,7 +95,13 @@ public class BuildRootImpl<MODULE_ID extends ModuleId, PROJECT, DEPENDENCY, REPO
 	@Override
 	public List<ProjectDependency> getProjectDependenciesForProjectModule(ProjectModuleResourcePath module) {
 
-		return projects.get(module).getDependencies().stream()
+	    Objects.requireNonNull(module);
+	    
+	    final BuildProject<PROJECT> buildProject = projects.get(module);
+	    
+	    Objects.requireNonNull(buildProject);
+
+		return buildProject.getDependencies().stream()
 				.filter(dependency -> dependency.getType() == DependencyType.PROJECT)
 				.map(dependency -> new ProjectDependencyImpl(dependency))
 				.collect(Collectors.toList());

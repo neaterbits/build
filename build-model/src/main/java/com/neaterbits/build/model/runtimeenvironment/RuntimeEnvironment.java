@@ -28,6 +28,8 @@ public interface RuntimeEnvironment {
     String[] getCommandLineForRunning(
             List<CompiledModuleFileResourcePath> projects,
             List<LibraryResourcePath> libraries,
-            TypeName entryPointType);
+            TypeName entryPointType,
+            String [] programArguments,
+            String [] vmArguments);
 
 }

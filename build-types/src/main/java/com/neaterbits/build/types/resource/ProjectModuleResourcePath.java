@@ -19,10 +19,23 @@ public class ProjectModuleResourcePath extends ModuleResourcePath {
 	@Override
 	public ResourcePath getParentPath() {
 		
-		final ResourcePath parentPath = new ProjectModuleResourcePath(getPaths(1));
+		final ResourcePath parentPath = isAtRoot()
+		        ? null
+                : new ProjectModuleResourcePath(getPaths(1));
 
 		return parentPath;
 	}
+
+	public ProjectModuleResourcePath getRoot() {
+        
+        ProjectModuleResourcePath path;
+        
+        for (path = this; !path.isAtRoot(); path = (ProjectModuleResourcePath)getParentPath()) {
+            
+        }
+        
+        return path;
+    }
 
 	public final String getName() {
 		final ModuleResource moduleResource = (ModuleResource)getLast();

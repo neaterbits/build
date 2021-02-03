@@ -69,7 +69,9 @@ public class JavaRuntimeEnvironment implements RuntimeEnvironment {
     public String[] getCommandLineForRunning(
             List<CompiledModuleFileResourcePath> projects,
             List<LibraryResourcePath> libraries,
-            TypeName entryPointType) {
+            TypeName entryPointType,
+            String [] programArguments,
+            String [] vmArguments) {
         
         Objects.requireNonNull(projects);
         Objects.requireNonNull(entryPointType);
@@ -90,9 +92,21 @@ public class JavaRuntimeEnvironment implements RuntimeEnvironment {
             }
         }
         
+        if (vmArguments != null) {
+            for (String vmArgument : vmArguments) {
+                arguments.add(vmArgument);
+            }
+        }
+
+        ClassPathHelper.addClassPathOption(arguments, files);
+        
         arguments.add(entryPointType.join('.'));
         
-        ClassPathHelper.addClassPathOption(arguments, files);
+        if (programArguments != null) {
+            for (String programArgument : programArguments) {
+                arguments.add(programArgument);
+            }
+        }
         
         return arguments.toArray(new String[arguments.size()]);
     }
